@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loop Node — WBSKT Workflow Engine</title>
+    <title>WBSKT — The IDE for Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -27,7 +27,7 @@
             --blue-dim: #162030;
             --purple: #9a7ed4;
             --purple-dim: #221a38;
-            --r: 6px;
+            --r: 8px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,9 +36,10 @@
             background: var(--bg);
             color: var(--text);
             font-family: 'DM Mono', monospace;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.7;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Grid noise texture overlay */
@@ -50,7 +51,7 @@
                     linear-gradient(var(--border) 1px, transparent 1px),
                     linear-gradient(90deg, var(--border) 1px, transparent 1px);
             background-size: 40px 40px;
-            opacity: 0.18;
+            opacity: 0.15;
             pointer-events: none;
             z-index: 0;
         }
@@ -58,36 +59,34 @@
         .wrap {
             position: relative;
             z-index: 1;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 60px 40px 100px;
+            padding: 100px 40px;
         }
 
-        /* ── Header ── */
-        .header {
-            margin-bottom: 64px;
-            border-bottom: 1px solid var(--border2);
-            padding-bottom: 40px;
+        /* ── Header / Hero ── */
+        .hero {
+            text-align: center;
+            margin-bottom: 100px;
         }
 
-        .breadcrumb {
-            font-size: 11px;
+        .brand-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
             color: var(--text3);
-            letter-spacing: .1em;
+            letter-spacing: 0.3em;
+            margin-bottom: 40px;
             text-transform: uppercase;
-            margin-bottom: 24px;
         }
-
-        .breadcrumb span { color: var(--text2); }
 
         h1 {
             font-family: 'Fraunces', serif;
-            font-size: 52px;
+            font-size: 72px;
             font-weight: 300;
-            line-height: 1.1;
+            line-height: 1;
             color: var(--accent);
-            letter-spacing: -.02em;
-            margin-bottom: 12px;
+            letter-spacing: -.03em;
+            margin-bottom: 24px;
         }
 
         h1 em {
@@ -95,825 +94,335 @@
             color: var(--text);
         }
 
-        .tagline {
+        .hero-tagline {
+            font-size: 18px;
             color: var(--text2);
-            font-size: 13px;
-            max-width: 540px;
-            line-height: 1.8;
-            margin-top: 16px;
-        }
-
-        .version-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-top: 24px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 10px;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-weight: 500;
-        }
-
-        .badge-todo  { background: var(--amber-dim); color: var(--amber); border: 1px solid #5a4010; }
-        .badge-v1    { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent2); }
-        .badge-seq   { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
-        .badge-iot   { background: var(--purple-dim); color: var(--purple); border: 1px solid #3a2860; }
-
-        /* ── Section titles ── */
-        h2 {
-            font-family: 'Fraunces', serif;
-            font-size: 22px;
-            font-weight: 300;
-            color: var(--text);
-            margin: 56px 0 24px;
-            letter-spacing: -.01em;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        h2::before {
-            content: '';
-            display: block;
-            width: 4px;
-            height: 22px;
-            background: var(--accent);
-            border-radius: 2px;
-            flex-shrink: 0;
-        }
-
-        h3 {
-            font-size: 11px;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: var(--text3);
-            font-weight: 400;
-            margin: 32px 0 14px;
-        }
-
-        /* ── Node type card ── */
-        .node-card {
-            background: var(--bg2);
-            border: 1px solid var(--border2);
-            border-radius: var(--r);
-            overflow: hidden;
-            margin-bottom: 48px;
-        }
-
-        .node-header {
-            padding: 20px 24px;
-            background: var(--bg3);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .node-name {
-            font-family: 'DM Mono', monospace;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--accent);
-            letter-spacing: .02em;
-        }
-
-        .node-desc {
-            color: var(--text2);
-            font-size: 12px;
-            padding: 16px 24px 20px;
-            border-bottom: 1px solid var(--border);
-            line-height: 1.8;
-        }
-
-        .node-body { padding: 24px; }
-
-        /* ── Property table ── */
-        .prop-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-
-        .prop-table th {
-            text-align: left;
-            font-size: 10px;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--text3);
-            padding: 0 12px 10px 0;
-            font-weight: 400;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .prop-table td {
-            padding: 10px 12px 10px 0;
-            vertical-align: top;
-            border-bottom: 1px solid var(--border);
-            color: var(--text2);
-            line-height: 1.7;
-        }
-
-        .prop-table tr:last-child td { border-bottom: none; }
-
-        .prop-name {
-            font-family: 'DM Mono', monospace;
-            color: var(--accent);
-            white-space: nowrap;
-            font-size: 12px;
-        }
-
-        .prop-type {
-            color: var(--blue);
-            white-space: nowrap;
-            font-size: 11px;
-        }
-
-        .prop-default {
-            color: var(--amber);
-            font-size: 11px;
-            white-space: nowrap;
-        }
-
-        .prop-note {
-            font-size: 11px;
-            color: var(--text3);
-            margin-top: 4px;
-            font-style: italic;
-        }
-
-        /* ── Port rows ── */
-        .port-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 8px;
-        }
-
-        .port-col-label {
-            font-size: 10px;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--text3);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .port-col-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .port-row {
-            padding: 10px 14px;
-            border-radius: var(--r);
-            border: 1px solid var(--border);
-            background: var(--bg3);
-            margin-bottom: 8px;
-        }
-
-        .port-row:last-child { margin-bottom: 0; }
-
-        .port-name {
-            font-family: 'DM Mono', monospace;
-            font-size: 12px;
-            margin-bottom: 3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .port-pill {
-            font-size: 9px;
-            padding: 2px 7px;
-            border-radius: 99px;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .pill-signal  { background: var(--blue-dim);   color: var(--blue);   border: 1px solid #1a3a54; }
-        .pill-data    { background: var(--purple-dim);  color: var(--purple); border: 1px solid #3a2860; }
-        .pill-both    { background: var(--accent-dim);  color: var(--accent); border: 1px solid var(--accent2); }
-        .pill-control { background: var(--amber-dim);   color: var(--amber);  border: 1px solid #5a4010; }
-        .pill-error   { background: var(--coral-dim);   color: var(--coral);  border: 1px solid #5a2018; }
-
-        .port-desc {
-            font-size: 11px;
-            color: var(--text3);
+            max-width: 700px;
+            margin: 0 auto;
             line-height: 1.6;
         }
 
-        .port-payload {
-            font-family: 'DM Mono', monospace;
-            font-size: 10px;
-            color: var(--text2);
-            background: var(--bg4);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 6px 10px;
-            margin-top: 6px;
-            line-height: 1.8;
-        }
-
-        /* ── Callout boxes ── */
-        .callout {
-            border-radius: var(--r);
-            padding: 14px 18px;
-            font-size: 12px;
-            line-height: 1.8;
-            margin: 20px 0;
-            border-left: 3px solid;
-        }
-
-        .callout-warn  { background: var(--amber-dim); border-color: var(--amber); color: #c09830; }
-        .callout-info  { background: var(--blue-dim);  border-color: var(--blue);  color: var(--blue); }
-        .callout-good  { background: var(--accent-dim);border-color: var(--accent);color: var(--accent); }
-        .callout-error { background: var(--coral-dim); border-color: var(--coral); color: var(--coral); }
-
-        .callout strong { font-weight: 500; display: block; margin-bottom: 4px; }
-
-        /* ── Priority table ── */
-        .priority-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 14px;
-            border-radius: 4px;
-            margin-bottom: 6px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            font-size: 12px;
-        }
-
-        .priority-num {
-            font-size: 10px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-
-        .p1 { background: var(--coral-dim); color: var(--coral); border: 1px solid #5a2018; }
-        .p2 { background: var(--amber-dim); color: var(--amber); border: 1px solid #5a4010; }
-        .p3 { background: var(--blue-dim);  color: var(--blue);  border: 1px solid #1a3a54; }
-
-        .priority-label { color: var(--accent); font-family: 'DM Mono', monospace; }
-        .priority-desc  { color: var(--text3); font-size: 11px; }
-
-        /* ── State section ── */
-        .state-grid {
+        /* ── Feature Grid ── */
+        .feature-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 120px;
         }
 
-        .state-item {
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 10px 14px;
-        }
-
-        .state-key   { font-family: 'DM Mono', monospace; color: var(--accent); font-size: 12px; }
-        .state-type  { color: var(--blue); font-size: 11px; margin-left: 6px; }
-        .state-about { color: var(--text3); font-size: 11px; margin-top: 3px; line-height: 1.5; }
-
-        /* ── Concurrency diagram ── */
-        .concur-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .concur-card {
+        .feature-card {
+            background: var(--bg2);
             border: 1px solid var(--border2);
             border-radius: var(--r);
-            overflow: hidden;
+            padding: 32px;
+            transition: transform 0.2s, border-color 0.2s;
         }
 
-        .concur-head {
-            padding: 10px 14px;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: .05em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .feature-card:hover {
+            border-color: var(--accent2);
+            transform: translateY(-4px);
         }
 
-        .concur-head.seq  { background: var(--blue-dim);   color: var(--blue);   border-bottom: 1px solid #1a3a54; }
-        .concur-head.conc { background: var(--purple-dim);  color: var(--purple); border-bottom: 1px solid #3a2860; }
+        .feature-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
 
-        .concur-body {
-            padding: 14px;
-            background: var(--bg3);
-            font-size: 11px;
+        .feature-card p {
             color: var(--text2);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ── SDK Section ── */
+        .sdk-section {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 120px;
+            padding: 60px 0;
+            border-top: 1px solid var(--border2);
+            border-bottom: 1px solid var(--border2);
+        }
+
+        .sdk-content h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 36px;
+            font-weight: 300;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .sdk-content p {
+            color: var(--text2);
+            margin-bottom: 32px;
             line-height: 1.8;
         }
 
-        .timeline {
+        .lang-pills {
             display: flex;
-            gap: 4px;
-            align-items: center;
-            margin: 10px 0 4px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .tick {
-            width: 28px;
-            height: 20px;
-            border-radius: 3px;
+        .pill {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            color: var(--text2);
+            transition: border-color 0.2s;
+        }
+
+        .pill:hover { border-color: var(--accent); }
+
+        .code-window {
+            background: #050704;
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .code-header {
+            background: var(--bg3);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); }
+
+        .code-body {
+            padding: 24px;
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text2);
+        }
+
+        .c-kw  { color: var(--purple); }
+        .c-fn  { color: var(--blue); }
+        .c-str { color: var(--accent); }
+        .c-cmt { color: var(--text3); font-style: italic; }
+
+        /* ── Ecosystem ── */
+        .eco-section {
+            margin-bottom: 100px;
+        }
+
+        .eco-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .eco-card {
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 40px;
+        }
+
+        .eco-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .eco-card p {
+            color: var(--text2);
+            margin-bottom: 32px;
+        }
+
+        .int-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .int-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: 500;
-            flex-shrink: 0;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text3);
+            transition: color 0.2s;
         }
 
-        .tick-active { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
-        .tick-wait   { background: var(--bg4); color: var(--text3); border: 1px solid var(--border); }
-        .tick-all    { background: var(--purple-dim); color: var(--purple); border: 1px solid #3a2860; }
-        .tick-label  { font-size: 10px; color: var(--text3); margin-left: 4px; }
+        .int-item:hover { color: var(--text2); }
 
-        /* ── TODOs ── */
-        .todo-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .todo-list li {
-            padding: 10px 14px;
-            border-left: 2px solid var(--amber);
-            background: var(--amber-dim);
-            border-radius: 0 4px 4px 0;
-            font-size: 12px;
-            color: #c09830;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .todo-list li::before {
-            content: '○';
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
+        .int-item::before { content: '→'; color: var(--accent); font-size: 11px; }
 
         /* ── Footer ── */
         .footer {
-            margin-top: 80px;
-            padding-top: 24px;
+            margin-top: 120px;
+            padding-top: 60px;
             border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            color: var(--text3);
+            text-align: center;
         }
 
-        .footer-brand {
+        .footer h4 {
             font-family: 'Fraunces', serif;
-            font-size: 14px;
+            font-size: 20px;
+            font-weight: 300;
             color: var(--text2);
+            margin-bottom: 32px;
+        }
+
+        .docs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .docs-link {
+            text-decoration: none;
+            color: var(--text3);
+            transition: color 0.2s;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .docs-link:hover { color: var(--accent); }
+
+        .footer-bottom {
+            font-size: 11px;
+            color: var(--text3);
+            letter-spacing: 0.05em;
         }
 
         /* ── Animations ── */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
         .wrap > * {
-            animation: fadeUp .4s ease both;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .wrap > *:nth-child(1) { animation-delay: .05s; }
-        .wrap > *:nth-child(2) { animation-delay: .10s; }
-        .wrap > *:nth-child(3) { animation-delay: .15s; }
-        .wrap > *:nth-child(4) { animation-delay: .20s; }
-        .wrap > *:nth-child(5) { animation-delay: .25s; }
-
-        code {
-            font-family: 'DM Mono', monospace;
-            background: var(--bg4);
-            border: 1px solid var(--border);
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-size: 11px;
-            color: var(--accent);
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 32px 0;
-        }
-
-        p { color: var(--text2); line-height: 1.8; margin-bottom: 12px; }
+        .wrap > *:nth-child(2) { animation-delay: 0.1s; }
+        .wrap > *:nth-child(3) { animation-delay: 0.2s; }
+        .wrap > *:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
+
+<!-- Development Banner -->
+<div style="background: var(--amber-dim); border-bottom: 1px solid #5a4010; color: var(--amber); padding: 8px 0; text-align: center; font-size: 11px; letter-spacing: 0.1em; position: relative; z-index: 10;">
+    SYSTEMS UNDER DEVELOPMENT — v0.4.0-alpha (COMING SOON)
+</div>
+
 <div class="wrap">
 
-    <!-- Header -->
-    <div class="header">
-        <div class="breadcrumb">WBSKT Workflow Engine <span>/ Node Reference / Loop Nodes</span></div>
-        <h1>Loop <em>Nodes</em></h1>
-        <p class="tagline">Loop nodes provide iterative execution patterns within a workflow. They emit per-iteration signals, support external control via input ports, and integrate with the bookmark/suspend pattern for crash-safe resumption.</p>
-        <div class="version-row">
-            <span class="badge badge-v1">v1 — Static for-loop</span>
-            <span class="badge badge-seq">Sequential by default</span>
-            <span class="badge badge-iot">IoT-aware ack model</span>
-            <span class="badge badge-todo">Dynamic loop — TODO</span>
+    <!-- Hero -->
+    <div class="hero">
+        <div class="brand-logo">WBSKT</div>
+        <h1>The IDE for <em>Automation</em></h1>
+        <p class="hero-tagline">A lightning-fast, cost-effective workflow engine built for real-time data. Built by developers, for developers, to run anywhere.</p>
+    </div>
+
+    <!-- Value Props -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>Real-time Data</h3>
+            <p>Persistent connections as first-class citizens. React to telemetry, signals, and webhooks the instant they hit the wire.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Fast & Cheap</h3>
+            <p>Highly optimized core. Scale to millions of executions without the enterprise tax or heavy infrastructure overhead.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Ease of Use</h3>
+            <p>A logical, visual-first approach to complex logic. If you can think it, you can automate it in minutes.</p>
         </div>
     </div>
 
-    <!-- Overview -->
-    <h2>Overview</h2>
-    <p>All loop nodes share a common execution model: they suspend between iterations using the <strong>bookmark pattern</strong>, persisting their current iteration state into the workflow instance. This means a process restart mid-loop resumes at the last completed iteration — not from the beginning.</p>
-    <p>Each iteration fires an <code>onIteration</code> output port carrying typed data. The loop either continues immediately (fire-and-forget) or waits for an acknowledgement signal from downstream nodes before advancing (ack mode).</p>
-
-    <!-- StaticForLoopNode -->
-    <h2>StaticForLoopNode</h2>
-
-    <div class="node-card">
-        <div class="node-header">
-            <span class="node-name">StaticForLoopNode</span>
-            <div style="display:flex;gap:8px;">
-                <span class="badge badge-v1">v1.0</span>
-                <span class="badge badge-seq">Sequential</span>
+    <!-- SDK Section -->
+    <div class="sdk-section">
+        <div class="sdk-content">
+            <h2>Universal SDKs</h2>
+            <p>Embed automation directly into your apps. WBSKT provides first-class client libraries for all popular languages, making integration a breeze.</p>
+            <div class="lang-pills">
+                <div class="pill">TypeScript</div>
+                <div class="pill">JavaScript</div>
+                <div class="pill">Python</div>
+                <div class="pill">Go</div>
+                <div class="pill">.NET Core</div>
             </div>
         </div>
-        <div class="node-desc">
-            Iterates over a fixed numeric range defined at workflow design time. Range is set in the <code>WorkflowDefinition</code> and cannot be changed at runtime. On each iteration, the current value is emitted via the <code>onIteration</code> output port. Supports external pause, continue, and stop control via input signal ports.
-        </div>
-
-        <div class="node-body">
-
-            <!-- Input Properties -->
-            <h3>Input properties</h3>
-            <table class="prop-table">
-                <thead>
-                <tr>
-                    <th style="width:160px">Property</th>
-                    <th style="width:90px">Type</th>
-                    <th style="width:100px">Default</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="prop-name">from</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">required</td>
-                    <td>
-                        Starting value of the loop (inclusive).
-                        <div class="prop-note">e.g. from=0 starts the first iteration with value=0</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">to</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">required</td>
-                    <td>
-                        Ending value of the loop (exclusive — like Python <code>range()</code>).
-                        <div class="prop-note">e.g. from=0, to=5 yields values 0,1,2,3,4</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">step</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">1</td>
-                    <td>
-                        Increment applied after each iteration. Use a negative value with <code>from &gt; to</code> for countdown loops.
-                        <div class="prop-note">e.g. from=10, to=0, step=-2 yields 10,8,6,4,2</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">iteration-mode</td>
-                    <td class="prop-type">enum</td>
-                    <td class="prop-default">Sequential</td>
-                    <td>
-                        <code>Sequential</code> — next iteration starts only after current completes (or is acked).<br>
-                        <code>Concurrent</code> — all iterations fan-out as independent pointers simultaneously.
-                        <div class="prop-note">Concurrent mode requires max-concurrency to avoid flooding downstream systems.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">iteration-delay-ms</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">0</td>
-                    <td>
-                        Milliseconds to wait after an iteration <em>completes</em> before starting the next. Counted from iteration completion, not iteration start.
-                        <div class="prop-note">Only applies in Sequential mode.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">ack</td>
-                    <td class="prop-type">bool</td>
-                    <td class="prop-default">false</td>
-                    <td>
-                        <code>false</code> — fire and forget. <code>onIteration</code> fires and the loop advances immediately.<br>
-                        <code>true</code> — loop suspends after each <code>onIteration</code> and waits for downstream nodes to send a signal to the <code>continue</code> input port before advancing.
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">ack-timeout-ms</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">0</td>
-                    <td>
-                        Milliseconds to wait for acknowledgement before treating the iteration as timed out. <code>0</code> = wait indefinitely.
-                        <div class="prop-note">Only relevant when ack: true. Timeout fires the onIterationTimeout port.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">ack-mode</td>
-                    <td class="prop-type">enum</td>
-                    <td class="prop-default">Any</td>
-                    <td>
-                        <code>Any</code> — resume when any one connected downstream node sends ack.<br>
-                        <code>All</code> — resume only when all connected downstream nodes have acked.
-                        <div class="prop-note">Only relevant when ack: true.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">max-concurrency</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">∞</td>
-                    <td>
-                        Maximum number of concurrent iterations when <code>iteration-mode: Concurrent</code>. Prevents flooding downstream systems.
-                        <div class="prop-note">Strongly recommended for IoT command sequences. Has no effect in Sequential mode.</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">on-iteration-error</td>
-                    <td class="prop-type">enum</td>
-                    <td class="prop-default">Halt</td>
-                    <td>
-                        <code>Halt</code> — stop the loop and fire <code>onError</code>.<br>
-                        <code>Continue</code> — skip the failed iteration and advance.<br>
-                        <code>Retry(n)</code> — retry the current iteration up to n times before applying Halt or Continue.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="callout callout-warn">
-                <strong>Range validation at publish time</strong>
-                The engine validates that the range produces at least one iteration when the definition is published. A definition with <code>from=5, to=3, step=1</code> (impossible range) is rejected before any instance can be created.
+        <div class="code-window">
+            <div class="code-header">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
-
-            <!-- Ports -->
-            <h3>Ports</h3>
-            <div class="port-grid">
-
-                <!-- Input ports -->
-                <div>
-                    <div class="port-col-label">Input ports</div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            start
-                            <span class="port-pill pill-control">control</span>
-                        </div>
-                        <div class="port-desc">Begins the loop from <code>from</code>. Ignored if the loop is already running.</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            pause
-                            <span class="port-pill pill-control">control</span>
-                        </div>
-                        <div class="port-desc">Suspends iteration after the current iteration completes. Loop resumes on next <code>continue</code> signal. Instance status remains Running.</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            continue
-                            <span class="port-pill pill-control">control</span>
-                        </div>
-                        <div class="port-desc">Resumes a paused loop, OR serves as the ack signal when <code>ack: true</code>. Dual purpose — context determines which behaviour applies.</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            stop
-                            <span class="port-pill pill-control">control</span>
-                        </div>
-                        <div class="port-desc">Terminates the loop immediately after the current iteration. Does not wait for pending acks. Fires the <code>onStop</code> output port.</div>
-                    </div>
-                </div>
-
-                <!-- Output ports -->
-                <div>
-                    <div class="port-col-label">Output ports</div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            onIteration
-                            <span class="port-pill pill-both">data + signal</span>
-                        </div>
-                        <div class="port-desc">Fires on each iteration. Carries current iteration data.</div>
-                        <div class="port-payload">
-                            { index: int,<br>
-                            &nbsp;&nbsp;value: int,<br>
-                            &nbsp;&nbsp;isFirst: bool,<br>
-                            &nbsp;&nbsp;isLast: bool }
-                        </div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            onComplete
-                            <span class="port-pill pill-signal">signal</span>
-                        </div>
-                        <div class="port-desc">Fires when all iterations finish naturally (not stopped or errored).</div>
-                        <div class="port-payload">{ totalIterations: int, completedAt: timestamp }</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            onStop
-                            <span class="port-pill pill-signal">signal</span>
-                        </div>
-                        <div class="port-desc">Fires when stopped externally via the <code>stop</code> input port.</div>
-                        <div class="port-payload">{ stoppedAtValue: int, iterationsCompleted: int }</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            onIterationTimeout
-                            <span class="port-pill pill-error">error</span>
-                        </div>
-                        <div class="port-desc">Fires per iteration when <code>ack-timeout-ms</code> is exceeded. Only emitted when <code>ack: true</code> and <code>ack-timeout-ms &gt; 0</code>.</div>
-                        <div class="port-payload">{ value: int, index: int }</div>
-                    </div>
-
-                    <div class="port-row">
-                        <div class="port-name">
-                            onError
-                            <span class="port-pill pill-error">error</span>
-                        </div>
-                        <div class="port-desc">Fires when <code>on-iteration-error: Halt</code> and an iteration fails. Loop terminates.</div>
-                        <div class="port-payload">{ value: int, index: int, error: string }</div>
-                    </div>
-                </div>
+            <div class="code-body">
+                <span class="c-kw">import</span> { Wbskt } <span class="c-kw">from</span> <span class="c-str">'@wbskt/sdk'</span>;<br><br>
+                <span class="c-cmt">// 1. Connect to the real-time engine</span><br>
+                <span class="c-kw">const</span> client = <span class="c-kw">await</span> Wbskt.<span class="c-fn">connect</span>(<span class="c-str">'API_KEY'</span>);<br><br>
+                <span class="c-cmt">// 2. Receive commands from your workflows</span><br>
+                client.<span class="c-fn">on</span>(<span class="c-str">'command'</span>, (task) => {<br>
+                &nbsp;&nbsp;console.<span class="c-fn">log</span>(<span class="c-str">'Action received:'</span>, task.name);<br>
+                });<br><br>
+                <span class="c-cmt">// 3. Send real-time data to trigger logic</span><br>
+                client.<span class="c-fn">emit</span>(<span class="c-str">'telemetry'</span>, { temp: <span class="c-str">24.5</span> });
             </div>
-
-            <!-- Port priority -->
-            <h3>Input port priority</h3>
-            <p>When multiple control signals arrive simultaneously at the same iteration boundary, the following priority applies:</p>
-
-            <div class="priority-row">
-                <span class="priority-num p1">1</span>
-                <span class="priority-label">stop</span>
-                <span class="priority-desc">— highest priority, always terminates the loop immediately</span>
-            </div>
-            <div class="priority-row">
-                <span class="priority-num p2">2</span>
-                <span class="priority-label">pause</span>
-                <span class="priority-desc">— suspends after current iteration; overrides continue</span>
-            </div>
-            <div class="priority-row">
-                <span class="priority-num p3">3</span>
-                <span class="priority-label">continue</span>
-                <span class="priority-desc">— lowest priority, resumes only if not paused or stopped</span>
-            </div>
-
-            <!-- Concurrency model -->
-            <h3>Concurrency model</h3>
-            <p>One loop node runs per workflow instance. Two instances of the same definition have completely independent loop state and iteration counters.</p>
-
-            <div class="concur-row">
-                <div class="concur-card">
-                    <div class="concur-head seq">Sequential mode</div>
-                    <div class="concur-body">
-                        One active iteration at a time. Loop pointer suspends between iterations. If the process restarts mid-loop, execution resumes from the last completed iteration.
-                        <div class="timeline">
-                            <span class="tick tick-active">i=0</span>
-                            <span class="tick tick-wait">···</span>
-                            <span class="tick tick-active">i=1</span>
-                            <span class="tick tick-wait">···</span>
-                            <span class="tick tick-active">i=2</span>
-                            <span class="tick-label">one at a time</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="concur-card">
-                    <div class="concur-head conc">Concurrent mode</div>
-                    <div class="concur-body">
-                        All iterations fan-out as independent execution pointers. A FanInGate downstream collects results. Cap with <code>max-concurrency</code> to avoid flooding.
-                        <div class="timeline">
-                            <span class="tick tick-all">i=0</span>
-                            <span class="tick tick-all">i=1</span>
-                            <span class="tick tick-all">i=2</span>
-                            <span class="tick tick-all">i=3</span>
-                            <span class="tick-label">all at once</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="callout callout-error" style="margin-top:16px;">
-                <strong>IoT warning — Concurrent mode</strong>
-                Without <code>max-concurrency</code>, a loop with <code>from=0, to=1000</code> in Concurrent mode dispatches 1000 simultaneous device commands. Always set <code>max-concurrency</code> when targeting physical devices.
-            </div>
-
-            <!-- Crash recovery -->
-            <h3>Persisted state (crash recovery)</h3>
-            <p>The following fields are written to <code>WorkflowInstance.State.NodeOutputs[nodeId]</code> on every iteration suspension, ensuring resumption from the correct point after a process restart.</p>
-
-            <div class="state-grid">
-                <div class="state-item">
-                    <span class="state-key">currentValue</span><span class="state-type">int</span>
-                    <div class="state-about">Value at the time of last suspension. Loop resumes from here on restart.</div>
-                </div>
-                <div class="state-item">
-                    <span class="state-key">iterationsCompleted</span><span class="state-type">int</span>
-                    <div class="state-about">Count of successfully completed iterations so far.</div>
-                </div>
-                <div class="state-item">
-                    <span class="state-key">isPaused</span><span class="state-type">bool</span>
-                    <div class="state-about">True if the loop was externally paused via the pause input port.</div>
-                </div>
-                <div class="state-item">
-                    <span class="state-key">pendingAcks</span><span class="state-type">int</span>
-                    <div class="state-about">Number of acks still expected. Only set when ack-mode: All.</div>
-                </div>
-                <div class="state-item">
-                    <span class="state-key">status</span><span class="state-type">enum</span>
-                    <div class="state-about">Running | Paused | Completed | Stopped | Failed</div>
-                </div>
-                <div class="state-item">
-                    <span class="state-key">lastIterationAt</span><span class="state-type">timestamp</span>
-                    <div class="state-about">Timestamp of last completed iteration. Used for delay calculation.</div>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- TODO section -->
-    <h2>Planned node types</h2>
-    <p>The following loop node variants are planned for future releases. Design notes are preliminary.</p>
-
-    <ul class="todo-list">
-        <li>
-            <div>
-                <strong style="color:#c09830;font-weight:500;">DynamicForLoopNode</strong> — Iterates over a range resolved at runtime from workflow state or a node output. Range values come from instance variables rather than the definition config. Requires expression evaluation against <code>WorkflowState</code> at execution time.
+    <!-- Ecosystem -->
+    <div class="eco-section">
+        <div class="eco-grid">
+            <div class="eco-card">
+                <h3>Standalone Clients</h3>
+                <p>Deploy ready-to-use agents on any OS. Our pre-built binaries come with the SDK baked in—perfect for edge hardware.</p>
+                <div class="int-list">
+                    <div class="int-item">Windows</div>
+                    <div class="int-item">Linux</div>
+                    <div class="int-item">macOS</div>
+                    <div class="int-item">Docker</div>
+                </div>
             </div>
-        </li>
-        <li>
-            <div>
-                <strong style="color:#c09830;font-weight:500;">ForEachNode</strong> — Iterates over a collection (array) rather than a numeric range. Collection sourced from a node output or workflow variable. Each iteration emits the current item via <code>onIteration</code>. Supports both Sequential and Concurrent modes with the same ack model.
+            <div class="eco-card">
+                <h3>Integrations</h3>
+                <p>Connect your workflows to the tools your team uses every day with our native third-party integration suite.</p>
+                <div class="int-list">
+                    <div class="int-item">Slack</div>
+                    <div class="int-item">Discord</div>
+                    <div class="int-item">Gmail</div>
+                    <div class="int-item">Webhooks</div>
+                </div>
             </div>
-        </li>
-        <li>
-            <div>
-                <strong style="color:#c09830;font-weight:500;">WhileLoopNode</strong> — Continues iterating while a condition expression evaluates to true. Condition is re-evaluated at the start of each iteration against current workflow state. Requires integration with the <code>WorkflowExpressionEvaluator</code>. Must include a max-iterations safety cap.
-            </div>
-        </li>
-        <li>
-            <div>
-                <strong style="color:#c09830;font-weight:500;">PollLoopNode</strong> — Purpose-built for IoT polling patterns. Fires a device query on each iteration, compares the response against a condition, and either continues polling or exits via a <code>onConditionMet</code> port. Built-in backoff between polls. Essentially a WhileLoop with device-query semantics baked in.
-            </div>
-        </li>
-    </ul>
-
-    <div class="callout callout-info" style="margin-top:24px;">
-        <strong>Design note — ack model applies to all loop types</strong>
-        The ack / ack-timeout / ack-mode properties and the pause/continue/stop input port pattern are intended to be consistent across all loop node variants. Downstream nodes send ack via the same <code>continue</code> input port regardless of loop type.
+        </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-        <span class="footer-brand">WBSKT</span>
-        <span>Loop Nodes · Specification v1.0 · Internal</span>
+        <h4>Deep Dives</h4>
+        <div class="docs-nav">
+            <a href="workflow.html" class="docs-link">Workflow Specs</a>
+            <a href="nodes/loop-nodes.html" class="docs-link">Node Reference</a>
+            <a href="#" class="docs-link" style="opacity:0.3">SDK Docs</a>
+            <a href="#" class="docs-link" style="opacity:0.3">API Reference</a>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 WBSKT PLATFORM · ALL SYSTEMS OPERATIONAL
+        </div>
     </div>
 
 </div>
+
 </body>
 </html>

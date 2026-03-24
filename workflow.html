@@ -76,6 +76,8 @@
             margin-bottom: 24px;
         }
 
+        .breadcrumb a { color: var(--text3); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
         .breadcrumb span { color: var(--text2); }
 
         h1 {
@@ -127,10 +129,10 @@
 
         h2 {
             font-family: 'Fraunces', serif;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 300;
             color: var(--text);
-            margin: 56px 0 24px;
+            margin: 56px 0 12px;
             letter-spacing: -.01em;
             display: flex;
             align-items: center;
@@ -141,19 +143,17 @@
             content: '';
             display: block;
             width: 4px;
-            height: 22px;
+            height: 24px;
             background: var(--accent);
             border-radius: 2px;
             flex-shrink: 0;
         }
 
-        h3 {
-            font-size: 11px;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: var(--text3);
-            font-weight: 400;
-            margin: 32px 0 14px;
+        .section-intro {
+            color: var(--text2);
+            font-size: 13px;
+            margin-bottom: 24px;
+            max-width: 600px;
         }
 
         .node-card {
@@ -202,12 +202,14 @@
         }
 
         .prop-table td {
-            padding: 10px 12px 10px 0;
+            padding: 12px 12px 12px 0;
             vertical-align: top;
             border-bottom: 1px solid var(--border);
             color: var(--text2);
             line-height: 1.7;
         }
+
+        .prop-table tr:last-child td { border-bottom: none; }
 
         .prop-name {
             font-family: 'DM Mono', monospace;
@@ -215,8 +217,8 @@
             font-size: 12px;
         }
 
-        .prop-type { color: var(--blue); font-size: 11px; }
-        .prop-default { color: var(--amber); font-size: 11px; }
+        .prop-type { color: var(--blue); font-size: 11px; white-space: nowrap; }
+        .prop-default { color: var(--amber); font-size: 11px; white-space: nowrap; }
 
         .callout {
             border-radius: var(--r);
@@ -230,33 +232,7 @@
         .callout-info  { background: var(--blue-dim);  border-color: var(--blue);  color: var(--blue); }
         .callout-warn  { background: var(--amber-dim); border-color: var(--amber); color: #c09830; }
 
-        .concur-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .concur-card {
-            border: 1px solid var(--border2);
-            border-radius: var(--r);
-            overflow: hidden;
-        }
-
-        .concur-head {
-            padding: 10px 14px;
-            font-size: 11px;
-            font-weight: 500;
-            background: var(--bg3);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .concur-body {
-            padding: 14px;
-            background: var(--bg3);
-            font-size: 11px;
-            color: var(--text2);
-        }
+        .callout strong { font-weight: 500; display: block; margin-bottom: 4px; }
 
         .footer {
             margin-top: 80px;
@@ -264,8 +240,15 @@
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 11px;
             color: var(--text3);
+        }
+
+        .footer-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 14px;
+            color: var(--text2);
         }
 
         code {
@@ -277,13 +260,22 @@
             font-size: 11px;
             color: var(--accent);
         }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .wrap > * {
+            animation: fadeUp .4s ease both;
+        }
     </style>
 </head>
 <body>
 <div class="wrap">
 
     <div class="header">
-        <div class="breadcrumb">WBSKT Workflow Engine <span>/ Core Specs / Global Properties</span></div>
+        <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/ Core Specs / Global Properties</span></div>
         <h1>Workflow <em>Definitions</em></h1>
         <p class="tagline">The structural blueprint defining execution physics, routing logic, and instance lifecycle. This configuration governs how the engine instantiates workflows across IoT, CI/CD, and Automation verticals.</p>
         <div class="version-row">
@@ -293,7 +285,9 @@
         </div>
     </div>
 
-    <h2>1. Identity & Routing</h2>
+    <h2>Identity & Routing</h2>
+    <p class="section-intro">Defines how a workflow is identified within the system and how incoming signals are mapped to specific execution instances.</p>
+    
     <div class="node-card">
         <div class="node-header">
             <span class="node-name">Core Configuration</span>
@@ -313,19 +307,19 @@
                     <td class="prop-name">definitionId</td>
                     <td class="prop-type">uuid</td>
                     <td class="prop-default">required</td>
-                    <td>Immutable unique identifier for this workflow template.</td>
+                    <td>Immutable unique identifier for this workflow template. Used as the primary key for lookups.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">triggers</td>
                     <td class="prop-type">array[obj]</td>
                     <td class="prop-default">[]</td>
-                    <td>List of entry points (HTTP, MQTT, Cron). Supports "Logical OR" activation.</td>
+                    <td>List of entry points (HTTP, MQTT, Cron). Supports "Logical OR" activation—any trigger can start the flow.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">correlationKey</td>
                     <td class="prop-type">expression</td>
                     <td class="prop-default">null</td>
-                    <td>JSONPath/Expression used to map signals to specific instances (e.g., <code>$.roomId</code>).</td>
+                    <td>Expression used to map signals to specific instances. Essential for multi-step processes targeting specific devices.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">onMatch</td>
@@ -333,7 +327,7 @@
                     <td class="prop-default">CreateNew</td>
                     <td>
                         <code>CreateNew</code> — Ignore existing, start fresh instance.<br>
-                        <code>UpdateExisting</code> — Merge signal into the current instance (IoT/Fan-In).<br>
+                        <code>UpdateExisting</code> — Merge signal into the current instance.<br>
                         <code>ReplaceOld</code> — Kill active instance and restart.
                     </td>
                 </tr>
@@ -342,7 +336,9 @@
         </div>
     </div>
 
-    <h2>2. Execution Physics</h2>
+    <h2>Execution Physics</h2>
+    <p class="section-intro">Governs the lifecycle and performance characteristics of the workflow instance during its execution.</p>
+
     <div class="node-card">
         <div class="node-header">
             <span class="node-name">Lifecycle & Performance</span>
@@ -363,8 +359,8 @@
                     <td class="prop-type">enum</td>
                     <td class="prop-default">Persistent</td>
                     <td>
-                        <code>Persistent</code> — Full DB state tracking (Safety/Business).<br>
-                        <code>Ephemeral</code> — In-memory only (Speed/IoT High-Frequency).
+                        <code>Persistent</code> — Full DB state tracking for safety.<br>
+                        <code>Ephemeral</code> — In-memory only for high-frequency low-latency IoT.
                     </td>
                 </tr>
                 <tr>
@@ -377,7 +373,7 @@
                     <td class="prop-name">maxActiveInstances</td>
                     <td class="prop-type">int</td>
                     <td class="prop-default">∞</td>
-                    <td>Concurrency cap to prevent system flooding or resource exhaustion.</td>
+                    <td>Concurrency cap per definition to prevent system resource exhaustion.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">priority</td>
@@ -395,7 +391,9 @@
         </div>
     </div>
 
-    <h2>3. Error & Resilience</h2>
+    <h2>Error & Resilience</h2>
+    <p class="section-intro">Configuration for global fault tolerance and recovery mechanisms when nodes encounter failures.</p>
+
     <div class="node-card">
         <div class="node-header">
             <span class="node-name">Global Fault Tolerance</span>
@@ -421,20 +419,22 @@
                     <td class="prop-name">defaultRetryPolicy</td>
                     <td class="prop-type">object</td>
                     <td class="prop-default">{}</td>
-                    <td>Global <code>maxAttempts</code> and <code>backoffStrategy</code> for failing nodes.</td>
+                    <td>Global <code>maxAttempts</code> and <code>backoffStrategy</code> for all failing nodes in this flow.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">isRecoverable</td>
                     <td class="prop-type">bool</td>
                     <td class="prop-default">true</td>
-                    <td>If true, engine attempts to resume flow at last checkpoint after server restart.</td>
+                    <td>If true, the engine attempts to resume the flow at the last checkpoint after a server restart.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <h2>4. Data & Governance</h2>
+    <h2>Data & Governance</h2>
+    <p class="section-intro">Defines the security context, data validation rules, and audit log retention policies.</p>
+
     <div class="node-card">
         <div class="node-header">
             <span class="node-name">Context & Security</span>
@@ -454,13 +454,13 @@
                     <td class="prop-name">inputSchema</td>
                     <td class="prop-type">json-schema</td>
                     <td class="prop-default">null</td>
-                    <td>Validates trigger payload before instance creation. Rejects invalid data.</td>
+                    <td>Validates trigger payload before instance creation. Rejects invalid data early.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">secretRefs</td>
                     <td class="prop-type">array[str]</td>
                     <td class="prop-default">[]</td>
-                    <td>Keys to fetch from secure Vault storage (API keys, DB credentials).</td>
+                    <td>Keys to fetch from secure Vault storage (API keys, DB credentials) at runtime.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">retentionPeriod</td>
@@ -479,7 +479,7 @@
     </div>
 
     <div class="footer">
-        <span class="footer-brand">WBSKT</span>
+        <div class="footer-brand">WBSKT</div>
         <span>Workflow Definition · Global Spec v1.2 · Internal Use Only</span>
     </div>
 
