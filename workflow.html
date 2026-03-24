@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Definition — WBSKT Specification</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0f0a;
+            --bg2: #131710;
+            --bg3: #1a1f16;
+            --bg4: #222820;
+            --border: #2a3226;
+            --border2: #354030;
+            --text: #d8e4d0;
+            --text2: #8fa888;
+            --text3: #556650;
+            --accent: #7ec96a;
+            --accent2: #4a8c3a;
+            --accent-dim: #2a4a22;
+            --amber: #d4a843;
+            --amber-dim: #3a2e10;
+            --coral: #d46e5a;
+            --coral-dim: #3a1e16;
+            --blue: #5a9fd4;
+            --blue-dim: #162030;
+            --purple: #9a7ed4;
+            --purple-dim: #221a38;
+            --r: 6px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                    linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px 100px;
+        }
+
+        .header {
+            margin-bottom: 64px;
+            border-bottom: 1px solid var(--border2);
+            padding-bottom: 40px;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: var(--text3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb span { color: var(--text2); }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 1.1;
+            color: var(--accent);
+            letter-spacing: -.02em;
+            margin-bottom: 12px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .tagline {
+            color: var(--text2);
+            font-size: 13px;
+            max-width: 540px;
+            line-height: 1.8;
+            margin-top: 16px;
+        }
+
+        .version-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-weight: 500;
+        }
+
+        .badge-v1    { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent2); }
+        .badge-core  { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
+        .badge-sec   { background: var(--purple-dim); color: var(--purple); border: 1px solid #3a2860; }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--text);
+            margin: 56px 0 24px;
+            letter-spacing: -.01em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--text3);
+            font-weight: 400;
+            margin: 32px 0 14px;
+        }
+
+        .node-card {
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 48px;
+        }
+
+        .node-header {
+            padding: 20px 24px;
+            background: var(--bg3);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .node-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: .02em;
+        }
+
+        .node-body { padding: 24px; }
+
+        .prop-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .prop-table th {
+            text-align: left;
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text3);
+            padding: 0 12px 10px 0;
+            font-weight: 400;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prop-table td {
+            padding: 10px 12px 10px 0;
+            vertical-align: top;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+            line-height: 1.7;
+        }
+
+        .prop-name {
+            font-family: 'DM Mono', monospace;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .prop-type { color: var(--blue); font-size: 11px; }
+        .prop-default { color: var(--amber); font-size: 11px; }
+
+        .callout {
+            border-radius: var(--r);
+            padding: 14px 18px;
+            font-size: 12px;
+            line-height: 1.8;
+            margin: 20px 0;
+            border-left: 3px solid;
+        }
+
+        .callout-info  { background: var(--blue-dim);  border-color: var(--blue);  color: var(--blue); }
+        .callout-warn  { background: var(--amber-dim); border-color: var(--amber); color: #c09830; }
+
+        .concur-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .concur-card {
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            overflow: hidden;
+        }
+
+        .concur-head {
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--bg3);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .concur-body {
+            padding: 14px;
+            background: var(--bg3);
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        code {
+            font-family: 'DM Mono', monospace;
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="header">
+        <div class="breadcrumb">WBSKT Workflow Engine <span>/ Core Specs / Global Properties</span></div>
+        <h1>Workflow <em>Definitions</em></h1>
+        <p class="tagline">The structural blueprint defining execution physics, routing logic, and instance lifecycle. This configuration governs how the engine instantiates workflows across IoT, CI/CD, and Automation verticals.</p>
+        <div class="version-row">
+            <span class="badge badge-v1">Spec v1.2</span>
+            <span class="badge badge-core">Multi-Trigger Enabled</span>
+            <span class="badge badge-sec">State-Aware Persistence</span>
+        </div>
+    </div>
+
+    <h2>1. Identity & Routing</h2>
+    <div class="node-card">
+        <div class="node-header">
+            <span class="node-name">Core Configuration</span>
+        </div>
+        <div class="node-body">
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">definitionId</td>
+                    <td class="prop-type">uuid</td>
+                    <td class="prop-default">required</td>
+                    <td>Immutable unique identifier for this workflow template.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">triggers</td>
+                    <td class="prop-type">array[obj]</td>
+                    <td class="prop-default">[]</td>
+                    <td>List of entry points (HTTP, MQTT, Cron). Supports "Logical OR" activation.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">correlationKey</td>
+                    <td class="prop-type">expression</td>
+                    <td class="prop-default">null</td>
+                    <td>JSONPath/Expression used to map signals to specific instances (e.g., <code>$.roomId</code>).</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">onMatch</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">CreateNew</td>
+                    <td>
+                        <code>CreateNew</code> — Ignore existing, start fresh instance.<br>
+                        <code>UpdateExisting</code> — Merge signal into the current instance (IoT/Fan-In).<br>
+                        <code>ReplaceOld</code> — Kill active instance and restart.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2>2. Execution Physics</h2>
+    <div class="node-card">
+        <div class="node-header">
+            <span class="node-name">Lifecycle & Performance</span>
+        </div>
+        <div class="node-body">
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">instanceMode</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">Persistent</td>
+                    <td>
+                        <code>Persistent</code> — Full DB state tracking (Safety/Business).<br>
+                        <code>Ephemeral</code> — In-memory only (Speed/IoT High-Frequency).
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prop-name">executionTimeout</td>
+                    <td class="prop-type">duration</td>
+                    <td class="prop-default">0 (infinite)</td>
+                    <td>The absolute time limit for a workflow instance before forced termination.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">maxActiveInstances</td>
+                    <td class="prop-type">int</td>
+                    <td class="prop-default">∞</td>
+                    <td>Concurrency cap to prevent system flooding or resource exhaustion.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">priority</td>
+                    <td class="prop-type">int (0-10)</td>
+                    <td class="prop-default">5</td>
+                    <td>Execution queue priority. Higher numbers process first in congested environments.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-info">
+                <strong>Multi-Trigger Strategy</strong>
+                Triggers act as agnostic entry points. Regardless of source (MQTT/HTTP), the <code>correlationKey</code> is resolved against the incoming payload to decide the routing target.
+            </div>
+        </div>
+    </div>
+
+    <h2>3. Error & Resilience</h2>
+    <div class="node-card">
+        <div class="node-header">
+            <span class="node-name">Global Fault Tolerance</span>
+        </div>
+        <div class="node-body">
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">globalErrorHandler</td>
+                    <td class="prop-type">nodeId</td>
+                    <td class="prop-default">null</td>
+                    <td>Fallback node triggered if any unhandled error occurs in the flow.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">defaultRetryPolicy</td>
+                    <td class="prop-type">object</td>
+                    <td class="prop-default">{}</td>
+                    <td>Global <code>maxAttempts</code> and <code>backoffStrategy</code> for failing nodes.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">isRecoverable</td>
+                    <td class="prop-type">bool</td>
+                    <td class="prop-default">true</td>
+                    <td>If true, engine attempts to resume flow at last checkpoint after server restart.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2>4. Data & Governance</h2>
+    <div class="node-card">
+        <div class="node-header">
+            <span class="node-name">Context & Security</span>
+        </div>
+        <div class="node-body">
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">inputSchema</td>
+                    <td class="prop-type">json-schema</td>
+                    <td class="prop-default">null</td>
+                    <td>Validates trigger payload before instance creation. Rejects invalid data.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">secretRefs</td>
+                    <td class="prop-type">array[str]</td>
+                    <td class="prop-default">[]</td>
+                    <td>Keys to fetch from secure Vault storage (API keys, DB credentials).</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">retentionPeriod</td>
+                    <td class="prop-type">duration</td>
+                    <td class="prop-default">30d</td>
+                    <td>How long to keep history of completed instances in the audit log.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="callout callout-warn">
+        <strong>Versioning Policy</strong>
+        By default, active instances stick to the <code>version</code> they were started with. Updates to the <code>definition</code> only apply to new instances created after publication.
+    </div>
+
+    <div class="footer">
+        <span class="footer-brand">WBSKT</span>
+        <span>Workflow Definition · Global Spec v1.2 · Internal Use Only</span>
+    </div>
+
+</div>
+</body>
+</html>
