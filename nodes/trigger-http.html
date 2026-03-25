@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Webhook Trigger — WBSKT Specification</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0f0a;
+            --bg2: #131710;
+            --bg3: #1a1f16;
+            --bg4: #222820;
+            --border: #2a3226;
+            --border2: #354030;
+            --text: #d8e4d0;
+            --text2: #8fa888;
+            --text3: #556650;
+            --accent: #7ec96a;
+            --accent2: #4a8c3a;
+            --accent-dim: #2a4a22;
+            --amber: #d4a843;
+            --amber-dim: #3a2e10;
+            --coral: #d46e5a;
+            --coral-dim: #3a1e16;
+            --blue: #5a9fd4;
+            --blue-dim: #162030;
+            --purple: #9a7ed4;
+            --purple-dim: #221a38;
+            --r: 6px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                    linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px 100px;
+        }
+
+        .header {
+            margin-bottom: 64px;
+            border-bottom: 1px solid var(--border2);
+            padding-bottom: 40px;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: var(--text3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb span { color: var(--text2); }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 1.1;
+            color: var(--accent);
+            letter-spacing: -.02em;
+            margin-bottom: 12px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .tagline {
+            color: var(--text2);
+            font-size: 13px;
+            max-width: 540px;
+            line-height: 1.8;
+            margin-top: 16px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-weight: 500;
+        }
+
+        .badge-v1    { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent2); }
+        .badge-http  { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--text);
+            margin: 56px 0 24px;
+            letter-spacing: -.01em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--text3);
+            font-weight: 400;
+            margin: 32px 0 14px;
+        }
+
+        .node-card {
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 48px;
+        }
+
+        .node-header {
+            padding: 20px 24px;
+            background: var(--bg3);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .node-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: .02em;
+        }
+
+        .node-body { padding: 24px; }
+
+        .prop-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .prop-table th {
+            text-align: left;
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text3);
+            padding: 0 12px 10px 0;
+            font-weight: 400;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prop-table td {
+            padding: 10px 12px 10px 0;
+            vertical-align: top;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+            line-height: 1.7;
+        }
+
+        .prop-name {
+            font-family: 'DM Mono', monospace;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .prop-type { color: var(--blue); font-size: 11px; }
+        .prop-default { color: var(--amber); font-size: 11px; }
+
+        .callout {
+            border-radius: var(--r);
+            padding: 14px 18px;
+            font-size: 12px;
+            line-height: 1.8;
+            margin: 20px 0;
+            border-left: 3px solid;
+        }
+
+        .callout-info  { background: var(--blue-dim);  border-color: var(--blue);  color: var(--blue); }
+
+        .port-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .port-col-label {
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .port-col-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .port-row {
+            padding: 10px 14px;
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            margin-bottom: 8px;
+        }
+
+        .port-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .port-pill {
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: 99px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .pill-both    { background: var(--accent-dim);  color: var(--accent); border: 1px solid var(--accent2); }
+
+        .port-desc {
+            font-size: 11px;
+            color: var(--text3);
+            line-height: 1.6;
+        }
+
+        .port-payload {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text2);
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            margin-top: 6px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        code {
+            font-family: 'DM Mono', monospace;
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="header">
+        <div class="breadcrumb"><a href="../index.html">WBSKT Engine</a> <span>/</span> <a href="../reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+        <h1>HTTP Webhook <em>Trigger</em></h1>
+        <p class="tagline">The edge gateway for API-driven workflows. Exposes standard HTTP endpoints, authenticates incoming requests, extracts correlation identities, and releases normalized payloads into visual canvas nodes.</p>
+        <div class="version-row">
+            <span class="badge badge-v1">Spec v1.1</span>
+            <span class="badge badge-http">RESTful Entry</span>
+        </div>
+    </div>
+
+    <h2>Node Properties</h2>
+    <p>Configuration settings set in the UI panel. During deployment, the WBSKT engine hoists these parameters to the Webhook Router for native, high-performance edge execution.</p>
+
+    <div class="node-card">
+        <div class="node-header">
+            <span class="node-name">HttpWebhookTrigger</span>
+        </div>
+        <div class="node-body">
+            <h3>Endpoint & Routing</h3>
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">path</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">required</td>
+                    <td>The relative URL path (e.g., <code>/v1/github/merge</code>). Must be unique within the tenant.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">method</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">POST</td>
+                    <td><code>POST</code> | <code>GET</code> | <code>PUT</code> | <code>DELETE</code></td>
+                </tr>
+                <tr>
+                    <td class="prop-name">correlationExpression</td>
+                    <td class="prop-type">expression</td>
+                    <td class="prop-default">null</td>
+                    <td>A JSONPath or regex to extract a unique Instance Context ID (e.g., <code>$.body.order_id</code>).</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">onMatch</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">MapOrCreate</td>
+                    <td>
+                        <code>MapOrCreate</code> — (Genesis) Spawns context if unknown, updates if active.<br>
+                        <code>MapOrDiscard</code> — (Signal) Drops payload if no active instance is tracking this context.<br>
+                        <code>AlwaysCreate</code> — Bypasses correlation to fire uncoupled, parallel pipeline triggers.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Authentication & Gatekeeping</h3>
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">authType</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">None</td>
+                    <td>
+                        <code>None</code> — Public endpoint.<br>
+                        <code>ApiKey</code> — Header validation (e.g., <code>X-API-Key</code>).<br>
+                        <code>BasicAuth</code> — Native username and password decoding.<br>
+                        <code>HMAC</code> — Cryptographic signature hashing (Best for Stripe/GitHub).
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prop-name">secretRef</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">null</td>
+                    <td>Pointer to a securely stored secret vault reference used for validating incoming tokens.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Response Handling</h3>
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">responseMode</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">AckOnArrival</td>
+                    <td>
+                        <code>AckOnArrival</code> — Responds 202 Accepted immediately. Does not wait for workflow execution.<br>
+                        <code>RespondOnComplete</code> — Freezes HTTP connection and returns a snapshot of the <code>WorkflowContext</code> when execution halts.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prop-name">successCode</td>
+                    <td class="prop-type">int</td>
+                    <td class="prop-default">200</td>
+                    <td>Status code returned to the external platform upon successful webhook acceptance.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="callout callout-info">
+        <strong>Shared State Architecture</strong>
+        Connections between nodes do not carry data payloads. Wires only transmit pure triggers (pulses). When a Webhook fires, it writes the payload directly into the <code>WorkflowContext</code>. Downstream nodes pull variables from this shared memory as needed.
+    </div>
+
+    <h2>Ports</h2>
+    <p>Once data clears authentication and engine mapping, it is committed to the instance context and releases a control signal to begin execution.</p>
+
+    <div class="port-grid">
+        <div>
+            <div class="port-col-label">Output ports</div>
+
+            <div class="port-row">
+                <div class="port-name">
+                    onTrigger
+                    <span class="port-pill pill-both">signal only</span>
+                </div>
+                <div class="port-desc">Fires a control pulse to adjacent downstream nodes. No data is passed over the wire.</div>
+                <div class="port-payload">
+                    // Committed directly to WorkflowContext[nodeId]:<br>
+                    { "metadata": { "method": "POST", "timestamp": 1711395729 },<br>
+                    &nbsp;&nbsp;"headers": { "content-type": "application/json" },<br>
+                    &nbsp;&nbsp;"query": {},<br>
+                    &nbsp;&nbsp;"body": { ... } }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="footer-brand">WBSKT</span>
+        <span>Webhook Trigger · Global Spec v1.1 · Internal Use Only</span>
+    </div>
+
+</div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP Webhook Trigger — WBSKT Specification</title>
+    <title>Scheduled Trigger — WBSKT Specification</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -76,6 +76,8 @@
             margin-bottom: 24px;
         }
 
+        .breadcrumb a { color: var(--text3); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
         .breadcrumb span { color: var(--text2); }
 
         h1 {
@@ -114,7 +116,7 @@
         }
 
         .badge-v1    { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent2); }
-        .badge-http  { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
+        .badge-core  { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3a54; }
 
         h2 {
             font-family: 'Fraunces', serif;
@@ -219,30 +221,13 @@
         }
 
         .callout-info  { background: var(--blue-dim);  border-color: var(--blue);  color: var(--blue); }
+        .callout strong { font-weight: 500; display: block; margin-bottom: 4px; }
 
         .port-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 16px;
             margin-bottom: 8px;
-        }
-
-        .port-col-label {
-            font-size: 10px;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--text3);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .port-col-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
         }
 
         .port-row {
@@ -271,7 +256,7 @@
             font-weight: 500;
         }
 
-        .pill-both    { background: var(--accent-dim);  color: var(--accent); border: 1px solid var(--accent2); }
+        .pill-both    { background: var(--purple-dim);  color: var(--purple); border: 1px solid #3a2860; }
 
         .port-desc {
             font-size: 11px;
@@ -316,24 +301,24 @@
 <div class="wrap">
 
     <div class="header">
-        <div class="breadcrumb">WBSKT Workflow Engine <span>/ Node Reference / Trigger Nodes</span></div>
-        <h1>HTTP Webhook <em>Trigger</em></h1>
-        <p class="tagline">The edge gateway for API-driven workflows. Exposes standard HTTP endpoints, authenticates incoming requests, extracts correlation identities, and releases normalized payloads into visual canvas nodes.</p>
+        <div class="breadcrumb"><a href="../index.html">WBSKT Engine</a> <span>/</span> <a href="../reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+        <h1>Scheduled <em>Trigger</em></h1>
+        <p class="tagline">The internal heartbeat of the engine. Automates workflow execution based on precise time intervals or complex calendar patterns. Unlike event triggers, it originates from the system clock.</p>
         <div class="version-row">
             <span class="badge badge-v1">Spec v1.1</span>
-            <span class="badge badge-http">RESTful Entry</span>
+            <span class="badge badge-core">Time-Driven</span>
         </div>
     </div>
 
     <h2>Node Properties</h2>
-    <p>Configuration settings set in the UI panel. During deployment, the WBSKT engine hoists these parameters to the Webhook Router for native, high-performance edge execution.</p>
+    <p>Configuration parameters for the scheduler. The engine's central <code>CronService</code> monitors these definitions and dispatches signals to the worker pool at the designated timestamps.</p>
 
     <div class="node-card">
         <div class="node-header">
-            <span class="node-name">HttpWebhookTrigger</span>
+            <span class="node-name">ScheduledTrigger</span>
         </div>
         <div class="node-body">
-            <h3>Endpoint & Routing</h3>
+            <h3>Schedule Configuration</h3>
             <table class="prop-table">
                 <thead>
                 <tr>
@@ -345,92 +330,69 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="prop-name">path</td>
-                    <td class="prop-type">string</td>
-                    <td class="prop-default">required</td>
-                    <td>The relative URL path (e.g., <code>/v1/github/merge</code>). Must be unique within the tenant.</td>
-                </tr>
-                <tr>
-                    <td class="prop-name">method</td>
+                    <td class="prop-name">scheduleMode</td>
                     <td class="prop-type">enum</td>
-                    <td class="prop-default">POST</td>
-                    <td><code>POST</code> | <code>GET</code> | <code>PUT</code> | <code>DELETE</code></td>
+                    <td class="prop-default">Interval</td>
+                    <td>
+                        <code>Interval</code> — Simple repetitive cadence (e.g. Every 5m).<br>
+                        <code>Cron</code> — Advanced calendar logic using standard Crontab syntax.
+                    </td>
                 </tr>
                 <tr>
-                    <td class="prop-name">correlationExpression</td>
-                    <td class="prop-type">expression</td>
-                    <td class="prop-default">null</td>
-                    <td>A JSONPath or regex to extract a unique Instance Context ID (e.g., <code>$.body.order_id</code>).</td>
+                    <td class="prop-name">intervalValue</td>
+                    <td class="prop-type">int</td>
+                    <td class="prop-default">15</td>
+                    <td>The numeric value for interval mode. Minimum recommended: 1.</td>
                 </tr>
+                <tr>
+                    <td class="prop-name">intervalUnit</td>
+                    <td class="prop-type">enum</td>
+                    <td class="prop-default">Minutes</td>
+                    <td><code>Seconds</code> | <code>Minutes</code> | <code>Hours</code> | <code>Days</code></td>
+                </tr>
+                <tr>
+                    <td class="prop-name">cronExpression</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">null</td>
+                    <td>The Cron string (e.g. <code>0 8 * * 1-5</code> for 8AM Weekdays).</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">timeZone</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">UTC</td>
+                    <td>Valid IANA timezone string. Critical for DST-aware scheduling.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Instance Strategy</h3>
+            <table class="prop-table">
+                <thead>
+                <tr>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td class="prop-name">onMatch</td>
                     <td class="prop-type">enum</td>
-                    <td class="prop-default">MapOrCreate</td>
+                    <td class="prop-default">AlwaysCreate</td>
                     <td>
-                        <code>MapOrCreate</code> — (Genesis) Spawns context if unknown, updates if active.<br>
-                        <code>MapOrDiscard</code> — (Signal) Drops payload if no active instance is tracking this context.<br>
-                        <code>AlwaysCreate</code> — Bypasses correlation to fire uncoupled, parallel pipeline triggers.
+                        <code>AlwaysCreate</code> — Every tick spawns a new parallel instance (Standard).<br>
+                        <code>MapOrCreate</code> — Tries to find an active instance via <code>staticCorrelationId</code>. If found, it updates/restarts it.
                     </td>
                 </tr>
-                </tbody>
-            </table>
-
-            <h3>Authentication & Gatekeeping</h3>
-            <table class="prop-table">
-                <thead>
                 <tr>
-                    <th style="width:180px">Property</th>
-                    <th style="width:100px">Type</th>
-                    <th style="width:120px">Default</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="prop-name">authType</td>
+                    <td class="prop-name">misfirePolicy</td>
                     <td class="prop-type">enum</td>
-                    <td class="prop-default">None</td>
+                    <td class="prop-default">Discard</td>
                     <td>
-                        <code>None</code> — Public endpoint.<br>
-                        <code>ApiKey</code> — Header validation (e.g., <code>X-API-Key</code>).<br>
-                        <code>BasicAuth</code> — Native username and password decoding.<br>
-                        <code>HMAC</code> — Cryptographic signature hashing (Best for Stripe/GitHub).
+                        <code>FireImmediately</code> — If the server was down during a tick, fire it as soon as it recovers.<br>
+                        <code>Discard</code> — Ignore missed ticks and wait for the next scheduled occurrence.
                     </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">secretRef</td>
-                    <td class="prop-type">string</td>
-                    <td class="prop-default">null</td>
-                    <td>Pointer to a securely stored secret vault reference used for validating incoming tokens.</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <h3>Response Handling</h3>
-            <table class="prop-table">
-                <thead>
-                <tr>
-                    <th style="width:180px">Property</th>
-                    <th style="width:100px">Type</th>
-                    <th style="width:120px">Default</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="prop-name">responseMode</td>
-                    <td class="prop-type">enum</td>
-                    <td class="prop-default">AckOnArrival</td>
-                    <td>
-                        <code>AckOnArrival</code> — Responds 202 Accepted immediately. Does not wait for workflow execution.<br>
-                        <code>RespondOnComplete</code> — Freezes HTTP connection and returns a snapshot of the <code>WorkflowContext</code> when execution halts.
-                    </td>
-                </tr>
-                <tr>
-                    <td class="prop-name">successCode</td>
-                    <td class="prop-type">int</td>
-                    <td class="prop-default">200</td>
-                    <td>Status code returned to the external platform upon successful webhook acceptance.</td>
                 </tr>
                 </tbody>
             </table>
@@ -438,37 +400,34 @@
     </div>
 
     <div class="callout callout-info">
-        <strong>Shared State Architecture</strong>
-        Connections between nodes do not carry data payloads. Wires only transmit pure triggers (pulses). When a Webhook fires, it writes the payload directly into the <code>WorkflowContext</code>. Downstream nodes pull variables from this shared memory as needed.
+        <strong>Context Persistence</strong>
+        This node utilizes the Shared-State model. No data is passed via output connections. Upon triggering, the engine writes the <code>triggeredAt</code> timestamp and <code>scheduleMeta</code> directly to the <code>WorkflowContext</code> for downstream consumption.
     </div>
 
     <h2>Ports</h2>
-    <p>Once data clears authentication and engine mapping, it is committed to the instance context and releases a control signal to begin execution.</p>
+    <p>Standardized control signals used to initiate flow logic following a successful time-event.</p>
 
     <div class="port-grid">
-        <div>
-            <div class="port-col-label">Output ports</div>
-
-            <div class="port-row">
-                <div class="port-name">
-                    onTrigger
-                    <span class="port-pill pill-both">signal only</span>
-                </div>
-                <div class="port-desc">Fires a control pulse to adjacent downstream nodes. No data is passed over the wire.</div>
-                <div class="port-payload">
-                    // Committed directly to WorkflowContext[nodeId]:<br>
-                    { "metadata": { "method": "POST", "timestamp": 1711395729 },<br>
-                    &nbsp;&nbsp;"headers": { "content-type": "application/json" },<br>
-                    &nbsp;&nbsp;"query": {},<br>
-                    &nbsp;&nbsp;"body": { ... } }
-                </div>
+        <div class="port-row">
+            <div class="port-name">
+                onTick
+                <span class="port-pill pill-both">signal only</span>
+            </div>
+            <div class="port-desc">Fires a control pulse to downstream nodes. No data payload is included in the transmission.</div>
+            <div class="port-payload">
+                // Written to WorkflowContext[nodeId]:<br>
+                {<br>
+                &nbsp;&nbsp;"timestamp": 1711395729,<br>
+                &nbsp;&nbsp;"iso": "2026-03-25T12:00:00Z",<br>
+                &nbsp;&nbsp;"mode": "Cron"<br>
+                }
             </div>
         </div>
     </div>
 
     <div class="footer">
         <span class="footer-brand">WBSKT</span>
-        <span>Webhook Trigger · Global Spec v1.1 · Internal Use Only</span>
+        <span>Scheduled Trigger · Global Spec v1.1 · Internal Use Only</span>
     </div>
 
 </div>
