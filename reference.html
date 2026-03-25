@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Reference — WBSKT Specification</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0f0a;
+            --bg2: #131710;
+            --bg3: #1a1f16;
+            --bg4: #222820;
+            --border: #2a3226;
+            --border2: #354030;
+            --text: #d8e4d0;
+            --text2: #8fa888;
+            --text3: #556650;
+            --accent: #7ec96a;
+            --accent2: #4a8c3a;
+            --accent-dim: #2a4a22;
+            --blue: #5a9fd4;
+            --blue-dim: #162030;
+            --purple: #9a7ed4;
+            --purple-dim: #221a38;
+            --r: 8px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                    linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .header {
+            margin-bottom: 64px;
+            border-bottom: 1px solid var(--border2);
+            padding-bottom: 40px;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: var(--text3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb a { color: var(--text3); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--accent); }
+        .breadcrumb span { color: var(--text2); }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 1.1;
+            color: var(--accent);
+            letter-spacing: -.02em;
+            margin-bottom: 12px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .tagline {
+            color: var(--text2);
+            font-size: 14px;
+            max-width: 540px;
+            line-height: 1.8;
+            margin-top: 16px;
+        }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--text);
+            margin: 64px 0 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border2);
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .ref-card {
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 32px;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: block;
+        }
+
+        .ref-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            background: var(--bg3);
+        }
+
+        .ref-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .ref-card p {
+            color: var(--text2);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .cat-label {
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .node-section {
+            margin-bottom: 80px;
+        }
+
+        .node-category h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 300;
+            color: var(--text2);
+            margin: 40px 0 20px;
+            padding-left: 12px;
+            border-left: 2px solid var(--border2);
+        }
+
+        .node-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .node-link {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: var(--r);
+            text-decoration: none;
+            color: var(--accent);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .node-link:hover {
+            border-color: var(--accent);
+            background: var(--bg4);
+        }
+
+        .node-link span {
+            color: var(--text3);
+            font-size: 11px;
+        }
+
+        .footer {
+            margin-top: 100px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .wrap > * {
+            animation: fadeUp .6s ease both;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="header">
+        <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/ Technical Reference</span></div>
+        <h1>Technical <em>Reference</em></h1>
+        <p class="tagline">The formal architectural specifications for the WBSKT platform. From the global execution blueprint to individual node physics.</p>
+    </div>
+
+    <!-- Core Specs -->
+    <h2>Core Specifications</h2>
+    <div class="ref-grid">
+        <a href="workflow.html" class="ref-card">
+            <span class="cat-label">Blueprint Layer</span>
+            <h3>Workflow Definitions</h3>
+            <p>The structural schema governing execution physics, routing logic, and lifecycle management.</p>
+        </a>
+        <div class="ref-card" style="opacity: 0.5;">
+            <span class="cat-label">Runtime Layer</span>
+            <h3>Engine Internals</h3>
+            <p>Coming Soon: Detailed breakdown of the navigation cycle, pointer management, and bookmark store.</p>
+        </div>
+    </div>
+
+    <!-- Node Catalog -->
+    <h2>Node Catalog</h2>
+    <div class="node-section">
+        
+        <div class="node-category">
+            <h4>Trigger Nodes</h4>
+            <div class="node-links">
+                <a href="nodes/trigger-http.html" class="node-link">HTTP Webhook <span>Trigger</span></a>
+                <a href="nodes/trigger-scheduled.html" class="node-link">Scheduled <span>Trigger</span></a>
+                <a href="#" class="node-link" style="opacity: 0.4;">MQTT Telemetry <span>Coming Soon</span></a>
+            </div>
+        </div>
+
+        <div class="node-category">
+            <h4>Logic & Control</h4>
+            <div class="node-links">
+                <a href="nodes/loop-static-for.html" class="node-link">Static For-Loop <span>Loop</span></a>
+                <a href="#" class="node-link" style="opacity: 0.4;">Logic Gate <span>Condition</span></a>
+                <a href="#" class="node-link" style="opacity: 0.4;">Fan-In Gate <span>Parallel</span></a>
+            </div>
+        </div>
+
+        <div class="node-category">
+            <h4>Action Nodes</h4>
+            <div class="node-links">
+                <a href="#" class="node-link" style="opacity: 0.4;">Send Command <span>Action</span></a>
+                <a href="#" class="node-link" style="opacity: 0.4;">HTTP Request <span>Action</span></a>
+                <a href="#" class="node-link" style="opacity: 0.4;">Slack / Email <span>Notification</span></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        &copy; 2026 WBSKT PLATFORM · INTERNAL SPECIFICATION
+    </div>
+
+</div>
+</body>
+</html>
