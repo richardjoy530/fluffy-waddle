@@ -290,7 +290,7 @@
     
     <div class="node-card">
         <div class="node-header">
-            <span class="node-name">Core Configuration</span>
+            <span class="node-name">Workflow Metadata</span>
         </div>
         <div class="node-body">
             <table class="prop-table">
@@ -307,7 +307,19 @@
                     <td class="prop-name">definitionId</td>
                     <td class="prop-type">uuid</td>
                     <td class="prop-default">required</td>
-                    <td>Immutable unique identifier for this workflow template. Used as the primary key for lookups.</td>
+                    <td>Immutable unique identifier for this workflow template.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">name</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">required</td>
+                    <td>The display name used within the WBSKT orchestration dashboard.</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">description</td>
+                    <td class="prop-type">string</td>
+                    <td class="prop-default">null</td>
+                    <td>Internal documentation describing the workflow's business logic and expected triggers.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">triggers</td>
@@ -315,24 +327,56 @@
                     <td class="prop-default">[]</td>
                     <td>List of entry points (HTTP, MQTT, Cron). Supports "Logical OR" activation—any trigger can start the flow.</td>
                 </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3>Trigger Object Properties</h3>
+    <p style="font-size: 11px; color: var(--text2); margin-bottom: 12px;">Properties defined within the <code>triggers[]</code> array. Each trigger can have its own arrival logic and allows the engine to extract a common Identity from different data formats.</p>
+
+    <div class="node-card">
+        <div class="node-body">
+            <table class="prop-table">
+                <thead>
                 <tr>
-                    <td class="prop-name">correlationKey</td>
+                    <th style="width:180px">Property</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:120px">Default</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="prop-name">correlationExpression</td>
                     <td class="prop-type">expression</td>
                     <td class="prop-default">null</td>
-                    <td>Expression used to map signals to specific instances. Essential for multi-step processes targeting specific devices.</td>
+                    <td>A JSONPath/Regex to find the ID in <i>this specific</i> trigger. <br>
+                        Example: Trigger A uses
+                        <code>$.sensor_id</code>, Trigger B uses <code>$.body.mac_address</code>.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">onMatch</td>
                     <td class="prop-type">enum</td>
-                    <td class="prop-default">CreateNew</td>
+                    <td class="prop-default">MapOrCreate</td>
                     <td>
-                        <code>CreateNew</code> — Ignore existing, start fresh instance.<br>
-                        <code>UpdateExisting</code> — Merge signal into the current instance.<br>
-                        <code>ReplaceOld</code> — Kill active instance and restart.
+                        <code>MapOrCreate</code> — <b>(Genesis)</b> Creates a new instance if the resolved ID is
+                        unknown. Updates if known.<br>
+                        <code>MapOrDiscard</code> — <b>(Signal)</b> Only updates existing instances. If no match is
+                        found, the signal is dropped.<br>
+                        <code>AlwaysCreate</code> — Ignores the resolved ID and spawns a parallel instance (useful for
+                        stateless logs).<br>
+                        <code>MapOrReplace</code> — Aborts the existing instance and starts a fresh one with the new
+                        payload.
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <div class="callout callout-info">
+                <strong>Multi-Trigger Strategy</strong>
+                Triggers act as agnostic entry points. Regardless of source (MQTT/HTTP), the <code>correlationKey</code> is resolved against the incoming payload to decide the routing target.
+            </div>
         </div>
     </div>
 
@@ -359,8 +403,8 @@
                     <td class="prop-type">enum</td>
                     <td class="prop-default">Persistent</td>
                     <td>
-                        <code>Persistent</code> — Full DB state tracking for safety.<br>
-                        <code>Ephemeral</code> — In-memory only for high-frequency low-latency IoT.
+                        <code>Persistent</code> — Full DB state tracking (Safety/Business).<br>
+                        <code>Ephemeral</code> — In-memory only (Speed/IoT High-Frequency).
                     </td>
                 </tr>
                 <tr>
@@ -373,7 +417,7 @@
                     <td class="prop-name">maxActiveInstances</td>
                     <td class="prop-type">int</td>
                     <td class="prop-default">∞</td>
-                    <td>Concurrency cap per definition to prevent system resource exhaustion.</td>
+                    <td>Concurrency cap to prevent system flooding or resource exhaustion.</td>
                 </tr>
                 <tr>
                     <td class="prop-name">priority</td>
@@ -383,11 +427,6 @@
                 </tr>
                 </tbody>
             </table>
-
-            <div class="callout callout-info">
-                <strong>Multi-Trigger Strategy</strong>
-                Triggers act as agnostic entry points. Regardless of source (MQTT/HTTP), the <code>correlationKey</code> is resolved against the incoming payload to decide the routing target.
-            </div>
         </div>
     </div>
 
