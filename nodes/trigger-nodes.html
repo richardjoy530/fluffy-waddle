@@ -422,8 +422,8 @@
                     <td class="prop-type">enum</td>
                     <td class="prop-default">AckOnArrival</td>
                     <td>
-                        <code>AckOnArrival</code> — Responds 202 Accepted immediately without waiting for graph execution.<br>
-                        <code>RespondOnComplete</code> — Freezes HTTP connection and returns payload when workflow finishes.
+                        <code>AckOnArrival</code> — Responds 202 Accepted immediately. Does not wait for workflow execution.<br>
+                        <code>RespondOnComplete</code> — Freezes HTTP connection and returns a snapshot of the <code>WorkflowContext</code> when execution halts.
                     </td>
                 </tr>
                 <tr>
@@ -438,12 +438,12 @@
     </div>
 
     <div class="callout callout-info">
-        <strong>Edge Hoisting Mechanism</strong>
-        To prevent parsing overhead during graph instantiation, WBSKT edge-routers lift <code>path</code> and <code>method</code> tables into isolation. The router acts as a synchronous interceptor before async worker queues handle internal node execution.
+        <strong>Shared State Architecture</strong>
+        Connections between nodes do not carry data payloads. Wires only transmit pure triggers (pulses). When a Webhook fires, it writes the payload directly into the <code>WorkflowContext</code>. Downstream nodes pull variables from this shared memory as needed.
     </div>
 
     <h2>Ports</h2>
-    <p>Once data clears authentication and engine mapping, it is released through visual ports on the canvas.</p>
+    <p>Once data clears authentication and engine mapping, it is committed to the instance context and releases a control signal to begin execution.</p>
 
     <div class="port-grid">
         <div>
@@ -452,13 +452,14 @@
             <div class="port-row">
                 <div class="port-name">
                     onTrigger
-                    <span class="port-pill pill-both">data + signal</span>
+                    <span class="port-pill pill-both">signal only</span>
                 </div>
-                <div class="port-desc">Fires normalized payload packets to adjacent downstream nodes.</div>
+                <div class="port-desc">Fires a control pulse to adjacent downstream nodes. No data is passed over the wire.</div>
                 <div class="port-payload">
-                    { "metadata": { "method": "POST", "timestamp": "int" },<br>
-                    &nbsp;&nbsp;"headers": { "content-type": "str" },<br>
-                    &nbsp;&nbsp;"query": { "limit": "str" },<br>
+                    // Committed directly to WorkflowContext[nodeId]:<br>
+                    { "metadata": { "method": "POST", "timestamp": 1711395729 },<br>
+                    &nbsp;&nbsp;"headers": { "content-type": "application/json" },<br>
+                    &nbsp;&nbsp;"query": {},<br>
                     &nbsp;&nbsp;"body": { ... } }
                 </div>
             </div>
