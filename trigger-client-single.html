@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Client Trigger — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="trigger-client-single">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+            <h1>Single Client <em>Trigger</em></h1>
+            <p class="tagline">The "Pinned" identity trigger. Binds a workflow to exactly one specific device in the registry, ensuring dedicated, isolated execution for high-value assets.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-registry">Identity: Single</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">No input ports</div>
+                <div style="color: var(--text3); font-size: 11px; font-style: italic; padding-top: 8px;">Entry point node — filtered by specific Client UUID.</div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Single Client Trigger</div>
+                <div class="port-diagram-node-type">Trigger</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-both"></span>
+                    <span class="port-pin-line"></span>
+                    onEvent
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the targeted client. Because this trigger is locked to one identity, the engine handles instance mapping automatically.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">SingleClientTrigger</span></div>
+            <div class="node-body">
+
+                <h3>Identity Target</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">clientId</td>
+                        <td class="prop-type">uuid</td>
+                        <td class="prop-default">required</td>
+                        <td>The unique identifier of the device in the platform registry.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">filterExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">null</td>
+                        <td>Optional JSONPath to filter specific events from this client (e.g., <code>$.type == 'ALARM'</code>).</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Instance Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">correlationExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">null</td>
+                        <td><b>Implicit.</b> Set to <code>null</code> as the <code>clientId</code> acts as the fixed correlation key for the instance.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">onMatch</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">MapOrCreate</td>
+                        <td>
+                            <code>MapOrCreate</code> — <b>(Genesis)</b> Creates the instance on first signal. Updates thereafter.<br>
+                            <code>MapOrDiscard</code> — <b>(Signal)</b> Only accepts signals if the instance was manually started.<br>
+                            <code>AlwaysCreate</code> — Not recommended for single client (spawns parallel flows for one device).<br>
+                            <code>MapOrReplace</code> — Resets the device's digital twin state on every new signal.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Dedicated Workspaces</strong>
+            Single Client triggers are best for "Digital Twin" scenarios where a workflow represents the persistent state of one specific physical machine. No data parsing is needed to find the instance; the engine knows exactly which "room" to put the data in.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases the raw client payload enriched with Registry Metadata.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">
+                        onEvent
+                        <span class="port-pill pill-both">signal + data</span>
+                    </div>
+                    <div class="port-desc">Fires when the specific client publishes data or changes state.</div>
+                    <div class="port-payload">
+                        // Written to WorkflowContext[nodeId]:<br>
+                        { <br>
+                        &nbsp;&nbsp;"payload": { ... },<br>
+                        &nbsp;&nbsp;"client": { "id": "dev_01", "name": "Main Pump", "tags": ["critical"] } <br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Single Client Trigger · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
