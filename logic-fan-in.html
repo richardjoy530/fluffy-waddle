@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan-In Gate — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="logic-fan-in">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Logic & Control</span></div>
+            <h1>Fan-In <em>Gate</em></h1>
+            <p class="tagline">The synchronization barrier. Harvests multiple parallel trigger signals and releases a single unified pulse once its synchronization condition is met. Essential for re-joining concurrent loops and parallel branches.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-core">Sync Barrier</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">Input ports</div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    arrive
+                </div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    reset
+                </div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Fan-In Gate</div>
+                <div class="port-diagram-node-type">Logic</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onComplete
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onPartial
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-error"></span>
+                    <span class="port-pin-line"></span>
+                    onTimeout
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the synchronization logic. The Fan-In Gate is "Context-Aware" and can automatically detect the expected arrival count when placed downstream of a Concurrent Loop.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">FanInGate</span></div>
+            <div class="node-body">
+
+                <h3>Synchronization Logic</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">mode</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">All</td>
+                        <td>
+                            <code>All</code> — Wait for every incoming signal to arrive before firing.<br>
+                            <code>Any</code> — Fire as soon as the first signal arrives (Race mode).<br>
+                            <code>Quorum</code> — Fire once a specific number of signals arrive.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">expectedCount</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">auto</td>
+                        <td>The number of signals to wait for. <code>auto</code> uses the parent loop's iteration count.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">waitTimeoutMs</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">0</td>
+                        <td>Maximum time to wait for synchronization to complete. <code>0</code> = wait indefinitely.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Context Harvesting</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">collectResults</td>
+                        <td class="prop-type">bool</td>
+                        <td class="prop-default">true</td>
+                        <td>If true, the node "harvests" the shared state of all connected source nodes and consolidates them into a result array.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>The Harvesting Model</strong>
+            In the WBSKT "Shared-State" model, Fan-In nodes do not "receive" data over wires. Instead, they perform a <strong>State Sweep</strong> of the <code>WorkflowContext</code> for all nodes connected to the <code>arrive</code> port, consolidating individual iteration results into a unified object.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases control signals and harvested results based on the synchronization outcome.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Input ports</div>
+                <div class="port-row">
+                    <div class="port-name">arrive <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">Termination point for parallel branches. Each arrival increments the internal counter.</div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">reset <span class="port-pill pill-control">control</span></div>
+                    <div class="port-desc">Clears the current synchronization counter and harvested results.</div>
+                </div>
+            </div>
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">onComplete <span class="port-pill pill-both">data + signal</span></div>
+                    <div class="port-desc">Fires when the sync condition (All/Any/Quorum) is met. Carries the harvested result array.</div>
+                    <div class="port-payload">
+                        { <br>
+                        &nbsp;&nbsp;"summary": { "totalArrived": 10, "status": "Complete" },<br>
+                        &nbsp;&nbsp;"results": [ { "iteration": 0, "nodeId": "api_1", "data": { ... } }, ... ] <br>
+                        }
+                    </div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">onPartial <span class="port-pill pill-both">data + signal</span></div>
+                    <div class="port-desc">Fires if the workflow is interrupted or stopped before completion, providing a snapshot of current progress.</div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">onTimeout <span class="port-pill pill-error">error</span></div>
+                    <div class="port-desc">Fires if <code>waitTimeoutMs</code> is reached before the synchronization condition is met.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Fan-In Gate · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
