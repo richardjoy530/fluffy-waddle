@@ -12,6 +12,10 @@
     <a href="trigger-polling.html" class="sidebar-link" data-page="trigger-polling">Polling / Watcher</a>
     <a href="trigger-manual.html" class="sidebar-link" data-page="trigger-manual">Manual Event</a>
     <a href="trigger-mqtt.html" class="sidebar-link" data-page="trigger-mqtt">MQTT Telemetry</a>
+    <div class="sidebar-section">Identity Triggers</div>
+    <a href="trigger-client-single.html" class="sidebar-link" data-page="trigger-client-single">Single Client</a>
+    <a href="trigger-client-group.html" class="sidebar-link" data-page="trigger-client-group">Group / Folder</a>
+    <a href="trigger-client-policy.html" class="sidebar-link" data-page="trigger-client-policy">Policy-Based</a>
     <div class="sidebar-section">Logic &amp; Control</div>
     <a href="loop-static-for.html" class="sidebar-link" data-page="loop-static-for">Static For-Loop</a>
     <a href="#" class="sidebar-link coming-soon">Logic Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group / Folder Trigger — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="trigger-client-group">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+            <h1>Group / Folder <em>Trigger</em></h1>
+            <p class="tagline">The dynamic fleet trigger. Binds a workflow to an entire hierarchy of devices (e.g., /Facility_A/Sensors/), automatically enrolling new clients as they are added to the platform registry.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-registry">Identity: Group</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">No input ports</div>
+                <div style="color: var(--text3); font-size: 11px; font-style: italic; padding-top: 8px;">Entry point node — listens to all signals in a registry subtree.</div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Group Trigger</div>
+                <div class="port-diagram-node-type">Trigger</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-both"></span>
+                    <span class="port-pin-line"></span>
+                    onEvent
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the targeted registry folder. Any client within this path (and sub-paths) will initiate a workflow instance when it publishes data.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">GroupClientTrigger</span></div>
+            <div class="node-body">
+
+                <h3>Identity Target</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">groupPath</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">required</td>
+                        <td>The registry path to watch (e.g., <code>/Factory_1/HVAC/</code>). Supports recursive matching.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">includeSubgroups</td>
+                        <td class="prop-type">bool</td>
+                        <td class="prop-default">true</td>
+                        <td>If true, clients in deeper nested folders will also trigger this node.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Instance Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">correlationExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">$.client_id</td>
+                        <td><b>Required.</b> Used to extract the specific Client ID from the incoming stream to map it to its own instance.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">onMatch</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">MapOrCreate</td>
+                        <td>
+                            <code>MapOrCreate</code> — <b>(Genesis)</b> Spawns a new instance for every new client detected in the folder.<br>
+                            <code>MapOrDiscard</code> — <b>(Signal)</b> Only updates existing instances. Useful for bulk-monitoring specific active groups.<br>
+                            <code>AlwaysCreate</code> — Not recommended (spawns unlinked parallel flows for every message).<br>
+                            <code>MapOrReplace</code> — Resets the individual client's digital twin state on every signal.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Zero-Touch Scaling</strong>
+            Group triggers eliminate the need to update workflows when adding hardware. By organizing devices into folders (e.g., /Region/Site), your logic automatically scales to new sensors as soon as they are registered by the field technician.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases the payload enriched with specific client location and path metadata.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">
+                        onEvent
+                        <span class="port-pill pill-both">signal + data</span>
+                    </div>
+                    <div class="port-desc">Fires when any client within the folder path publishes data.</div>
+                    <div class="port-payload">
+                        // Written to WorkflowContext[nodeId]:<br>
+                        { <br>
+                        &nbsp;&nbsp;"payload": { "vibration": 0.42 },<br>
+                        &nbsp;&nbsp;"client": { "id": "motor_22", "path": "/Factory/Line_1/Motors", "tags": [] } <br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Group / Folder Trigger · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
