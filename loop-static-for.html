@@ -135,17 +135,17 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">iteration-mode</td>
+                        <td class="prop-name">iterationMode</td>
                         <td class="prop-type">enum</td>
                         <td class="prop-default">Sequential</td>
                         <td>
                             <code>Sequential</code> — next iteration starts only after current completes (or is acked).<br>
                             <code>Concurrent</code> — all iterations fan-out as independent pointers simultaneously.
-                            <div class="prop-note">Concurrent mode requires max-concurrency to avoid flooding downstream systems.</div>
+                            <div class="prop-note">Concurrent mode requires maxConcurrency to avoid flooding downstream systems.</div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">iteration-delay-ms</td>
+                        <td class="prop-name">iterationDelayMs</td>
                         <td class="prop-type">int</td>
                         <td class="prop-default">0</td>
                         <td>Milliseconds to wait after an iteration <em>completes</em> before starting the next.
@@ -162,7 +162,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">ack-timeout-ms</td>
+                        <td class="prop-name">ackTimeoutMs</td>
                         <td class="prop-type">int</td>
                         <td class="prop-default">0</td>
                         <td>Milliseconds to wait for acknowledgement before timing out. <code>0</code> = wait indefinitely.
@@ -170,7 +170,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">ack-mode</td>
+                        <td class="prop-name">ackMode</td>
                         <td class="prop-type">enum</td>
                         <td class="prop-default">Any</td>
                         <td>
@@ -180,15 +180,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">max-concurrency</td>
+                        <td class="prop-name">maxConcurrency</td>
                         <td class="prop-type">int</td>
                         <td class="prop-default">∞</td>
-                        <td>Maximum concurrent iterations when <code>iteration-mode: Concurrent</code>.
+                        <td>Maximum concurrent iterations when <code>iterationMode: Concurrent</code>.
                             <div class="prop-note">Strongly recommended for IoT command sequences. Has no effect in Sequential mode.</div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">on-iteration-error</td>
+                        <td class="prop-name">onIterationError</td>
                         <td class="prop-type">enum</td>
                         <td class="prop-default">Halt</td>
                         <td>
@@ -246,12 +246,12 @@
                         </div>
                         <div class="port-row">
                             <div class="port-name">onIterationTimeout <span class="port-pill pill-error">error</span></div>
-                            <div class="port-desc">Fires per iteration when <code>ack-timeout-ms</code> is exceeded. Only when <code>ack: true</code> and <code>ack-timeout-ms &gt; 0</code>.</div>
+                            <div class="port-desc">Fires per iteration when <code>ackTimeoutMs</code> is exceeded. Only when <code>ack: true</code> and <code>ackTimeoutMs &gt; 0</code>.</div>
                             <div class="port-payload">{ value: int, index: int }</div>
                         </div>
                         <div class="port-row">
                             <div class="port-name">onError <span class="port-pill pill-error">error</span></div>
-                            <div class="port-desc">Fires when <code>on-iteration-error: Halt</code> and an iteration fails.</div>
+                            <div class="port-desc">Fires when <code>onIterationError: Halt</code> and an iteration fails.</div>
                             <div class="port-payload">{ value: int, index: int, error: string }</div>
                         </div>
                     </div>
@@ -297,7 +297,7 @@
                     <div class="concur-card">
                         <div class="concur-head conc">Concurrent mode</div>
                         <div class="concur-body">
-                            All iterations fan-out as independent execution pointers. A FanInGate downstream collects results. Cap with <code>max-concurrency</code> to avoid flooding.
+                            All iterations fan-out as independent execution pointers. A FanInGate downstream collects results. Cap with <code>maxConcurrency</code> to avoid flooding.
                             <div class="timeline">
                                 <span class="tick tick-all">i=0</span>
                                 <span class="tick tick-all">i=1</span>
@@ -311,7 +311,7 @@
 
                 <div class="callout callout-error" style="margin-top:16px;">
                     <strong>IoT warning — Concurrent mode</strong>
-                    Without <code>max-concurrency</code>, a loop with <code>from=0, to=1000</code> in Concurrent mode dispatches 1000 simultaneous device commands. Always set <code>max-concurrency</code> when targeting physical devices.
+                    Without <code>maxConcurrency</code>, a loop with <code>from=0, to=1000</code> in Concurrent mode dispatches 1000 simultaneous device commands. Always set <code>maxConcurrency</code> when targeting physical devices.
                 </div>
 
                 <!-- Crash recovery -->
@@ -332,7 +332,7 @@
                     </div>
                     <div class="state-item">
                         <span class="state-key">pendingAcks</span><span class="state-type">int</span>
-                        <div class="state-about">Number of acks still expected. Only set when ack-mode: All.</div>
+                        <div class="state-about">Number of acks still expected. Only set when ackMode: All.</div>
                     </div>
                     <div class="state-item">
                         <span class="state-key">status</span><span class="state-type">enum</span>
@@ -358,7 +358,7 @@
 
         <div class="callout callout-info" style="margin-top:24px;">
             <strong>Design note — ack model applies to all loop types</strong>
-            The ack / ack-timeout / ack-mode properties and the pause/continue/stop input port pattern are intended to be consistent across all loop node variants.
+            The ack / ackTimeoutMs / ackMode properties and the pause/continue/stop input port pattern are intended to be consistent across all loop node variants.
         </div>
 
         <div class="page-footer">
@@ -368,36 +368,6 @@
 
     </main>
 </div>
-<script>
-(function() {
-    const SIDEBAR_HTML = `
-<nav class="sidebar">
-    <a href="index.html" class="sidebar-logo">WBSKT</a>
-    <div class="sidebar-section">Core</div>
-    <a href="reference.html" class="sidebar-link" data-page="reference">Reference Index</a>
-    <a href="workflow.html" class="sidebar-link" data-page="workflow">Workflow Definitions</a>
-    <div class="sidebar-section">Trigger Nodes</div>
-    <a href="trigger-http.html" class="sidebar-link" data-page="trigger-http">HTTP Webhook</a>
-    <a href="trigger-scheduled.html" class="sidebar-link" data-page="trigger-scheduled">Scheduled</a>
-    <a href="#" class="sidebar-link coming-soon">MQTT Telemetry <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <div class="sidebar-section">Logic &amp; Control</div>
-    <a href="loop-static-for.html" class="sidebar-link" data-page="loop-static-for">Static For-Loop</a>
-    <a href="#" class="sidebar-link coming-soon">Logic Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <a href="#" class="sidebar-link coming-soon">Fan-In Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <div class="sidebar-section">Action Nodes</div>
-    <a href="#" class="sidebar-link coming-soon">Send Command <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <a href="#" class="sidebar-link coming-soon">HTTP Request <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <a href="#" class="sidebar-link coming-soon">Slack / Email <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-</nav>`;
-    const activePage = document.body.dataset.page || '';
-    const layout = document.querySelector('.layout');
-    if (layout) {
-        layout.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
-        document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-            if (l.dataset.page === activePage) l.classList.add('active');
-        });
-    }
-})();
-</script>
+<script src="wbskt-sidebar.js"></script>
 </body>
 </html>

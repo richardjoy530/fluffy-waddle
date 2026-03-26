@@ -19,7 +19,7 @@
     <div class="sidebar-section">Logic &amp; Control</div>
     <a href="loop-static-for.html" class="sidebar-link" data-page="loop-static-for">Static For-Loop</a>
     <a href="#" class="sidebar-link coming-soon">Logic Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
-    <a href="#" class="sidebar-link coming-soon">Fan-In Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <a href="logic-fan-in.html" class="sidebar-link" data-page="logic-fan-in">Fan-In Gate</a>
     <div class="sidebar-section">Action Nodes</div>
     <a href="#" class="sidebar-link coming-soon">Send Command <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
     <a href="#" class="sidebar-link coming-soon">HTTP Request <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
