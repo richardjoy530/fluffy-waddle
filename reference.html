@@ -4,289 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Technical Reference — WBSKT Specification</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wbskt.css">
     <style>
-        :root {
-            --bg: #0c0f0a;
-            --bg2: #131710;
-            --bg3: #1a1f16;
-            --bg4: #222820;
-            --border: #2a3226;
-            --border2: #354030;
-            --text: #d8e4d0;
-            --text2: #8fa888;
-            --text3: #556650;
-            --accent: #7ec96a;
-            --accent2: #4a8c3a;
-            --accent-dim: #2a4a22;
-            --blue: #5a9fd4;
-            --blue-dim: #162030;
-            --purple: #9a7ed4;
-            --purple-dim: #221a38;
-            --r: 8px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Mono', monospace;
-            font-size: 14px;
-            line-height: 1.7;
-            min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                    linear-gradient(var(--border) 1px, transparent 1px),
-                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .wrap {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 80px 40px;
-        }
-
-        .header {
-            margin-bottom: 64px;
-            border-bottom: 1px solid var(--border2);
-            padding-bottom: 40px;
-        }
-
-        .breadcrumb {
-            font-size: 11px;
-            color: var(--text3);
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-        }
-
-        .breadcrumb a { color: var(--text3); text-decoration: none; }
-        .breadcrumb a:hover { color: var(--accent); }
-        .breadcrumb span { color: var(--text2); }
-
-        h1 {
-            font-family: 'Fraunces', serif;
-            font-size: 52px;
-            font-weight: 300;
-            line-height: 1.1;
-            color: var(--accent);
-            letter-spacing: -.02em;
-            margin-bottom: 12px;
-        }
-
-        h1 em {
-            font-style: italic;
-            color: var(--text);
-        }
-
-        .tagline {
-            color: var(--text2);
-            font-size: 14px;
-            max-width: 540px;
-            line-height: 1.8;
-            margin-top: 16px;
-        }
-
-        h2 {
-            font-family: 'Fraunces', serif;
-            font-size: 28px;
-            font-weight: 300;
-            color: var(--text);
-            margin: 64px 0 32px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        h2::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border2);
-        }
-
         .ref-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 40px;
+            gap: 20px;
+            margin-bottom: 32px;
         }
 
         .ref-card {
             background: var(--bg2);
             border: 1px solid var(--border2);
             border-radius: var(--r);
-            padding: 32px;
+            padding: 28px;
             text-decoration: none;
             transition: all 0.2s;
             display: block;
         }
-
-        .ref-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            background: var(--bg3);
-        }
+        .ref-card:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--bg3); }
+        .ref-card.dim { opacity: 0.45; pointer-events: none; }
 
         .ref-card h3 {
             font-family: 'Fraunces', serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 300;
             color: var(--accent);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-
-        .ref-card p {
-            color: var(--text2);
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .cat-label {
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text3);
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .node-section {
-            margin-bottom: 80px;
-        }
+        .ref-card p { color: var(--text2); font-size: 12px; line-height: 1.6; }
+        .cat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; display: block; }
 
         .node-category h4 {
             font-family: 'Fraunces', serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 300;
             color: var(--text2);
-            margin: 40px 0 20px;
+            margin: 32px 0 16px;
             padding-left: 12px;
             border-left: 2px solid var(--border2);
         }
 
-        .node-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-        }
+        .node-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 
         .node-link {
             background: var(--bg3);
             border: 1px solid var(--border);
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-radius: var(--r);
             text-decoration: none;
             color: var(--accent);
-            font-size: 13px;
+            font-size: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             transition: all 0.2s;
         }
+        .node-link:hover { border-color: var(--accent); background: var(--bg4); }
 
-        .node-link:hover {
-            border-color: var(--accent);
+        /* Coming soon node links */
+        .node-link.coming-soon {
+            color: var(--text3);
+            cursor: default;
+            position: relative;
+        }
+        .node-link.coming-soon:hover { background: var(--bg3); border-color: var(--border); }
+
+        .node-link .tag { color: var(--text3); font-size: 10px; flex-shrink: 0; }
+
+        /* Inline coming-soon pill + tooltip */
+        .cs-inline {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cs-inline .cs-badge {
+            font-size: 8px;
+            padding: 1px 5px;
+            border-radius: 99px;
             background: var(--bg4);
-        }
-
-        .node-link span {
+            border: 1px solid var(--border2);
             color: var(--text3);
-            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
         }
-
-        .footer {
-            margin-top: 100px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 11px;
-            color: var(--text3);
+        .cs-inline .tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 6px);
+            right: 0;
+            background: var(--bg4);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 5px 9px;
+            font-size: 10px;
+            color: var(--text2);
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .wrap > * {
-            animation: fadeUp .6s ease both;
-        }
+        .node-link.coming-soon:hover .cs-inline .tooltip { display: block; }
     </style>
 </head>
-<body>
-<div class="wrap">
+<body data-page="reference">
+<div class="layout">
+    <!-- Sidebar injected by JS -->
+    <main class="content">
 
-    <div class="header">
-        <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/ Technical Reference</span></div>
-        <h1>Technical <em>Reference</em></h1>
-        <p class="tagline">The formal architectural specifications for the WBSKT platform. From the global execution blueprint to individual node physics.</p>
-    </div>
-
-    <!-- Core Specs -->
-    <h2>Core Specifications</h2>
-    <div class="ref-grid">
-        <a href="workflow.html" class="ref-card">
-            <span class="cat-label">Blueprint Layer</span>
-            <h3>Workflow Definitions</h3>
-            <p>The structural schema governing execution physics, routing logic, and lifecycle management.</p>
-        </a>
-        <div class="ref-card" style="opacity: 0.5;">
-            <span class="cat-label">Runtime Layer</span>
-            <h3>Engine Internals</h3>
-            <p>Coming Soon: Detailed breakdown of the navigation cycle, pointer management, and bookmark store.</p>
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/ Technical Reference</span></div>
+            <h1>Technical <em>Reference</em></h1>
+            <p class="tagline">The formal architectural specifications for the WBSKT platform. From the global execution blueprint to individual node schematics.</p>
         </div>
-    </div>
 
-    <!-- Node Catalog -->
-    <h2>Node Catalog</h2>
-    <div class="node-section">
-        
+        <h2>Core Specifications</h2>
+        <div class="ref-grid">
+            <a href="workflow.html" class="ref-card">
+                <span class="cat-label">Blueprint Layer</span>
+                <h3>Workflow Definitions</h3>
+                <p>The structural schema governing execution physics, routing logic, and lifecycle management.</p>
+            </a>
+            <div class="ref-card dim">
+                <span class="cat-label">Runtime Layer</span>
+                <h3>Engine Internals</h3>
+                <p>Coming Soon: Detailed breakdown of the navigation cycle, pointer management, and bookmark store.</p>
+            </div>
+        </div>
+
+        <h2>Node Catalog</h2>
+
         <div class="node-category">
             <h4>Trigger Nodes</h4>
             <div class="node-links">
-                <a href="nodes/trigger-http.html" class="node-link">HTTP Webhook <span>Trigger</span></a>
-                <a href="nodes/trigger-scheduled.html" class="node-link">Scheduled <span>Trigger</span></a>
-                <a href="#" class="node-link" style="opacity: 0.4;">MQTT Telemetry <span>Coming Soon</span></a>
+                <a href="trigger-http.html" class="node-link">
+                    HTTP Webhook <span class="tag">Trigger</span>
+                </a>
+                <a href="trigger-scheduled.html" class="node-link">
+                    Scheduled <span class="tag">Trigger</span>
+                </a>
+                <a href="trigger-polling.html" class="node-link">
+                    Polling / Watcher <span class="tag">Trigger</span>
+                </a>
+                <a href="trigger-manual.html" class="node-link">
+                    Manual Event <span class="tag">Trigger</span>
+                </a>
+                <a href="trigger-mqtt.html" class="node-link">
+                    MQTT Telemetry <span class="tag">Trigger</span>
+                </a>
             </div>
         </div>
 
         <div class="node-category">
             <h4>Logic & Control</h4>
             <div class="node-links">
-                <a href="nodes/loop-static-for.html" class="node-link">Static For-Loop <span>Loop</span></a>
-                <a href="#" class="node-link" style="opacity: 0.4;">Logic Gate <span>Condition</span></a>
-                <a href="#" class="node-link" style="opacity: 0.4;">Fan-In Gate <span>Parallel</span></a>
+                <a href="loop-static-for.html" class="node-link">
+                    Static For-Loop <span class="tag">Loop</span>
+                </a>
+                <span class="node-link coming-soon">
+                    Logic Gate
+                    <span class="cs-inline">
+                        <span class="tag">Condition</span>
+                        <span class="cs-badge">Soon</span>
+                    </span>
+                </span>
+                <span class="node-link coming-soon">
+                    Fan-In Gate
+                    <span class="cs-inline">
+                        <span class="tag">Parallel</span>
+                        <span class="cs-badge">Soon</span>
+                    </span>
+                </span>
             </div>
         </div>
 
         <div class="node-category">
             <h4>Action Nodes</h4>
             <div class="node-links">
-                <a href="#" class="node-link" style="opacity: 0.4;">Send Command <span>Action</span></a>
-                <a href="#" class="node-link" style="opacity: 0.4;">HTTP Request <span>Action</span></a>
-                <a href="#" class="node-link" style="opacity: 0.4;">Slack / Email <span>Notification</span></a>
+                <span class="node-link coming-soon">
+                    Send Command
+                    <span class="cs-inline">
+                        <span class="tag">Action</span>
+                        <span class="cs-badge">Soon</span>
+                    </span>
+                </span>
+                <span class="node-link coming-soon">
+                    HTTP Request
+                    <span class="cs-inline">
+                        <span class="tag">Action</span>
+                        <span class="cs-badge">Soon</span>
+                    </span>
+                </span>
+                <span class="node-link coming-soon">
+                    Slack / Email
+                    <span class="cs-inline">
+                        <span class="tag">Notification</span>
+                        <span class="cs-badge">Soon</span>
+                    </span>
+                </span>
             </div>
         </div>
 
-    </div>
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Technical Reference · Internal Specification</span>
+        </div>
 
-    <div class="footer">
-        &copy; 2026 WBSKT PLATFORM · INTERNAL SPECIFICATION
-    </div>
-
+    </main>
 </div>
+<script src="wbskt-sidebar.js"></script>
 </body>
 </html>

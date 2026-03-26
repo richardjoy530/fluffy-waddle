@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loop Nodes — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="loop-static-for">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Loop Nodes</span></div>
+            <h1>Loop <em>Nodes</em></h1>
+            <p class="tagline">Loop nodes provide iterative execution patterns within a workflow. They emit per-iteration signals, support external control via input ports, and integrate with the bookmark/suspend pattern for crash-safe resumption.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">v1 — Static for-loop</span>
+                <span class="badge badge-seq">Sequential by default</span>
+                <span class="badge badge-iot">IoT-aware ack model</span>
+                <span class="badge badge-todo">Dynamic loop — TODO</span>
+            </div>
+        </div>
+
+        <h2>Overview</h2>
+        <p>All loop nodes share a common execution model: they suspend between iterations using the <strong>bookmark pattern</strong>, persisting their current iteration state into the workflow instance. This means a process restart mid-loop resumes at the last completed iteration — not from the beginning.</p>
+        <p>Each iteration fires an <code>onIteration</code> output port carrying typed data. The loop either continues immediately (fire-and-forget) or waits for an acknowledgement signal from downstream nodes before advancing (ack mode).</p>
+
+        <!-- StaticForLoopNode -->
+        <h2>StaticForLoopNode</h2>
+
+        <!-- Port Diagram -->
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">Input ports</div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    start
+                </div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    pause
+                </div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    continue
+                </div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    stop
+                </div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">StaticFor LoopNode</div>
+                <div class="port-diagram-node-type">Loop</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-both"></span>
+                    <span class="port-pin-line"></span>
+                    onIteration
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onComplete
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onStop
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-error"></span>
+                    <span class="port-pin-line"></span>
+                    onIterationTimeout
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-error"></span>
+                    <span class="port-pin-line"></span>
+                    onError
+                </div>
+            </div>
+        </div>
+
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">StaticForLoopNode</span>
+                <div style="display:flex;gap:8px;">
+                    <span class="badge badge-v1">v1.0</span>
+                    <span class="badge badge-seq">Sequential</span>
+                </div>
+            </div>
+            <div class="node-desc">
+                Iterates over a fixed numeric range defined at workflow design time. Range is set in the <code>WorkflowDefinition</code> and cannot be changed at runtime. On each iteration, the current value is emitted via the <code>onIteration</code> output port. Supports external pause, continue, and stop control via input signal ports.
+            </div>
+
+            <div class="node-body">
+                <h3>Input Properties</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:180px">Property</th>
+                        <th style="width:90px">Type</th>
+                        <th style="width:100px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">from</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">required</td>
+                        <td>Starting value of the loop (inclusive).
+                            <div class="prop-note">e.g. from=0 starts the first iteration with value=0</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">to</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">required</td>
+                        <td>Ending value of the loop (exclusive — like Python <code>range()</code>).
+                            <div class="prop-note">e.g. from=0, to=5 yields values 0,1,2,3,4</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">step</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">1</td>
+                        <td>Increment applied after each iteration. Use a negative value with <code>from &gt; to</code> for countdown loops.
+                            <div class="prop-note">e.g. from=10, to=0, step=-2 yields 10,8,6,4,2</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">iteration-mode</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Sequential</td>
+                        <td>
+                            <code>Sequential</code> — next iteration starts only after current completes (or is acked).<br>
+                            <code>Concurrent</code> — all iterations fan-out as independent pointers simultaneously.
+                            <div class="prop-note">Concurrent mode requires max-concurrency to avoid flooding downstream systems.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">iteration-delay-ms</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">0</td>
+                        <td>Milliseconds to wait after an iteration <em>completes</em> before starting the next.
+                            <div class="prop-note">Only applies in Sequential mode.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">ack</td>
+                        <td class="prop-type">bool</td>
+                        <td class="prop-default">false</td>
+                        <td>
+                            <code>false</code> — fire and forget. Loop advances immediately after <code>onIteration</code>.<br>
+                            <code>true</code> — loop suspends and waits for a signal to the <code>continue</code> input port before advancing.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">ack-timeout-ms</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">0</td>
+                        <td>Milliseconds to wait for acknowledgement before timing out. <code>0</code> = wait indefinitely.
+                            <div class="prop-note">Only relevant when ack: true. Timeout fires the onIterationTimeout port.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">ack-mode</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Any</td>
+                        <td>
+                            <code>Any</code> — resume when any one connected downstream node sends ack.<br>
+                            <code>All</code> — resume only when all connected downstream nodes have acked.
+                            <div class="prop-note">Only relevant when ack: true.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">max-concurrency</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">∞</td>
+                        <td>Maximum concurrent iterations when <code>iteration-mode: Concurrent</code>.
+                            <div class="prop-note">Strongly recommended for IoT command sequences. Has no effect in Sequential mode.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">on-iteration-error</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Halt</td>
+                        <td>
+                            <code>Halt</code> — stop the loop and fire <code>onError</code>.<br>
+                            <code>Continue</code> — skip the failed iteration and advance.<br>
+                            <code>Retry(n)</code> — retry the current iteration up to n times before applying Halt or Continue.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-warn">
+                    <strong>Range validation at publish time</strong>
+                    The engine validates that the range produces at least one iteration when the definition is published. A definition with <code>from=5, to=3, step=1</code> (impossible range) is rejected before any instance can be created.
+                </div>
+
+                <!-- Port Detail -->
+                <h3>Port Detail</h3>
+                <div class="port-grid">
+                    <div>
+                        <div class="port-col-label">Input ports</div>
+                        <div class="port-row">
+                            <div class="port-name">start <span class="port-pill pill-control">control</span></div>
+                            <div class="port-desc">Begins the loop from <code>from</code>. Ignored if the loop is already running.</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">pause <span class="port-pill pill-control">control</span></div>
+                            <div class="port-desc">Suspends iteration after the current iteration completes. Instance status remains Running.</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">continue <span class="port-pill pill-control">control</span></div>
+                            <div class="port-desc">Resumes a paused loop, OR serves as the ack signal when <code>ack: true</code>. Dual purpose — context determines behaviour.</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">stop <span class="port-pill pill-control">control</span></div>
+                            <div class="port-desc">Terminates the loop immediately. Does not wait for pending acks. Fires the <code>onStop</code> output port.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="port-col-label">Output ports</div>
+                        <div class="port-row">
+                            <div class="port-name">onIteration <span class="port-pill pill-both">data + signal</span></div>
+                            <div class="port-desc">Fires on each iteration. Carries current iteration data.</div>
+                            <div class="port-payload">{ index: int,<br>&nbsp;&nbsp;value: int,<br>&nbsp;&nbsp;isFirst: bool,<br>&nbsp;&nbsp;isLast: bool }</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">onComplete <span class="port-pill pill-signal">signal</span></div>
+                            <div class="port-desc">Fires when all iterations finish naturally (not stopped or errored).</div>
+                            <div class="port-payload">{ totalIterations: int, completedAt: timestamp }</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">onStop <span class="port-pill pill-signal">signal</span></div>
+                            <div class="port-desc">Fires when stopped externally via the <code>stop</code> input port.</div>
+                            <div class="port-payload">{ stoppedAtValue: int, iterationsCompleted: int }</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">onIterationTimeout <span class="port-pill pill-error">error</span></div>
+                            <div class="port-desc">Fires per iteration when <code>ack-timeout-ms</code> is exceeded. Only when <code>ack: true</code> and <code>ack-timeout-ms &gt; 0</code>.</div>
+                            <div class="port-payload">{ value: int, index: int }</div>
+                        </div>
+                        <div class="port-row">
+                            <div class="port-name">onError <span class="port-pill pill-error">error</span></div>
+                            <div class="port-desc">Fires when <code>on-iteration-error: Halt</code> and an iteration fails.</div>
+                            <div class="port-payload">{ value: int, index: int, error: string }</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority -->
+                <h3>Input port priority</h3>
+                <p>When multiple control signals arrive simultaneously at the same iteration boundary:</p>
+                <div class="priority-row">
+                    <span class="priority-num p1">1</span>
+                    <span class="priority-label">stop</span>
+                    <span class="priority-desc">— highest priority, always terminates the loop immediately</span>
+                </div>
+                <div class="priority-row">
+                    <span class="priority-num p2">2</span>
+                    <span class="priority-label">pause</span>
+                    <span class="priority-desc">— suspends after current iteration; overrides continue</span>
+                </div>
+                <div class="priority-row">
+                    <span class="priority-num p3">3</span>
+                    <span class="priority-label">continue</span>
+                    <span class="priority-desc">— lowest priority, resumes only if not paused or stopped</span>
+                </div>
+
+                <!-- Concurrency -->
+                <h3>Concurrency model</h3>
+                <p>One loop node runs per workflow instance. Two instances of the same definition have completely independent loop state and iteration counters.</p>
+                <div class="concur-row">
+                    <div class="concur-card">
+                        <div class="concur-head seq">Sequential mode</div>
+                        <div class="concur-body">
+                            One active iteration at a time. Loop pointer suspends between iterations. Resumes from the last completed iteration after a process restart.
+                            <div class="timeline">
+                                <span class="tick tick-active">i=0</span>
+                                <span class="tick tick-wait">···</span>
+                                <span class="tick tick-active">i=1</span>
+                                <span class="tick tick-wait">···</span>
+                                <span class="tick tick-active">i=2</span>
+                                <span class="tick-label">one at a time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concur-card">
+                        <div class="concur-head conc">Concurrent mode</div>
+                        <div class="concur-body">
+                            All iterations fan-out as independent execution pointers. A FanInGate downstream collects results. Cap with <code>max-concurrency</code> to avoid flooding.
+                            <div class="timeline">
+                                <span class="tick tick-all">i=0</span>
+                                <span class="tick tick-all">i=1</span>
+                                <span class="tick tick-all">i=2</span>
+                                <span class="tick tick-all">i=3</span>
+                                <span class="tick-label">all at once</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout callout-error" style="margin-top:16px;">
+                    <strong>IoT warning — Concurrent mode</strong>
+                    Without <code>max-concurrency</code>, a loop with <code>from=0, to=1000</code> in Concurrent mode dispatches 1000 simultaneous device commands. Always set <code>max-concurrency</code> when targeting physical devices.
+                </div>
+
+                <!-- Crash recovery -->
+                <h3>Persisted state (crash recovery)</h3>
+                <p>Written to <code>WorkflowInstance.State.NodeOutputs[nodeId]</code> on every iteration suspension:</p>
+                <div class="state-grid">
+                    <div class="state-item">
+                        <span class="state-key">currentValue</span><span class="state-type">int</span>
+                        <div class="state-about">Value at last suspension. Loop resumes from here on restart.</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-key">iterationsCompleted</span><span class="state-type">int</span>
+                        <div class="state-about">Count of successfully completed iterations so far.</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-key">isPaused</span><span class="state-type">bool</span>
+                        <div class="state-about">True if the loop was externally paused via the pause input port.</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-key">pendingAcks</span><span class="state-type">int</span>
+                        <div class="state-about">Number of acks still expected. Only set when ack-mode: All.</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-key">status</span><span class="state-type">enum</span>
+                        <div class="state-about">Running | Paused | Completed | Stopped | Failed</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-key">lastIterationAt</span><span class="state-type">timestamp</span>
+                        <div class="state-about">Timestamp of last completed iteration. Used for delay calculation.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h2>Planned Node Types</h2>
+        <p>The following loop node variants are planned for future releases. Design notes are preliminary.</p>
+        <ul class="todo-list">
+            <li><div><strong style="color:#c09830;font-weight:500;">DynamicForLoopNode</strong> — Iterates over a range resolved at runtime from workflow state or a node output. Requires expression evaluation against <code>WorkflowState</code> at execution time.</div></li>
+            <li><div><strong style="color:#c09830;font-weight:500;">ForEachNode</strong> — Iterates over a collection (array) rather than a numeric range. Each iteration emits the current item via <code>onIteration</code>. Supports both Sequential and Concurrent modes with the same ack model.</div></li>
+            <li><div><strong style="color:#c09830;font-weight:500;">WhileLoopNode</strong> — Continues iterating while a condition expression evaluates to true. Must include a max-iterations safety cap.</div></li>
+            <li><div><strong style="color:#c09830;font-weight:500;">PollLoopNode</strong> — Purpose-built for IoT polling patterns. Fires a device query each iteration, compares against a condition, exits via <code>onConditionMet</code>. Built-in backoff between polls.</div></li>
+        </ul>
+
+        <div class="callout callout-info" style="margin-top:24px;">
+            <strong>Design note — ack model applies to all loop types</strong>
+            The ack / ack-timeout / ack-mode properties and the pause/continue/stop input port pattern are intended to be consistent across all loop node variants.
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Loop Nodes · Spec v1.0 · Internal</span>
+        </div>
+
+    </main>
+</div>
+<script>
+(function() {
+    const SIDEBAR_HTML = `
+<nav class="sidebar">
+    <a href="index.html" class="sidebar-logo">WBSKT</a>
+    <div class="sidebar-section">Core</div>
+    <a href="reference.html" class="sidebar-link" data-page="reference">Reference Index</a>
+    <a href="workflow.html" class="sidebar-link" data-page="workflow">Workflow Definitions</a>
+    <div class="sidebar-section">Trigger Nodes</div>
+    <a href="trigger-http.html" class="sidebar-link" data-page="trigger-http">HTTP Webhook</a>
+    <a href="trigger-scheduled.html" class="sidebar-link" data-page="trigger-scheduled">Scheduled</a>
+    <a href="#" class="sidebar-link coming-soon">MQTT Telemetry <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <div class="sidebar-section">Logic &amp; Control</div>
+    <a href="loop-static-for.html" class="sidebar-link" data-page="loop-static-for">Static For-Loop</a>
+    <a href="#" class="sidebar-link coming-soon">Logic Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <a href="#" class="sidebar-link coming-soon">Fan-In Gate <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <div class="sidebar-section">Action Nodes</div>
+    <a href="#" class="sidebar-link coming-soon">Send Command <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <a href="#" class="sidebar-link coming-soon">HTTP Request <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <a href="#" class="sidebar-link coming-soon">Slack / Email <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+</nav>`;
+    const activePage = document.body.dataset.page || '';
+    const layout = document.querySelector('.layout');
+    if (layout) {
+        layout.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
+        document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
+            if (l.dataset.page === activePage) l.classList.add('active');
+        });
+    }
+})();
+</script>
+</body>
+</html>
