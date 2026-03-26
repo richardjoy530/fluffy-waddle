@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Trigger — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="trigger-manual">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+            <h1>Manual / User Event <em>Trigger</em></h1>
+            <p class="tagline">The human-in-the-loop entry point. Exposes a button or form within the dashboard or external portal to allow direct manual intervention in workflows.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-sec">User-Driven</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">No input ports</div>
+                <div style="color: var(--text3); font-size: 11px; font-style: italic; padding-top: 8px;">Entry point node — triggered by direct user interaction.</div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Manual Trigger</div>
+                <div class="port-diagram-node-type">Trigger</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-both"></span>
+                    <span class="port-pin-line"></span>
+                    onExecute
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the UI element and access control. This trigger allows users to provide input parameters at runtime before the workflow begins.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">ManualTrigger</span></div>
+            <div class="node-body">
+
+                <h3>UI & Interface</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">buttonLabel</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">"Run Workflow"</td>
+                        <td>The text displayed on the action button in the dashboard.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">inputSchema</td>
+                        <td class="prop-type">json-schema</td>
+                        <td class="prop-default">null</td>
+                        <td>Defines form fields (text, select, toggle) to be filled by the user before execution.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">requiredRoles</td>
+                        <td class="prop-type">array[string]</td>
+                        <td class="prop-default">[]</td>
+                        <td>RBAC roles allowed to see and trigger this button.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Instance Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">correlationExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">null</td>
+                        <td>A JSONPath or static value to bind this manual action to a specific instance ID.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">onMatch</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">MapOrCreate</td>
+                        <td>
+                            <code>MapOrCreate</code> — <b>(Genesis)</b> Creates a new instance if the resolved ID is unknown. Updates if known.<br>
+                            <code>MapOrDiscard</code> — <b>(Signal)</b> Only updates existing instances. If no match is found, the signal is dropped.<br>
+                            <code>AlwaysCreate</code> — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs).<br>
+                            <code>MapOrReplace</code> — Aborts the existing instance and starts a fresh one with the new payload.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Hybrid Automation</strong>
+            Manual triggers are often used as "Overdrive" signals to force a workflow into a specific state or to provide missing data that automated triggers could not resolve.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases a signal containing both user-provided form data and metadata about the triggering user.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">
+                        onExecute
+                        <span class="port-pill pill-both">signal + data</span>
+                    </div>
+                    <div class="port-desc">Fires immediately upon button click/form submission.</div>
+                    <div class="port-payload">
+                        // Written to WorkflowContext[nodeId]:<br>
+                        { <br>
+                        &nbsp;&nbsp;"user": { "id": "u_99", "email": "admin@wbskt.io" },<br>
+                        &nbsp;&nbsp;"input": { "reason": "Emergency Shutdown", "override_threshold": 95 } <br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Manual Trigger · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>

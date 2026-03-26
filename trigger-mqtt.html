@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Telemetry Trigger — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="trigger-mqtt">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+            <h1>MQTT Telemetry <em>Trigger</em></h1>
+            <p class="tagline">The persistent IoT backbone. Maintains long-lived subscriptions to message brokers, handles high-frequency telemetry, and decodes binary payloads for real-time workflow routing.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-iot">IoT / Edge</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">No input ports</div>
+                <div style="color: var(--text3); font-size: 11px; font-style: italic; padding-top: 8px;">Entry point node — driven by persistent broker subscriptions.</div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">MqttTelemetry Trigger</div>
+                <div class="port-diagram-node-type">Trigger</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-both"></span>
+                    <span class="port-pin-line"></span>
+                    onMessage
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the MQTT client and payload decoding. The engine manages the connection lifecycle, including automatic retries and backoff if the broker becomes unreachable.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">MqttTelemetryTrigger</span></div>
+            <div class="node-body">
+
+                <h3>Broker & Subscription</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">brokerRef</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">required</td>
+                        <td>Vault reference to broker details (host, port, TLS, credentials).</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">topic</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">#</td>
+                        <td>The MQTT topic subscription string. Supports wildcards (e.g., <code>telemetry/+/sensors</code>).</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">qos</td>
+                        <td class="prop-type">int (0-2)</td>
+                        <td class="prop-default">1</td>
+                        <td>Quality of Service level for the subscription.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Payload & Decoding</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">payloadFormat</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">JSON</td>
+                        <td>
+                            <code>JSON</code> — Standard text parsing.<br>
+                            <code>Protobuf</code> — Binary decoding via schema.<br>
+                            <code>RawBinary</code> — Passes payload as hex/base64 string.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">schemaRef</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">null</td>
+                        <td>Reference to a <code>.proto</code> file or binary template in the WBSKT Registry. Required for Protobuf.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Instance Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">correlationExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">null</td>
+                        <td>JSONPath for payload fields, or <code>$topic[index]</code> for topic segments (e.g., <code>$topic[1]</code> for 2nd segment).</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">onMatch</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">MapOrCreate</td>
+                        <td>
+                            <code>MapOrCreate</code> — <b>(Genesis)</b> Creates a new instance if the resolved ID is unknown. Updates if known.<br>
+                            <code>MapOrDiscard</code> — <b>(Signal)</b> Only updates existing instances. If no match is found, the signal is dropped.<br>
+                            <code>AlwaysCreate</code> — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs).<br>
+                            <code>MapOrReplace</code> — Aborts the existing instance and starts a fresh one with the new payload.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Topic-Based Routing</strong>
+            The MQTT Trigger is uniquely capable of extracting identity from the <code>topic</code> metadata. This allows the engine to route messages to the correct instance even if the payload is encrypted or in a proprietary binary format that cannot be parsed by the node itself.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases a signal containing the decoded payload and broker metadata.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">
+                        onMessage
+                        <span class="port-pill pill-both">signal + data</span>
+                    </div>
+                    <div class="port-desc">Fires instantly upon message arrival and successful decoding.</div>
+                    <div class="port-payload">
+                        // Written to WorkflowContext[nodeId]:<br>
+                        { <br>
+                        &nbsp;&nbsp;"metadata": { "topic": "v1/dev_99/status", "qos": 1, "retained": false },<br>
+                        &nbsp;&nbsp;"payload": { "temp": 24.5, "humidity": 48.2, "status": "ONLINE" } <br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>MQTT Telemetry Trigger · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>

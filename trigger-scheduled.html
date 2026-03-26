@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Trigger — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="trigger-scheduled">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Trigger Nodes</span></div>
+            <h1>Scheduled <em>Trigger</em></h1>
+            <p class="tagline">The internal heartbeat of the engine. Automates workflow execution based on precise time intervals or complex calendar patterns. Unlike event triggers, it originates from the system clock.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-core">Time-Driven</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">No input ports</div>
+                <div style="color: var(--text3); font-size: 11px; font-style: italic; padding-top: 8px;">Entry point node — driven by the engine's internal CronService.</div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Scheduled Trigger</div>
+                <div class="port-diagram-node-type">Trigger</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onTick
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration parameters for the scheduler. The engine's central <code>CronService</code> monitors these definitions and dispatches signals to the worker pool at the designated timestamps.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">ScheduledTrigger</span></div>
+            <div class="node-body">
+
+                <h3>Schedule Configuration</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:180px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">scheduleMode</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Interval</td>
+                        <td>
+                            <code>Interval</code> — Simple repetitive cadence (e.g. Every 5m).<br>
+                            <code>Cron</code> — Advanced calendar logic using standard Crontab syntax.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">intervalValue</td>
+                        <td class="prop-type">int</td>
+                        <td class="prop-default">15</td>
+                        <td>The numeric value for interval mode. Minimum recommended: 1.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">intervalUnit</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Minutes</td>
+                        <td><code>Seconds</code> | <code>Minutes</code> | <code>Hours</code> | <code>Days</code></td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">cronExpression</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">null</td>
+                        <td>The Cron string (e.g. <code>0 8 * * 1-5</code> for 8AM Weekdays).</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">timeZone</td>
+                        <td class="prop-type">string</td>
+                        <td class="prop-default">UTC</td>
+                        <td>Valid IANA timezone string. Critical for DST-aware scheduling.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <h3>Instance Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:180px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">correlationExpression</td>
+                        <td class="prop-type">expression</td>
+                        <td class="prop-default">null</td>
+                        <td>A JSONPath or regex to extract a unique Instance Context ID. Used for correlating schedule ticks to active instances.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">onMatch</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">AlwaysCreate</td>
+                        <td>
+                            <code>MapOrCreate</code> — <b>(Genesis)</b> Creates a new instance if the resolved ID is unknown. Updates if known.<br>
+                            <code>MapOrDiscard</code> — <b>(Signal)</b> Only updates existing instances. If no match is found, the signal is dropped.<br>
+                            <code>AlwaysCreate</code> — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs).<br>
+                            <code>MapOrReplace</code> — Aborts the existing instance and starts a fresh one with the new payload.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">misfirePolicy</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Discard</td>
+                        <td>
+                            <code>FireImmediately</code> — If the server was down during a tick, fire it as soon as it recovers.<br>
+                            <code>Discard</code> — Ignore missed ticks and wait for the next scheduled occurrence.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Context Persistence</strong>
+            This node utilizes the Shared-State model. No data is passed via output connections. Upon triggering, the engine writes the <code>triggeredAt</code> timestamp and <code>scheduleMeta</code> directly to the <code>WorkflowContext</code> for downstream consumption.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Standardized control signals used to initiate flow logic following a successful time-event.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">
+                        onTick
+                        <span class="port-pill pill-signal">signal only</span>
+                    </div>
+                    <div class="port-desc">Fires a control pulse to downstream nodes. No data payload is included in the transmission.</div>
+                    <div class="port-payload">
+                        // Written to WorkflowContext[nodeId]:<br>
+                        {<br>
+                        &nbsp;&nbsp;"timestamp": 1711395729,<br>
+                        &nbsp;&nbsp;"iso": "2026-03-25T12:00:00Z",<br>
+                        &nbsp;&nbsp;"mode": "Cron"<br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Scheduled Trigger · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
