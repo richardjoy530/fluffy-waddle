@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Gate (Multi-Rule) — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="logic-gate">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Logic & Control</span></div>
+            <h1>Logic <em>Gate</em></h1>
+            <p class="tagline">The multi-rule decision engine. Evaluates one or more independent boolean expressions against the workflow context and routes the trigger pulse to specific output ports based on the result.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-core">Multi-Rule Router</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">Input ports</div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    eval
+                </div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Logic Gate</div>
+                <div class="port-diagram-node-type">Logic</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    [ruleLabel_1]
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    [ruleLabel_N]
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    default
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-error"></span>
+                    <span class="port-pin-line"></span>
+                    onError
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for the rule set. Each rule defines a condition and a corresponding output port name. The node evaluates these rules against the <code>WorkflowContext</code> at runtime.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">LogicGate</span></div>
+            <div class="node-body">
+
+                <h3>Evaluation Strategy</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">logicMode</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Exclusive</td>
+                        <td>
+                            <code>Exclusive</code> — Evaluates top-to-bottom. Pulses the <b>first</b> matching rule and stops.<br>
+                            <code>Parallel</code> — Evaluates <b>all</b> rules. Pulses every matching rule simultaneously.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">rules</td>
+                        <td class="prop-type">array[obj]</td>
+                        <td class="prop-default">[]</td>
+                        <td>List of rules: <code>{ condition: expression, label: string }</code>. The label becomes the output port name.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">strictMode</td>
+                        <td class="prop-type">bool</td>
+                        <td class="prop-default">true</td>
+                        <td>
+                            <code>true</code> — Missing variables or null values trigger the <code>onError</code> port immediately (Recommended for safety-critical flows).<br>
+                            <code>false</code> — Missing data resolves the specific condition to <code>false</code> instead of failing the node.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="callout callout-info">
+            <strong>The Power of Parallel Evaluation</strong>
+            Unlike a standard If-Else, <code>Parallel</code> mode evaluates <b>every</b> rule in the list. This allows a single node to categorize a complex state and trigger multiple specific actions simultaneously. 
+            <br><br>
+            <em>Example (Facility Safety):</em><br>
+            • Rule 1 (Fire): <code>smoke &gt; 0.5</code> → Port <b>FireAlert</b><br>
+            • Rule 2 (Power): <code>voltage &lt; 110</code> → Port <b>BackupGen</b><br>
+            <br>
+            If both conditions are met, <b>both</b> ports pulse. This is more efficient than chaining multiple If nodes and keeps the logic centralized.
+        </div>
+
+        <h2>Port Detail</h2>
+        <p>Releases control signals to dynamic output ports based on rule evaluation.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Input ports</div>
+                <div class="port-row">
+                    <div class="port-name">eval <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">The trigger signal. When pulsed, the node evaluates the <code>rules</code> array based on the <code>logicMode</code>.</div>
+                </div>
+            </div>
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">[ruleLabel] <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">A dynamic port created for each rule. Pulses if the rule's condition is <code>true</code>.</div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">default <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">Fires only if <b>no</b> rules evaluate to <code>true</code>. Acts as the fallback or "else" path.</div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">onError <span class="port-pill pill-error">error</span></div>
+                    <div class="port-desc">Fires if an expression cannot be resolved due to syntax errors or missing data.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Logic Gate · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>

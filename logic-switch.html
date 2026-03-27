@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>If-Else Gate — WBSKT Specification</title>
+    <title>Switch Gate — WBSKT Specification</title>
     <link rel="stylesheet" href="wbskt.css">
 </head>
-<body data-page="logic-if">
+<body data-page="logic-switch">
 <div class="layout">
     <main class="content">
 
         <div class="header">
             <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Logic & Control</span></div>
-            <h1>If-Else <em>Gate</em></h1>
-            <p class="tagline">The binary decision engine. Evaluates a single boolean expression against the workflow context and routes the incoming trigger pulse to either the True or False output path.</p>
+            <h1>Switch <em>Gate</em></h1>
+            <p class="tagline">The value-based router. Evaluates a single expression once and matches the result against multiple predefined cases, directing the trigger pulse to the matching output path.</p>
             <div class="version-row">
                 <span class="badge badge-v1">Spec v1.1</span>
-                <span class="badge badge-core">Boolean Router</span>
+                <span class="badge badge-core">Value Matcher</span>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="port-diagram-center">
-                <div class="port-diagram-node-name">If-Else Gate</div>
+                <div class="port-diagram-node-name">Switch Gate</div>
                 <div class="port-diagram-node-type">Logic</div>
             </div>
             <div class="port-diagram-col outputs">
@@ -40,12 +40,17 @@
                 <div class="port-pin output">
                     <span class="port-pin-dot pin-signal"></span>
                     <span class="port-pin-line"></span>
-                    true
+                    [caseLabel_1]
                 </div>
                 <div class="port-pin output">
                     <span class="port-pin-dot pin-signal"></span>
                     <span class="port-pin-line"></span>
-                    false
+                    [caseLabel_N]
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    default
                 </div>
                 <div class="port-pin output">
                     <span class="port-pin-dot pin-error"></span>
@@ -56,13 +61,13 @@
         </div>
 
         <h2>Node Properties</h2>
-        <p>Configuration for the boolean check. The If-Else Gate does not receive data on its input wire; it reaches into the <code>WorkflowContext</code> to resolve its condition at runtime.</p>
+        <p>Configuration for the value comparison. Unlike the Logic Gate, the Switch Gate evaluates its source expression <b>once</b> and performs a lookup against its cases for maximum performance.</p>
 
         <div class="node-card">
-            <div class="node-header"><span class="node-name">IfElseGate</span></div>
+            <div class="node-header"><span class="node-name">SwitchGate</span></div>
             <div class="node-body">
 
-                <h3>Condition Configuration</h3>
+                <h3>Routing Configuration</h3>
                 <table class="prop-table">
                     <thead><tr>
                         <th style="width:200px">Property</th>
@@ -72,25 +77,26 @@
                     </tr></thead>
                     <tbody>
                     <tr>
-                        <td class="prop-name">condition</td>
+                        <td class="prop-name">expression</td>
                         <td class="prop-type">expression</td>
                         <td class="prop-default">required</td>
-                        <td>The logic to evaluate (e.g., <code>{{mqtt_1.payload.temp}} &gt; 35</code>). Must resolve to a boolean.</td>
+                        <td>The value to evaluate (e.g., <code>{{client.region}}</code> or <code>{{mqtt.payload.type}}</code>).</td>
                     </tr>
                     <tr>
-                        <td class="prop-name">evaluationEngine</td>
+                        <td class="prop-name">matchMode</td>
                         <td class="prop-type">enum</td>
-                        <td class="prop-default">JSONPath</td>
+                        <td class="prop-default">Exact</td>
                         <td>
-                            <code>JSONPath</code> — Fast, standard lookup.<br>
-                            <code>CEL</code> — Common Expression Language for complex multi-variable logic.
+                            <code>Exact</code> — String or numeric equality.<br>
+                            <code>Regex</code> — Matches the expression result against a regular expression pattern.<br>
+                            <code>NumericRange</code> — Matches if the value falls within a range (e.g., <code>0-100</code>).
                         </td>
                     </tr>
                     <tr>
-                        <td class="prop-name">strictMode</td>
-                        <td class="prop-type">bool</td>
-                        <td class="prop-default">true</td>
-                        <td>If true, missing variables or null values trigger the <code>onError</code> port. If false, they resolve to <code>false</code>.</td>
+                        <td class="prop-name">cases</td>
+                        <td class="prop-type">array[obj]</td>
+                        <td class="prop-default">[]</td>
+                        <td>List of cases: <code>{ value: any, label: string }</code>. The label becomes the output port name.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -99,44 +105,41 @@
         </div>
 
         <div class="callout callout-info">
-            <strong>Signal Routing Model</strong>
-            In WBSKT, the If-Else Gate is a stateless signal router. It does not modify the data context; it only determines which downstream path receives the "Pulse" to continue execution.
+            <strong>When to use Switch vs. Logic Gate</strong>
+            Use the <b>Switch Gate</b> when you are routing based on a single categorical variable (e.g., Device Type, Region, Status Code). Use the <b>Logic Gate</b> when you need to evaluate multiple independent conditions (e.g., <code>temp > 50 AND humidity < 20</code>).
         </div>
 
         <h2>Port Detail</h2>
-        <p>Releases a control signal based on the boolean result of the expression evaluation.</p>
+        <p>Releases control signals to dynamic output ports based on the value match.</p>
 
         <div style="grid-template-columns: 1fr;" class="port-grid">
             <div>
                 <div class="port-col-label">Input ports</div>
                 <div class="port-row">
                     <div class="port-name">eval <span class="port-pill pill-signal">signal</span></div>
-                    <div class="port-desc">The entry point. When pulsed, the node immediately resolves the <code>condition</code> property.</div>
+                    <div class="port-desc">The trigger signal. When pulsed, the node resolves the <code>expression</code> and finds the matching case.</div>
                 </div>
             </div>
             <div>
                 <div class="port-col-label">Output ports</div>
                 <div class="port-row">
-                    <div class="port-name">true <span class="port-pill pill-signal">signal</span></div>
-                    <div class="port-desc">Fires if the expression evaluates to <code>true</code>.</div>
+                    <div class="port-name">[caseLabel] <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">A dynamic port created for each case. Pulses if the <code>expression</code> result matches the case value.</div>
                 </div>
                 <div class="port-row">
-                    <div class="port-name">false <span class="port-pill pill-signal">signal</span></div>
-                    <div class="port-desc">Fires if the expression evaluates to <code>false</code>.</div>
+                    <div class="port-name">default <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">Fires only if <b>no</b> cases match the expression result.</div>
                 </div>
                 <div class="port-row">
                     <div class="port-name">onError <span class="port-pill pill-error">error</span></div>
-                    <div class="port-desc">Fires if the evaluation fails due to syntax errors or missing data (when <code>strictMode</code> is true).</div>
-                    <div class="port-payload">
-                        { "error": "Variable 'temp' not found in context", "nodeId": "mqtt_1" }
-                    </div>
+                    <div class="port-desc">Fires if the expression cannot be resolved or if the match mode fails due to invalid syntax.</div>
                 </div>
             </div>
         </div>
 
         <div class="page-footer">
             <span class="footer-brand">WBSKT</span>
-            <span>If-Else Gate · Spec v1.1 · Internal Use Only</span>
+            <span>Switch Gate · Spec v1.1 · Internal Use Only</span>
         </div>
 
     </main>
