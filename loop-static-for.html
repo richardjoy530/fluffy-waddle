@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loop Nodes — WBSKT Specification</title>
+    <title>Static For-Loop Node — WBSKT Specification</title>
     <link rel="stylesheet" href="wbskt.css">
 </head>
 <body data-page="loop-static-for">
@@ -11,23 +11,22 @@
     <main class="content">
 
         <div class="header">
-            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Loop Nodes</span></div>
-            <h1>Loop <em>Nodes</em></h1>
-            <p class="tagline">Loop nodes provide iterative execution patterns within a workflow. They emit per-iteration signals, support external control via input ports, and integrate with the bookmark/suspend pattern for crash-safe resumption.</p>
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Logic &amp; Control</span></div>
+            <h1>Static For-Loop <em>Node</em></h1>
+            <p class="tagline">A deterministic iteration node for bounded loops. Emits per-iteration output, supports pause/continue/stop control signals, and persists state for crash-safe resume behavior.</p>
             <div class="version-row">
-                <span class="badge badge-v1">v1 — Static for-loop</span>
+                <span class="badge badge-v1">Spec v1.1</span>
                 <span class="badge badge-seq">Sequential by default</span>
                 <span class="badge badge-iot">IoT-aware ack model</span>
                 <span class="badge badge-todo">Dynamic loop — TODO</span>
             </div>
         </div>
 
-        <h2>Overview</h2>
+        <h2>Execution Overview</h2>
         <p>All loop nodes share a common execution model: they suspend between iterations using the <strong>bookmark pattern</strong>, persisting their current iteration state into the workflow instance. This means a process restart mid-loop resumes at the last completed iteration — not from the beginning.</p>
         <p>Each iteration fires an <code>onIteration</code> output port carrying typed data. The loop either continues immediately (fire-and-forget) or waits for an acknowledgement signal from downstream nodes before advancing (ack mode).</p>
 
-        <!-- StaticForLoopNode -->
-        <h2>StaticForLoopNode</h2>
+        <h2>Port Overview</h2>
 
         <!-- Port Diagram -->
         <div class="port-diagram">
@@ -55,7 +54,7 @@
                 </div>
             </div>
             <div class="port-diagram-center">
-                <div class="port-diagram-node-name">StaticFor LoopNode</div>
+                <div class="port-diagram-node-name">StaticForLoopNode</div>
                 <div class="port-diagram-node-type">Loop</div>
             </div>
             <div class="port-diagram-col outputs">
@@ -88,11 +87,14 @@
             </div>
         </div>
 
+        <h2>Node Properties</h2>
+        <p>Design-time properties that control range behavior, acknowledgement mode, failure handling, and runtime concurrency guarantees.</p>
+
         <div class="node-card">
             <div class="node-header">
                 <span class="node-name">StaticForLoopNode</span>
                 <div style="display:flex;gap:8px;">
-                    <span class="badge badge-v1">v1.0</span>
+                    <span class="badge badge-v1">Spec v1.1</span>
                     <span class="badge badge-seq">Sequential</span>
                 </div>
             </div>
@@ -363,7 +365,7 @@
 
         <div class="page-footer">
             <span class="footer-brand">WBSKT</span>
-            <span>Loop Nodes · Spec v1.0 · Internal</span>
+            <span>Static For-Loop Node · Spec v1.1 · Internal Use Only</span>
         </div>
 
     </main>

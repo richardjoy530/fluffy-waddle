@@ -1,7 +1,7 @@
 /* wbskt-sidebar.js — inject sidebar (for ROOT-level pages: reference.html, workflow.html) */
 (function() {
     const SIDEBAR_HTML = `
-<nav class="sidebar">
+<nav class="sidebar" aria-label="Documentation">
     <a href="index.html" class="sidebar-logo">WBSKT</a>
     <div class="sidebar-section">Core</div>
     <a href="reference.html" class="sidebar-link" data-page="reference">Reference Index</a>
@@ -12,7 +12,7 @@
     <a href="trigger-polling.html" class="sidebar-link" data-page="trigger-polling">Polling / Watcher</a>
     <a href="trigger-manual.html" class="sidebar-link" data-page="trigger-manual">Manual Event</a>
     <a href="trigger-mqtt.html" class="sidebar-link" data-page="trigger-mqtt">MQTT Telemetry</a>
-    <div class="sidebar-section">Identity Triggers</div>
+    <div class="sidebar-section">Identity Trigger Nodes</div>
     <a href="trigger-client-single.html" class="sidebar-link" data-page="trigger-client-single">Single Client</a>
     <a href="trigger-client-group.html" class="sidebar-link" data-page="trigger-client-group">Group / Folder</a>
     <a href="trigger-client-policy.html" class="sidebar-link" data-page="trigger-client-policy">Policy-Based</a>
@@ -23,8 +23,8 @@
     <a href="logic-fan-in.html" class="sidebar-link" data-page="logic-fan-in">Fan-In Gate</a>
     <div class="sidebar-section">Data Nodes</div>
     <a href="data-set-value.html" class="sidebar-link" data-page="data-set-value">Set Context</a>
-    <a href="#" class="sidebar-link coming-soon">Data Mapper</a>
-    <a href="#" class="sidebar-link coming-soon">Bucket Store</a>
+    <a href="#" class="sidebar-link coming-soon">Data Mapper <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
+    <a href="#" class="sidebar-link coming-soon">Bucket Store <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
     <div class="sidebar-section">Action Nodes</div>
     <a href="#" class="sidebar-link coming-soon">Send Command <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
     <a href="#" class="sidebar-link coming-soon">HTTP Request <span class="cs-tooltip-wrap"><span class="cs-badge">Soon</span></span></a>
@@ -33,9 +33,22 @@
     const activePage = document.body.dataset.page || '';
     const layout = document.querySelector('.layout');
     if (layout) {
+        const main = layout.querySelector('.content');
+        if (main && !main.id) main.id = 'main-content';
+
         layout.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
+        layout.insertAdjacentHTML('afterbegin', '<a class="skip-link" href="#main-content">Skip to main content</a>');
         document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-            if (l.dataset.page === activePage) l.classList.add('active');
+            if (l.dataset.page === activePage) {
+                l.classList.add('active');
+                l.setAttribute('aria-current', 'page');
+            }
+        });
+
+        document.querySelectorAll('.sidebar-link.coming-soon').forEach(l => {
+            l.setAttribute('aria-disabled', 'true');
+            l.setAttribute('tabindex', '-1');
+            l.addEventListener('click', (e) => e.preventDefault());
         });
     }
 })();
