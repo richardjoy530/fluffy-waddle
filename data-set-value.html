@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Context Node — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="data-set-value">
+<div class="layout">
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Data Nodes</span></div>
+            <h1>Set <em>Context</em></h1>
+            <p class="tagline">The state manager. Explicitly creates, updates, or clears variables within the persistent WorkflowContext. Use this to normalize raw trigger data into clean, semantic variables for downstream logic.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.1</span>
+                <span class="badge badge-core">State Assignment</span>
+            </div>
+        </div>
+
+        <!-- Port Diagram -->
+        <h2>Port Overview</h2>
+        <div class="port-diagram">
+            <div class="port-diagram-col inputs">
+                <div class="port-diagram-col-label">Input ports</div>
+                <div class="port-pin">
+                    <span class="port-pin-dot pin-control"></span>
+                    <span class="port-pin-line"></span>
+                    set
+                </div>
+            </div>
+            <div class="port-diagram-center">
+                <div class="port-diagram-node-name">Set Context</div>
+                <div class="port-diagram-node-type">Data</div>
+            </div>
+            <div class="port-diagram-col outputs">
+                <div class="port-diagram-col-label">Output ports</div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-signal"></span>
+                    <span class="port-pin-line"></span>
+                    onComplete
+                </div>
+                <div class="port-pin output">
+                    <span class="port-pin-dot pin-error"></span>
+                    <span class="port-pin-line"></span>
+                    onError
+                </div>
+            </div>
+        </div>
+
+        <h2>Node Properties</h2>
+        <p>Configuration for state assignment. The Set Context node can perform multiple operations in a single atomic pass, ensuring the <code>WorkflowContext</code> is updated before downstream nodes fire.</p>
+
+        <div class="node-card">
+            <div class="node-header"><span class="node-name">SetContextNode</span></div>
+            <div class="node-body">
+
+                <h3>Assignments</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:200px">Property</th>
+                        <th style="width:100px">Type</th>
+                        <th style="width:120px">Default</th>
+                        <th>Description</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">assignments</td>
+                        <td class="prop-type">array[obj]</td>
+                        <td class="prop-default">required</td>
+                        <td>
+                            A list of operations to perform: <code>{ key, value, operation }</code>.
+                            <br><b>Key</b>: The destination path (e.g., <code>$.status</code>).
+                            <br><b>Value</b>: Static data or expression (e.g., <code>$.mqtt_1.payload.val * 1.1</code>).
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">operation</td>
+                        <td class="prop-type">enum</td>
+                        <td class="prop-default">Set</td>
+                        <td>
+                            <code>Set</code> — <b>(Upsert)</b> Creates a new key or overwrites an existing one.<br>
+                            <code>Merge</code> — Shallow-merges an object into an existing key.<br>
+                            <code>Increment</code> — Adds a value to a numeric variable.<br>
+                            <code>Append</code> — Adds an item to an array.<br>
+                            <code>Clear</code> — Removes the key from the context.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Operation Type Matrix</h3>
+        <p>To ensure state integrity, operations expect specific data types. If an operation is performed on an incompatible type, the <code>onError</code> port is triggered.</p>
+        <table class="prop-table">
+            <thead><tr>
+                <th style="width:120px">Operation</th>
+                <th style="width:140px">Expected Type</th>
+                <th>Behavior &amp; Example</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td class="prop-name">Set</td>
+                <td>Any</td>
+                <td><b>Upsert:</b> Creates or replaces. <br><i>Ex: <code>$.priority = "High"</code></i></td>
+            </tr>
+            <tr>
+                <td class="prop-name">Merge</td>
+                <td>Object</td>
+                <td><b>Patch:</b> Shallow-merges properties. <br><i>Ex: <code>$.device</code> + <code>{"battery": 80}</code></i></td>
+            </tr>
+            <tr>
+                <td class="prop-name">Increment</td>
+                <td>Number</td>
+                <td><b>Math:</b> Adds to existing value. <br><i>Ex: <code>$.alarmCount</code> + <code>1</code></i></td>
+            </tr>
+            <tr>
+                <td class="prop-name">Append</td>
+                <td>Array</td>
+                <td><b>Push:</b> Adds to end of list. <br><i>Ex: <code>$.history</code> + <code>"Alert Sent"</code></i></td>
+            </tr>
+            <tr>
+                <td class="prop-name">Clear</td>
+                <td>Any</td>
+                <td><b>Delete:</b> Removes key from context. <br><i>Ex: <code>$.tempToken</code></i></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="callout callout-warn">
+            <strong>Implicit Initialization</strong>
+            If an <code>Increment</code> or <code>Append</code> operation is performed on a key that <b>does not exist</b>, the engine initializes it as <code>0</code> or <code>[]</code> respectively before applying the change.
+        </div>
+
+        <div class="callout callout-info">
+            <strong>Semantic Normalization</strong>
+            Raw payloads from triggers are often deeply nested (e.g., <code>$.mqtt_1.body.sensors[0].val</code>). Use a Set Context node at the start of your flow to map these to clean, reusable variables like <code>$.currentTemperature</code>. This makes your workflow modular and easier to maintain.
+        </div>
+        <h2>Port Detail</h2>
+        <p>Handles the persistence of the new state before releasing control to the next node.</p>
+
+        <div style="grid-template-columns: 1fr;" class="port-grid">
+            <div>
+                <div class="port-col-label">Input ports</div>
+                <div class="port-row">
+                    <div class="port-name">set <span class="port-pill pill-control">control</span></div>
+                    <div class="port-desc">Triggers the assignment logic. All expressions are resolved against the <i>current</i> state before any writes occur.</div>
+                </div>
+            </div>
+            <div>
+                <div class="port-col-label">Output ports</div>
+                <div class="port-row">
+                    <div class="port-name">onComplete <span class="port-pill pill-signal">signal</span></div>
+                    <div class="port-desc">Fires once the new state has been committed to the persistent <code>WorkflowInstance</code> store.</div>
+                </div>
+                <div class="port-row">
+                    <div class="port-name">onError <span class="port-pill pill-error">error</span></div>
+                    <div class="port-desc">Fires if an expression fails (e.g., dividing by zero) or if an operation is invalid for the data type (e.g., incrementing a string).</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Set Context · Spec v1.1 · Internal Use Only</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
