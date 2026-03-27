@@ -107,6 +107,16 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
         .node-link.coming-soon:hover .cs-inline .tooltip { display: block; }
+
+        @media (max-width: 900px) {
+            .ref-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .ref-card { padding: 22px; }
+            .node-links { grid-template-columns: 1fr; }
+            .node-link { padding: 12px 14px; }
+        }
     </style>
 </head>
 <body data-page="reference">
@@ -158,7 +168,7 @@
         </div>
 
         <div class="node-category">
-            <h4>Identity Triggers</h4>
+            <h4>Identity Trigger Nodes</h4>
             <div class="node-links">
                 <a href="trigger-client-single.html" class="node-link">
                     Single Client <span class="tag">Identity</span>
