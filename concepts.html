@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Concepts — WBSKT Specification</title>
+    <link rel="stylesheet" href="wbskt.css">
+</head>
+<body data-page="concepts">
+<div class="layout">
+    <!-- Sidebar injected by JS -->
+    <main class="content">
+
+        <div class="header">
+            <div class="breadcrumb"><a href="index.html">WBSKT Engine</a> <span>/</span> <a href="reference.html">Reference</a> <span>/ Core Concepts</span></div>
+            <h1>Core <em>Concepts</em></h1>
+            <p class="tagline">The authoritative vocabulary for the WBSKT workflow builder. Covers both the visual canvas UI and the underlying engine runtime — from the elements you drag and drop to the objects the engine creates and manages at runtime.</p>
+            <div class="version-row">
+                <span class="badge badge-v1">Spec v1.2</span>
+                <span class="badge badge-core">Unified Glossary</span>
+            </div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════
+             SECTION 1 — CANVAS & UI LAYER
+        ══════════════════════════════════════════ -->
+        <h2>Canvas &amp; UI Layer</h2>
+        <p class="section-intro">The visual objects and interactive surfaces that make up the workflow builder interface. Everything visible in the editor maps to a concept defined here.</p>
+
+        <!-- Canvas -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Canvas</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">UI Surface</span>
+            </div>
+            <div class="node-desc">The infinite, pannable and zoomable workspace where a workflow is visually assembled by placing nodes and drawing connections between them.</div>
+            <div class="node-body">
+                <p>The canvas is the primary editing surface of the WBSKT workflow builder. It provides an infinite 2D plane on which users drag nodes from the node palette, position them spatially, and wire them together. The canvas has no functional meaning at runtime — it is purely a design-time representation. When a workflow is deployed, the engine reads the saved topology and discards all positional metadata.</p>
+                <p>Multiple canvases can exist within a tenant — each one corresponds to exactly one <strong>Workflow Definition</strong>.</p>
+                <div class="callout callout-info">
+                    <strong>Canvas vs. Workflow Definition</strong>
+                    The canvas is the editor view. A <code>Workflow Definition</code> is what gets serialized and saved to the platform when you publish. The canvas is your working surface; the definition is the artifact.
+                </div>
+            </div>
+        </div>
+
+        <!-- Node -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Node</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Building Block</span>
+            </div>
+            <div class="node-desc">A single, self-contained processing unit placed on the canvas. Every action, decision, trigger, loop, and data operation in a workflow is represented as a node.</div>
+            <div class="node-body">
+                <p>Nodes are the atomic building blocks of every workflow. Each node has a defined <strong>type</strong> (e.g. <code>HttpWebhookTrigger</code>, <code>LogicGate</code>, <code>StaticForLoop</code>), a set of configurable <strong>properties</strong> edited in the Properties Panel, and one or more <strong>ports</strong> through which it connects to other nodes.</p>
+                <p>At runtime, the engine executes nodes in sequence based on the <strong>signals</strong> flowing through <strong>connections</strong>. Each node type defines its own execution semantics — from routing a signal through a conditional branch to iterating over a list.</p>
+
+                <h3>Node Categories</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:160px">Category</th>
+                        <th>Role</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name" style="color:var(--blue)">Trigger</td>
+                        <td>Entry points that initiate workflow execution in response to an external event. No input ports.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name" style="color:var(--amber)">Logic &amp; Control</td>
+                        <td>Conditional routing, branching, looping, and parallel join nodes. Shape the execution path.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name" style="color:var(--purple)">Data</td>
+                        <td>Read, transform, and write values in the <code>WorkflowContext</code>.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name" style="color:var(--coral)">Action</td>
+                        <td>Perform side-effects: send commands, call external APIs, dispatch notifications.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-info">
+                    <strong>Nodes are Stateless</strong>
+                    Individual nodes do not store data between executions. All persistent state lives in the <code>WorkflowContext</code>. A node reads from context, acts, and optionally writes results back to context before emitting a signal.
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection / Wire -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Connection · Wire</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Edge</span>
+            </div>
+            <div class="node-desc">A directed line drawn from one node's output port to another node's input port. The route a Signal travels to activate the next node in the workflow.</div>
+            <div class="node-body">
+                <p>Connections are the edges of the workflow graph. Every connection has a <strong>source</strong> (an output port) and a <strong>target</strong> (an input port). The direction is always source → target; signals cannot travel backwards along a connection.</p>
+                <p>In the builder UI, a connection is drawn by clicking and dragging from an output port dot to an input port dot. The only constraint is direction — an output port connects to an input port. There is no type-based port compatibility check; all ports carry signals.</p>
+                <p>A single output port can fan-out to multiple connections, emitting the same signal to several downstream nodes simultaneously. A single input port can receive connections from multiple sources, but fires independently for each arriving signal.</p>
+                <div class="callout callout-warn">
+                    <strong>Connections carry no data</strong>
+                    A connection is purely a routing path. All data exchange between nodes happens through the shared <code>WorkflowContext</code>, not through the connection itself. The signal that travels along the wire is a zero-payload notification pulse.
+                </div>
+            </div>
+        </div>
+
+        <!-- Port -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Port</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Connector Point</span>
+            </div>
+            <div class="node-desc">A typed attachment point rendered as a colored dot on a node's edge. Every port emits or receives a signal — the color indicates the <em>kind</em> of signal, not a different data carrier. Ports are the anchors for connections.</div>
+            <div class="node-body">
+                <p>Every node exposes one or more named ports. Input ports appear on the left of the node block; output ports appear on the right. Port names are unique within a node and are surfaced in the Properties Panel and in the port diagram on each node's specification page.</p>
+                <p>All ports carry signals. The port color indicates the <strong>role</strong> of that signal within the workflow — not a distinct data type. The only rule governing connections is direction: an output port must connect to an input port.</p>
+
+                <h3>Signal Role Legend</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:36px"></th>
+                        <th style="width:120px">Role</th>
+                        <th>Semantics</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td><span class="port-pin-dot pin-signal" style="display:inline-block"></span></td>
+                        <td class="prop-name" style="color:var(--blue)">signal</td>
+                        <td>Standard execution pulse. Notifies the target node to evaluate and run its logic.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="port-pin-dot pin-control" style="display:inline-block"></span></td>
+                        <td class="prop-name" style="color:var(--amber)">control</td>
+                        <td>Internal flow-control signal — used for loop boundary events (e.g. <code>onComplete</code>, <code>onIteration</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><span class="port-pin-dot pin-error" style="display:inline-block"></span></td>
+                        <td class="prop-name" style="color:var(--coral)">error</td>
+                        <td>Fault signal. Fires when the node encounters an error; routes execution to a recovery branch.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout callout-info">
+                    <strong>Dynamic Ports</strong>
+                    Some node types (Logic Gate, Switch Gate) generate output ports dynamically at configuration time. Each rule or case label defined in the Properties Panel becomes a named output port on the canvas. These are shown in documentation as <code>[ruleLabel]</code> or <code>[caseLabel]</code>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Panel -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Properties Panel · Inspector</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">UI Panel</span>
+            </div>
+            <div class="node-desc">The configuration sidebar that opens when a node is selected on the canvas. Exposes all editable properties for that node type, organized by group.</div>
+            <div class="node-body">
+                <p>The Properties Panel (also called the Inspector) is a context-sensitive panel that renders the configuration form for whichever node is currently selected. Its contents change entirely depending on the node type — selecting an <code>HttpWebhookTrigger</code> exposes HTTP routing and auth settings, while selecting a <code>LogicGate</code> exposes the rule editor.</p>
+                <p>All property values edited here are serialized into the <strong>Workflow Definition</strong> when the workflow is saved. They are also the parameters documented in the "Node Properties" section of each node's specification page in this reference.</p>
+                <div class="callout callout-info">
+                    <strong>Properties vs. Runtime State</strong>
+                    Properties set in the Inspector are <em>static configuration</em> — they are fixed at design time. Runtime values (the data a node reads or writes during execution) live in the <code>WorkflowContext</code>, not in the node's properties.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════
+             SECTION 2 — WORKFLOW FUNDAMENTALS
+        ══════════════════════════════════════════ -->
+        <h2>Workflow Fundamentals</h2>
+        <p class="section-intro">The core objects the engine creates, manages, and executes. Understanding the distinction between a Definition and an Instance is central to working with WBSKT.</p>
+
+        <!-- Workflow Definition -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Workflow Definition</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Blueprint</span>
+            </div>
+            <div class="node-desc">The versioned, saved blueprint that captures the complete canvas topology — every node, connection, port binding, and property value. The definition is the template; it is never itself "running".</div>
+            <div class="node-body">
+                <p>A Workflow Definition is the immutable artifact you author in the builder UI and publish to the engine. It describes <em>what should happen</em> — which nodes exist, how they are connected, what each node is configured to do, and how incoming triggers are correlated to instances.</p>
+                <p>Each definition has a stable <code>definitionId</code> (UUID) and a <code>version</code>. When you edit and republish a definition, the engine creates a new version. Any <strong>Workflow Instances</strong> that are already running continue on the version they were started with; only new arrivals pick up the updated definition.</p>
+                <p>The formal schema for Workflow Definitions — including triggers, execution physics, error handling, and governance — is documented in <a href="workflow.html" style="color:var(--accent)">Workflow Definitions</a>.</p>
+                <div class="callout callout-warn">
+                    <strong>Versioning Policy</strong>
+                    Active instances are pinned to the definition version they were created under. Changing the definition mid-execution does not affect in-flight instances. Publish changes only when existing instances can safely complete or be terminated.
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Instance -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Workflow Instance</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Runtime Object</span>
+            </div>
+            <div class="node-desc">A live, in-progress execution spawned from a Workflow Definition. Each instance is isolated — it has its own WorkflowContext, its own execution pointer, and its own lifecycle.</div>
+            <div class="node-body">
+                <p>When a trigger fires and the engine resolves a matching or new <strong>CorrelationKey</strong>, it creates (or resumes) a Workflow Instance. The instance is the running incarnation of the definition's blueprint. It tracks:</p>
+                <ul style="list-style:none; padding:0; margin:12px 0;">
+                    <li style="padding:8px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); margin-bottom:8px; font-size:12px; color:var(--text2);">
+                        <span style="color:var(--accent); font-family:'DM Mono',monospace">correlationKey</span> — The unique identifier that distinguishes this instance from all others.
+                    </li>
+                    <li style="padding:8px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); margin-bottom:8px; font-size:12px; color:var(--text2);">
+                        <span style="color:var(--accent); font-family:'DM Mono',monospace">executionPointer</span> — Which node(s) are currently active.
+                    </li>
+                    <li style="padding:8px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); margin-bottom:8px; font-size:12px; color:var(--text2);">
+                        <span style="color:var(--accent); font-family:'DM Mono',monospace">WorkflowContext</span> — The shared key-value state accumulated during execution.
+                    </li>
+                    <li style="padding:8px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); font-size:12px; color:var(--text2);">
+                        <span style="color:var(--accent); font-family:'DM Mono',monospace">status</span> — <code>Running</code>, <code>Waiting</code>, <code>Completed</code>, <code>Failed</code>, or <code>Terminated</code>.
+                    </li>
+                </ul>
+                <p>Multiple instances of the same definition can exist simultaneously — each identified by a different <code>correlationKey</code> and maintaining fully independent state. The maximum concurrent count is capped by <code>maxActiveInstances</code> in the definition.</p>
+                <div class="callout callout-info">
+                    <strong>Persistent vs. Ephemeral Instances</strong>
+                    <code>Persistent</code> instances write their state to durable storage at every checkpoint — allowing crash recovery and audit. <code>Ephemeral</code> instances run entirely in memory for maximum throughput, with no recovery guarantee. Set via <code>instanceMode</code> in the Workflow Definition.
+                </div>
+            </div>
+        </div>
+
+        <!-- Trigger Node -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Trigger Node</span>
+                <span style="font-size:11px; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase;">Entry Point</span>
+            </div>
+            <div class="node-desc">A specialised class of node that listens to an external event source and initiates workflow execution. Trigger nodes have no input ports — they are always the starting point of a signal chain.</div>
+            <div class="node-body">
+                <p>Every workflow must have at least one trigger. A trigger monitors an external system (an HTTP endpoint, an MQTT topic, a cron schedule, a connected client, etc.) and fires when its configured conditions are met. When a trigger fires, it:</p>
+                <ol style="padding-left:20px; color:var(--text2); font-size:12px; line-height:2;">
+                    <li>Receives the raw external payload.</li>
+                    <li>Extracts the <strong>CorrelationKey</strong> from the payload using <code>correlationExpression</code>.</li>
+                    <li>Applies the <code>onMatch</code> strategy to create, resume, replace, or discard a workflow instance.</li>
+                    <li>Normalizes the payload into the <strong>WorkflowContext</strong>.</li>
+                    <li>Emits a signal on its <code>onTrigger</code> output port to start the execution chain.</li>
+                </ol>
+                <p>A single Workflow Definition can have multiple triggers of different types (e.g. both an HTTP webhook and an MQTT subscription). This is the <strong>multi-trigger</strong> pattern — any configured trigger can initiate or update the same instance.</p>
+                <div class="callout callout-info">
+                    <strong>Trigger Categories</strong>
+                    <strong>Light Triggers</strong> — React to protocol-level events: <a href="trigger-http.html" style="color:var(--accent)">HTTP Webhook</a>, <a href="trigger-mqtt.html" style="color:var(--accent)">MQTT Telemetry</a>, <a href="trigger-scheduled.html" style="color:var(--accent)">Scheduled</a>, <a href="trigger-polling.html" style="color:var(--accent)">Polling / Watcher</a>, <a href="trigger-manual.html" style="color:var(--accent)">Manual Event</a>.<br><br>
+                    <strong>Identity Triggers</strong> — Scope execution to registered clients or groups: <a href="trigger-client-single.html" style="color:var(--accent)">Single Client</a>, <a href="trigger-client-group.html" style="color:var(--accent)">Group / Folder</a>, <a href="trigger-client-policy.html" style="color:var(--accent)">Policy-Based</a>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Signal -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">Signal</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Execution Pulse</span>
+            </div>
+            <div class="node-desc">The zero-payload notification pulse that travels along a connection from one node's output port to the next node's input port. A signal carries no data — it is a pure "proceed" instruction.</div>
+            <div class="node-body">
+                <p>Signals are the mechanism of execution in WBSKT. When a node finishes its work, it emits a signal on one or more of its output ports. That signal travels along the connection(s) attached to those ports and activates the receiving nodes at the other end.</p>
+                <p>Because signals carry no data, the architecture avoids data coupling between nodes. A node that needs data from a previous step reads it directly from the <strong>WorkflowContext</strong> rather than receiving it on a wire. This <em>shared-state</em> model makes the graph topology independent of data shape.</p>
+
+                <h3>Signal Flow Example</h3>
+                <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:16px 20px; font-size:12px; color:var(--text2); line-height:2;">
+                    <span style="color:var(--blue)">HTTP Trigger</span> fires
+                    <span style="color:var(--text3); margin:0 6px">→ writes payload to context →</span>
+                    emits signal on <code>onTrigger</code>
+                    <span style="color:var(--text3); margin:0 6px">→ travels connection →</span>
+                    <span style="color:var(--amber)">Logic Gate</span> receives signal on <code>eval</code>
+                    <span style="color:var(--text3); margin:0 6px">→ reads context → evaluates rules →</span>
+                    emits signal on matching output port(s)
+                </div>
+
+                <div class="callout callout-warn">
+                    <strong>Signals are not queued by default</strong>
+                    If a node receives a signal while it is already executing, the behavior depends on the node type and the instance's concurrency configuration. For loop nodes, incoming signals during iteration can be queued or discarded per the <code>ackStrategy</code> setting.
+                </div>
+            </div>
+        </div>
+
+        <!-- WorkflowContext -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">WorkflowContext</span>
+                <span style="font-size:11px; color:var(--purple); letter-spacing:0.08em; text-transform:uppercase;">Shared State</span>
+            </div>
+            <div class="node-desc">The mutable, shared key-value store that lives inside a Workflow Instance. It is the sole data bus — all nodes read inputs from it and write outputs back to it rather than passing data through connections.</div>
+            <div class="node-body">
+                <p>The <code>WorkflowContext</code> is created when an instance is spawned and destroyed when the instance completes or is terminated. It is scoped strictly to one instance — no two instances share a context, even if they were created from the same definition.</p>
+                <p>The context is populated in layers as execution progresses:</p>
+                <ol style="padding-left:20px; color:var(--text2); font-size:12px; line-height:2;">
+                    <li>The triggering payload is written in at instance creation (e.g. the HTTP request body, the MQTT message).</li>
+                    <li>Data nodes (<code>Set Context</code>, <code>Data Mapper</code>) add or transform values during execution.</li>
+                    <li>Action and logic nodes may read values from context to parameterize their behavior.</li>
+                </ol>
+                <p>Nodes reference context values using expression syntax — for example <code>$.sensor.temperature</code> to read a nested field, or <code>{{client.id}}</code> for template interpolation in string properties.</p>
+                <div class="callout callout-info">
+                    <strong>Context is the data layer — Signals are the control layer</strong>
+                    Think of it as two separate planes: signals control <em>which</em> node runs next; the context holds <em>what data</em> that node operates on. This separation keeps the graph topology clean and makes each node independently testable.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════
+             SECTION 3 — IDENTITY & ROUTING
+        ══════════════════════════════════════════ -->
+        <h2>Identity &amp; Routing</h2>
+        <p class="section-intro">How the engine maps incoming trigger events to the correct workflow instance — or decides to create a new one.</p>
+
+        <!-- CorrelationKey -->
+        <div class="node-card">
+            <div class="node-header">
+                <span class="node-name">CorrelationKey · Identity</span>
+                <span style="font-size:11px; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase;">Instance Identifier</span>
+            </div>
+            <div class="node-desc">The resolved string identifier extracted from an incoming trigger payload that determines which Workflow Instance should receive the event — or whether a new instance should be created.</div>
+            <div class="node-body">
+                <p>Each trigger can be configured with a <code>correlationExpression</code> — a JSONPath or regex applied to the incoming payload. The value it extracts becomes the <strong>CorrelationKey</strong>. The engine then looks up all active instances for this definition and checks whether any instance was already created with that key.</p>
+
+                <h3>Resolution Outcomes — onMatch Strategies</h3>
+                <table class="prop-table">
+                    <thead><tr>
+                        <th style="width:160px">Strategy</th>
+                        <th>Behavior</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="prop-name">MapOrCreate</td>
+                        <td>If a matching instance is found, the signal is routed to it. If not, a new instance is created. <em>Default.</em></td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">MapOrDiscard</td>
+                        <td>Only routes to an existing instance. If no match is found, the incoming event is silently dropped.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">AlwaysCreate</td>
+                        <td>Ignores the resolved key entirely and always spawns a new parallel instance. Useful for stateless, fire-and-forget event logs.</td>
+                    </tr>
+                    <tr>
+                        <td class="prop-name">MapOrReplace</td>
+                        <td>If a match is found, the existing instance is terminated and a fresh instance starts with the new payload. Use when the latest event must always win.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <p>When a workflow has multiple triggers (multi-trigger pattern), each trigger defines its own <code>correlationExpression</code> independently. Different triggers may extract the key from different fields of their respective payloads, but they all resolve to the same logical identity space within the definition.</p>
+
+                <div class="callout callout-info">
+                    <strong>No Expression → AlwaysCreate</strong>
+                    If <code>correlationExpression</code> is left empty (null), the engine cannot extract a key and therefore cannot match an existing instance. In practice this behaves like <code>AlwaysCreate</code> — every trigger arrival spawns a new independent instance.
+                </div>
+
+                <p style="margin-top:16px">The full correlation specification — including multi-trigger strategy and per-trigger overrides — is defined in <a href="workflow.html" style="color:var(--accent)">Workflow Definitions → Identity &amp; Routing</a>.</p>
+            </div>
+        </div>
+
+
+        <div class="page-footer">
+            <span class="footer-brand">WBSKT</span>
+            <span>Core Concepts · Unified Glossary · Spec v1.2</span>
+        </div>
+
+    </main>
+</div>
+<script src="wbskt-sidebar.js"></script>
+</body>
+</html>
