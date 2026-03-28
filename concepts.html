@@ -293,7 +293,7 @@
                     <li>Data nodes (<code>Set Context</code>, <code>Data Mapper</code>) add or transform values during execution.</li>
                     <li>Action and logic nodes may read values from context to parameterize their behavior.</li>
                 </ol>
-                <p>Nodes reference context values using expression syntax — for example <code>$.sensor.temperature</code> to read a nested field, or <code>{{client.id}}</code> for template interpolation in string properties.</p>
+                <p>Nodes reference context values using JSONPath expressions — for example <code>$.sensor.temperature</code> to read a nested field, or <code>$.client.id</code> to access a top-level key.</p>
                 <div class="callout callout-info">
                     <strong>Context is the data layer — Signals are the control layer</strong>
                     Think of it as two separate planes: signals control <em>which</em> node runs next; the context holds <em>what data</em> that node operates on. This separation keeps the graph topology clean and makes each node independently testable.
