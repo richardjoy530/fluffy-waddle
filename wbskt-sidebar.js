@@ -5,6 +5,7 @@
     <a href="index.html" class="sidebar-logo">WBSKT</a>
     <div class="sidebar-section">Core</div>
     <a href="reference.html" class="sidebar-link" data-page="reference">Reference Index</a>
+    <a href="concepts.html" class="sidebar-link" data-page="concepts">Core Concepts</a>
     <a href="workflow.html" class="sidebar-link" data-page="workflow">Workflow Definitions</a>
     <div class="sidebar-section">Trigger Nodes</div>
     <a href="trigger-http.html" class="sidebar-link" data-page="trigger-http">HTTP Webhook</a>
