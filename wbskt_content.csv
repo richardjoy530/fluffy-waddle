@@ -1,0 +1,251 @@
+file,page_id,record_type,section,sub_section,name,type,default,description
+concepts.html,concepts,metadata,,,title,,,Core Concepts
+concepts.html,concepts,metadata,,,tagline,,,The authoritative vocabulary for the WBSKT workflow builder. Covers both the visual canvas UI and the underlying engine runtime — from the elements you drag and drop to the objects the engine creates and manages at runtime.
+concepts.html,concepts,metadata,,,badge,,,Spec v1.2
+concepts.html,concepts,metadata,,,badge,,,Unified Glossary
+concepts.html,concepts,section_intro,Canvas & UI Layer,,,,,The visual objects and interactive surfaces that make up the workflow builder interface. Everything visible in the editor maps to a concept defined here.
+concepts.html,concepts,concept,Canvas & UI Layer,Canvas,Canvas,,,"The infinite, pannable and zoomable workspace where a workflow is visually assembled by placing nodes and drawing connections between them."
+concepts.html,concepts,concept,Canvas & UI Layer,Node,Node,,,"A single, self-contained processing unit placed on the canvas. Every action, decision, trigger, loop, and data operation in a workflow is represented as a node."
+concepts.html,concepts,property,Canvas & UI Layer,Node,Trigger,Entry points that initiate workflow execution in response to an external event. No input ports.,,
+concepts.html,concepts,property,Canvas & UI Layer,Node,Logic & Control,"Conditional routing, branching, looping, and parallel join nodes. Shape the execution path.",,
+concepts.html,concepts,property,Canvas & UI Layer,Node,Data,"Read, transform, and write values in the WorkflowContext.",,
+concepts.html,concepts,property,Canvas & UI Layer,Node,Action,"Perform side-effects: send commands, call external APIs, dispatch notifications.",,
+concepts.html,concepts,concept,Canvas & UI Layer,Connection · Wire,Connection · Wire,,,A directed line drawn from one node's output port to another node's input port. The route a Signal travels to activate the next node in the workflow.
+concepts.html,concepts,concept,Canvas & UI Layer,Port,Port,,,"A typed attachment point rendered as a colored dot on a node's edge. Every port emits or receives a signal — the color indicates the kind of signal, not a different data carrier. Ports are the anchors for connections."
+concepts.html,concepts,concept,Canvas & UI Layer,Properties Panel · Inspector,Properties Panel · Inspector,,,"The configuration sidebar that opens when a node is selected on the canvas. Exposes all editable properties for that node type, organized by group."
+concepts.html,concepts,section_intro,Workflow Fundamentals,,,,,"The core objects the engine creates, manages, and executes. Understanding the distinction between a Definition and an Instance is central to working with WBSKT."
+concepts.html,concepts,concept,Workflow Fundamentals,Workflow Definition,Workflow Definition,,,"The versioned, saved blueprint that captures the complete canvas topology — every node, connection, port binding, and property value. The definition is the template; it is never itself ""running""."
+concepts.html,concepts,concept,Workflow Fundamentals,Workflow Instance,Workflow Instance,,,"A live, in-progress execution spawned from a Workflow Definition. Each instance is isolated — it has its own WorkflowContext, its own execution pointer, and its own lifecycle."
+concepts.html,concepts,concept,Workflow Fundamentals,Trigger Node,Trigger Node,,,A specialised class of node that listens to an external event source and initiates workflow execution. Trigger nodes have no input ports — they are always the starting point of a signal chain.
+concepts.html,concepts,concept,Workflow Fundamentals,Signal,Signal,,,"The zero-payload notification pulse that travels along a connection from one node's output port to the next node's input port. A signal carries no data — it is a pure ""proceed"" instruction."
+concepts.html,concepts,concept,Workflow Fundamentals,WorkflowContext,WorkflowContext,,,"The mutable, shared key-value store that lives inside a Workflow Instance. It is the sole data bus — all nodes read inputs from it and write outputs back to it rather than passing data through connections."
+concepts.html,concepts,section_intro,Identity & Routing,,,,,How the engine maps incoming trigger events to the correct workflow instance — or decides to create a new one.
+concepts.html,concepts,concept,Identity & Routing,CorrelationKey · Identity,CorrelationKey · Identity,,,The resolved string identifier extracted from an incoming trigger payload that determines which Workflow Instance should receive the event — or whether a new instance should be created.
+concepts.html,concepts,property,Identity & Routing,CorrelationKey · Identity,MapOrCreate,"If a matching instance is found, the signal is routed to it. If not, a new instance is created. Default.",,
+concepts.html,concepts,property,Identity & Routing,CorrelationKey · Identity,MapOrDiscard,"Only routes to an existing instance. If no match is found, the incoming event is silently dropped.",,
+concepts.html,concepts,property,Identity & Routing,CorrelationKey · Identity,AlwaysCreate,"Ignores the resolved key entirely and always spawns a new parallel instance. Useful for stateless, fire-and-forget event logs.",,
+concepts.html,concepts,property,Identity & Routing,CorrelationKey · Identity,MapOrReplace,"If a match is found, the existing instance is terminated and a fresh instance starts with the new payload. Use when the latest event must always win.",,
+data-set-value.html,data-set-value,metadata,,,title,,,Set Context
+data-set-value.html,data-set-value,metadata,,,tagline,,,"The state manager. Explicitly creates, updates, or clears variables within the persistent WorkflowContext. Use this to normalize raw trigger data into clean, semantic variables for downstream logic."
+data-set-value.html,data-set-value,metadata,,,badge,,,Spec v1.1
+data-set-value.html,data-set-value,metadata,,,badge,,,State Assignment
+data-set-value.html,data-set-value,port,Port Overview,Port Overview,set,control,input,
+data-set-value.html,data-set-value,port,Port Overview,Port Overview,onComplete,signal,output,
+data-set-value.html,data-set-value,port,Port Overview,Port Overview,onError,error,output,
+data-set-value.html,data-set-value,property,Node Properties,SetContextNode,assignments,array[obj],required,"A list of operations to perform: { key, value, operation }. Key: The destination path (e.g., $.status). Value: Static data or expression (e.g., $.mqtt_1.payload.val * 1.1)."
+data-set-value.html,data-set-value,property,Node Properties,SetContextNode,operation,enum,Set,Set — (Upsert) Creates a new key or overwrites an existing one. Merge — Shallow-merges an object into an existing key. Increment — Adds a value to a numeric variable. Append — Adds an item to an array. Clear — Removes the key from the context.
+data-set-value.html,data-set-value,callout,Node Properties,Operation Type Matrix,Implicit Initialization,warn,,"If an Increment or Append operation is performed on a key that does not exist, the engine initializes it as 0 or [] respectively before applying the change."
+data-set-value.html,data-set-value,callout,Node Properties,Operation Type Matrix,Semantic Normalization,info,,"Raw payloads from triggers are often deeply nested (e.g., $.mqtt_1.body.sensors[0].val). Use a Set Context node at the start of your flow to map these to clean, reusable variables like $.currentTemperature. This makes your workflow modular and easier to maintain."
+data-set-value.html,data-set-value,port,Port Detail,Port Detail,set,control,,Triggers the assignment logic. All expressions are resolved against the current state before any writes occur.
+data-set-value.html,data-set-value,port,Port Detail,Port Detail,onComplete,signal,,Fires once the new state has been committed to the persistent WorkflowInstance store.
+data-set-value.html,data-set-value,port,Port Detail,Port Detail,onError,error,,"Fires if an expression fails (e.g., dividing by zero) or if an operation is invalid for the data type (e.g., incrementing a string)."
+logic-fan-in.html,logic-fan-in,metadata,,,title,,,Fan-In Gate
+logic-fan-in.html,logic-fan-in,metadata,,,tagline,,,The synchronization barrier. Harvests multiple parallel trigger signals and releases a single unified pulse once its synchronization condition is met. Essential for re-joining concurrent loops and parallel branches.
+logic-fan-in.html,logic-fan-in,metadata,,,badge,,,Spec v1.1
+logic-fan-in.html,logic-fan-in,metadata,,,badge,,,Sync Barrier
+logic-fan-in.html,logic-fan-in,port,Port Overview,Port Overview,arrive,signal,input,
+logic-fan-in.html,logic-fan-in,port,Port Overview,Port Overview,reset,control,input,
+logic-fan-in.html,logic-fan-in,port,Port Overview,Port Overview,onComplete,signal,output,
+logic-fan-in.html,logic-fan-in,port,Port Overview,Port Overview,onPartial,signal,output,
+logic-fan-in.html,logic-fan-in,port,Port Overview,Port Overview,onTimeout,error,output,
+logic-fan-in.html,logic-fan-in,property,Node Properties,FanInGate,mode,enum,All,All — Wait for every incoming signal to arrive before firing. Any — Fire as soon as the first signal arrives (Race mode). Quorum — Fire once a specific number of signals arrive.
+logic-fan-in.html,logic-fan-in,property,Node Properties,FanInGate,expectedCount,int,auto,The number of signals to wait for. auto uses the parent loop's iteration count.
+logic-fan-in.html,logic-fan-in,property,Node Properties,FanInGate,waitTimeoutMs,int,0,Maximum time to wait for synchronization to complete. 0 = wait indefinitely.
+logic-fan-in.html,logic-fan-in,property,Node Properties,FanInGate,collectResults,bool,true,"If true, the node ""harvests"" the shared state of all connected source nodes and consolidates them into a result array."
+logic-fan-in.html,logic-fan-in,callout,Node Properties,,The Harvesting Model,info,,"In the WBSKT ""Shared-State"" model, Fan-In nodes do not ""receive"" data over wires. Instead, they perform a State Sweep of the WorkflowContext for all nodes connected to the arrive port, consolidating individual iteration results into a unified object."
+logic-fan-in.html,logic-fan-in,port,Port Detail,Port Detail,arrive,signal,,Termination point for parallel branches. Each arrival increments the internal counter.
+logic-fan-in.html,logic-fan-in,port,Port Detail,Port Detail,reset,control,,Clears the current synchronization counter and harvested results.
+logic-fan-in.html,logic-fan-in,port,Port Detail,Port Detail,onComplete,signal,,"Fires when the sync condition (All/Any/Quorum) is met. Carries the harvested result array. | payload: { ""summary"": { ""totalArrived"": 10, ""status"": ""Complete"" }, ""results"": [ { ""iteration"": 0, ""nodeId"": ""api_1"", ""data"": { ... } }, ... ] }"
+logic-fan-in.html,logic-fan-in,port,Port Detail,Port Detail,onPartial,signal,,"Fires if the workflow is interrupted or stopped before completion, providing a snapshot of current progress."
+logic-fan-in.html,logic-fan-in,port,Port Detail,Port Detail,onTimeout,error,,Fires if waitTimeoutMs is reached before the synchronization condition is met.
+logic-gate.html,logic-gate,metadata,,,title,,,Logic Gate
+logic-gate.html,logic-gate,metadata,,,tagline,,,The multi-rule decision engine. Evaluates one or more independent boolean expressions against the workflow context and routes the trigger pulse to specific output ports based on the result.
+logic-gate.html,logic-gate,metadata,,,badge,,,Spec v1.1
+logic-gate.html,logic-gate,metadata,,,badge,,,Multi-Rule Router
+logic-gate.html,logic-gate,port,Port Overview,Port Overview,eval,signal,input,
+logic-gate.html,logic-gate,port,Port Overview,Port Overview,[ruleLabel_1],signal,output,
+logic-gate.html,logic-gate,port,Port Overview,Port Overview,[ruleLabel_N],signal,output,
+logic-gate.html,logic-gate,port,Port Overview,Port Overview,default,signal,output,
+logic-gate.html,logic-gate,port,Port Overview,Port Overview,onError,error,output,
+logic-gate.html,logic-gate,property,Node Properties,LogicGate,logicMode,enum,Exclusive,Exclusive — Evaluates top-to-bottom. Pulses the first matching rule and stops. Parallel — Evaluates all rules. Pulses every matching rule simultaneously.
+logic-gate.html,logic-gate,property,Node Properties,LogicGate,rules,array[obj],[],"List of rules: { condition: expression, label: string }. The label becomes the output port name."
+logic-gate.html,logic-gate,property,Node Properties,LogicGate,strictMode,bool,true,true — Missing variables or null values trigger the onError port immediately (Recommended for safety-critical flows). false — Missing data resolves the specific condition to false instead of failing the node.
+logic-gate.html,logic-gate,callout,Node Properties,,The Power of Parallel Evaluation,info,,"Unlike a standard If-Else, Parallel mode evaluates every rule in the list. This allows a single node to categorize a complex state and trigger multiple specific actions simultaneously. Example (Facility Safety): • Rule 1 (Fire): smoke > 0.5 → Port FireAlert • Rule 2 (Power): voltage < 110 → Port BackupGen If both conditions are met, both ports pulse. This is more efficient than chaining multiple If nodes and keeps the logic centralized."
+logic-gate.html,logic-gate,port,Port Detail,Port Detail,eval,signal,,"The trigger signal. When pulsed, the node evaluates the rules array based on the logicMode."
+logic-gate.html,logic-gate,port,Port Detail,Port Detail,[ruleLabel],signal,,A dynamic port created for each rule. Pulses if the rule's condition is true.
+logic-gate.html,logic-gate,port,Port Detail,Port Detail,default,signal,,"Fires only if no rules evaluate to true. Acts as the fallback or ""else"" path."
+logic-gate.html,logic-gate,port,Port Detail,Port Detail,onError,error,,Fires if an expression cannot be resolved due to syntax errors or missing data.
+logic-switch.html,logic-switch,metadata,,,title,,,Switch Gate
+logic-switch.html,logic-switch,metadata,,,tagline,,,"The value-based router. Evaluates a single expression once and matches the result against multiple predefined cases, directing the trigger pulse to the matching output path."
+logic-switch.html,logic-switch,metadata,,,badge,,,Spec v1.1
+logic-switch.html,logic-switch,metadata,,,badge,,,Value Matcher
+logic-switch.html,logic-switch,port,Port Overview,Port Overview,eval,signal,input,
+logic-switch.html,logic-switch,port,Port Overview,Port Overview,[caseLabel_1],signal,output,
+logic-switch.html,logic-switch,port,Port Overview,Port Overview,[caseLabel_N],signal,output,
+logic-switch.html,logic-switch,port,Port Overview,Port Overview,default,signal,output,
+logic-switch.html,logic-switch,port,Port Overview,Port Overview,onError,error,output,
+logic-switch.html,logic-switch,property,Node Properties,SwitchGate,expression,expression,required,"The value to evaluate (e.g., $.client.region or $.mqtt.payload.type)."
+logic-switch.html,logic-switch,property,Node Properties,SwitchGate,matchMode,enum,Exact,"Exact — String or numeric equality. Regex — Matches the expression result against a regular expression pattern. NumericRange — Matches if the value falls within a range (e.g., 0-100)."
+logic-switch.html,logic-switch,property,Node Properties,SwitchGate,cases,array[obj],[],"List of cases: { value: any, label: string }. The label becomes the output port name."
+logic-switch.html,logic-switch,callout,Node Properties,,When to use Switch vs. Logic Gate,info,,"Use the Switch Gate when you are routing based on a single categorical variable (e.g., Device Type, Region, Status Code). Use the Logic Gate when you need to evaluate multiple independent conditions (e.g., temp > 50 AND humidity < 20)."
+logic-switch.html,logic-switch,port,Port Detail,Port Detail,eval,signal,,"The trigger signal. When pulsed, the node resolves the expression and finds the matching case."
+logic-switch.html,logic-switch,port,Port Detail,Port Detail,[caseLabel],signal,,A dynamic port created for each case. Pulses if the expression result matches the case value.
+logic-switch.html,logic-switch,port,Port Detail,Port Detail,default,signal,,Fires only if no cases match the expression result.
+logic-switch.html,logic-switch,port,Port Detail,Port Detail,onError,error,,Fires if the expression cannot be resolved or if the match mode fails due to invalid syntax.
+loop-static-for.html,loop-static-for,metadata,,,title,,,Static For-Loop Node
+loop-static-for.html,loop-static-for,metadata,,,tagline,,,"A deterministic iteration node for bounded loops. Emits per-iteration output, supports pause/continue/stop control signals, and persists state for crash-safe resume behavior."
+loop-static-for.html,loop-static-for,metadata,,,badge,,,Spec v1.1
+loop-static-for.html,loop-static-for,metadata,,,badge,,,Sequential by default
+loop-static-for.html,loop-static-for,metadata,,,badge,,,IoT-aware ack model
+loop-static-for.html,loop-static-for,metadata,,,badge,,,Dynamic loop — TODO
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,start,control,input,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,pause,control,input,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,continue,control,input,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,stop,control,input,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,onIteration,signal,output,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,onComplete,signal,output,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,onStop,signal,output,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,onIterationTimeout,error,output,
+loop-static-for.html,loop-static-for,port,Port Overview,Port Overview,onError,error,output,
+loop-static-for.html,loop-static-for,concept,Node Properties,StaticForLoopNode,StaticForLoopNode,,,"Iterates over a fixed numeric range defined at workflow design time. Range is set in the WorkflowDefinition and cannot be changed at runtime. On each iteration, the current value is emitted via the onIteration output port. Supports external pause, continue, and stop control via input signal ports."
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,from,int,required,Starting value of the loop (inclusive). e.g. from=0 starts the first iteration with value=0
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,to,int,required,"Ending value of the loop (exclusive — like Python range()). e.g. from=0, to=5 yields values 0,1,2,3,4"
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,step,int,1,"Increment applied after each iteration. Use a negative value with from > to for countdown loops. e.g. from=10, to=0, step=-2 yields 10,8,6,4,2"
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,iterationMode,enum,Sequential,Sequential — next iteration starts only after current completes (or is acked). Concurrent — all iterations fan-out as independent pointers simultaneously. Concurrent mode requires maxConcurrency to avoid flooding downstream systems.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,iterationDelayMs,int,0,Milliseconds to wait after an iteration completes before starting the next. Only applies in Sequential mode.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,ack,bool,false,false — fire and forget. Loop advances immediately after onIteration. true — loop suspends and waits for a signal to the continue input port before advancing.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,ackTimeoutMs,int,0,Milliseconds to wait for acknowledgement before timing out. 0 = wait indefinitely. Only relevant when ack: true. Timeout fires the onIterationTimeout port.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,ackMode,enum,Any,Any — resume when any one connected downstream node sends ack. All — resume only when all connected downstream nodes have acked. Only relevant when ack: true.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,maxConcurrency,int,∞,Maximum concurrent iterations when iterationMode: Concurrent. Strongly recommended for IoT command sequences. Has no effect in Sequential mode.
+loop-static-for.html,loop-static-for,property,Node Properties,StaticForLoopNode,onIterationError,enum,Halt,Halt — stop the loop and fire onError. Continue — skip the failed iteration and advance. Retry(n) — retry the current iteration up to n times before applying Halt or Continue.
+loop-static-for.html,loop-static-for,callout,Planned Node Types,,Design note — ack model applies to all loop types,info,,The ack / ackTimeoutMs / ackMode properties and the pause/continue/stop input port pattern are intended to be consistent across all loop node variants.
+trigger-client-group.html,trigger-client-group,metadata,,,title,,,Group / Folder Trigger
+trigger-client-group.html,trigger-client-group,metadata,,,tagline,,,"The dynamic fleet trigger. Binds a workflow to an entire hierarchy of devices (e.g., /Facility_A/Sensors/), automatically enrolling new clients as they are added to the platform registry."
+trigger-client-group.html,trigger-client-group,metadata,,,badge,,,Spec v1.1
+trigger-client-group.html,trigger-client-group,metadata,,,badge,,,Identity: Group
+trigger-client-group.html,trigger-client-group,port,Port Overview,Port Overview,onEvent,signal,output,
+trigger-client-group.html,trigger-client-group,property,Node Properties,GroupClientTrigger,groupPath,string,required,"The registry path to watch (e.g., /Factory_1/HVAC/). Supports recursive matching."
+trigger-client-group.html,trigger-client-group,property,Node Properties,GroupClientTrigger,includeSubgroups,bool,true,"If true, clients in deeper nested folders will also trigger this node."
+trigger-client-group.html,trigger-client-group,property,Node Properties,GroupClientTrigger,correlationExpression,expression,$.client_id,Required. Used to extract the specific Client ID from the incoming stream to map it to its own instance.
+trigger-client-group.html,trigger-client-group,property,Node Properties,GroupClientTrigger,onMatch,enum,MapOrCreate,MapOrCreate — (Genesis) Spawns a new instance for every new client detected in the folder. MapOrDiscard — (Signal) Only updates existing instances. Useful for bulk-monitoring specific active groups. AlwaysCreate — Not recommended (spawns unlinked parallel flows for every message). MapOrReplace — Resets the individual client's digital twin state on every signal.
+trigger-client-group.html,trigger-client-group,callout,Node Properties,,Zero-Touch Scaling,info,,"Group triggers eliminate the need to update workflows when adding hardware. By organizing devices into folders (e.g., /Region/Site), your logic automatically scales to new sensors as soon as they are registered by the field technician."
+trigger-client-group.html,trigger-client-group,port,Port Detail,Port Detail,onEvent,signal,,"Fires when any client within the folder path publishes data. | payload: // Written to WorkflowContext[nodeId]: { ""payload"": { ""vibration"": 0.42 }, ""client"": { ""id"": ""motor_22"", ""path"": ""/Factory/Line_1/Motors"", ""tags"": [] } }"
+trigger-client-policy.html,trigger-client-policy,metadata,,,title,,,Policy-Based Trigger
+trigger-client-policy.html,trigger-client-policy,metadata,,,tagline,,,"The behavioral fleet trigger. Binds a workflow to specific registration policies or device profiles (e.g., Firmware_v2_Beta), allowing for automated fleet management and targeted CI/CD for hardware."
+trigger-client-policy.html,trigger-client-policy,metadata,,,badge,,,Spec v1.1
+trigger-client-policy.html,trigger-client-policy,metadata,,,badge,,,Identity: Policy
+trigger-client-policy.html,trigger-client-policy,port,Port Overview,Port Overview,onEvent,signal,output,
+trigger-client-policy.html,trigger-client-policy,property,Node Properties,PolicyClientTrigger,policyName,string,required,The name of the registration policy to monitor.
+trigger-client-policy.html,trigger-client-policy,property,Node Properties,PolicyClientTrigger,triggerOnRegistration,bool,true,"If true, the workflow fires immediately when a device checks in for the first time using this policy."
+trigger-client-policy.html,trigger-client-policy,property,Node Properties,PolicyClientTrigger,correlationExpression,expression,$.client_id,Required. Maps the signal to the correct client instance within the policy group.
+trigger-client-policy.html,trigger-client-policy,property,Node Properties,PolicyClientTrigger,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Standard fleet behavior. MapOrDiscard — (Signal) Only updates existing instances. AlwaysCreate — Not recommended (spawns unlinked parallel flows for every message). MapOrReplace — Frequently used for lifecycle flows (e.g., re-running a setup script on every check-in)."
+trigger-client-policy.html,trigger-client-policy,callout,Node Properties,,Smart Fleet Routing,info,,"Policy triggers allow for behavioral segregation. You can target all devices on a ""Legacy"" policy for a security audit workflow, while ""Gold Tier"" devices follow a high-priority automation path, regardless of their physical location."
+trigger-client-policy.html,trigger-client-policy,port,Port Detail,Port Detail,onEvent,signal,,"Fires when any client assigned to the policy publishes data. | payload: // Written to WorkflowContext[nodeId]: { ""payload"": { ""fw_ver"": ""1.0.8"" }, ""client"": { ""id"": ""dev_404"", ""policy"": ""Legacy_Upgrade_Plan"" } }"
+trigger-client-single.html,trigger-client-single,metadata,,,title,,,Single Client Trigger
+trigger-client-single.html,trigger-client-single,metadata,,,tagline,,,"The ""Pinned"" identity trigger. Binds a workflow to exactly one specific device in the registry, ensuring dedicated, isolated execution for high-value assets."
+trigger-client-single.html,trigger-client-single,metadata,,,badge,,,Spec v1.1
+trigger-client-single.html,trigger-client-single,metadata,,,badge,,,Identity: Single
+trigger-client-single.html,trigger-client-single,port,Port Overview,Port Overview,onEvent,signal,output,
+trigger-client-single.html,trigger-client-single,property,Node Properties,SingleClientTrigger,clientId,uuid,required,The unique identifier of the device in the platform registry.
+trigger-client-single.html,trigger-client-single,property,Node Properties,SingleClientTrigger,filterExpression,expression,null,"Optional JSONPath to filter specific events from this client (e.g., $.type == 'ALARM')."
+trigger-client-single.html,trigger-client-single,property,Node Properties,SingleClientTrigger,correlationExpression,expression,null,Implicit. Set to null as the clientId acts as the fixed correlation key for the instance.
+trigger-client-single.html,trigger-client-single,property,Node Properties,SingleClientTrigger,onMatch,enum,MapOrCreate,MapOrCreate — (Genesis) Creates the instance on first signal. Updates thereafter. MapOrDiscard — (Signal) Only accepts signals if the instance was manually started. AlwaysCreate — Not recommended for single client (spawns parallel flows for one device). MapOrReplace — Resets the device's digital twin state on every new signal.
+trigger-client-single.html,trigger-client-single,callout,Node Properties,,Dedicated Workspaces,info,,"Single Client triggers are best for ""Digital Twin"" scenarios where a workflow represents the persistent state of one specific physical machine. No data parsing is needed to find the instance; the engine knows exactly which ""room"" to put the data in."
+trigger-client-single.html,trigger-client-single,port,Port Detail,Port Detail,onEvent,signal,,"Fires when the specific client publishes data or changes state. | payload: // Written to WorkflowContext[nodeId]: { ""payload"": { ... }, ""client"": { ""id"": ""dev_01"", ""name"": ""Main Pump"", ""tags"": [""critical""] } }"
+trigger-http.html,trigger-http,metadata,,,title,,,HTTP Webhook Trigger
+trigger-http.html,trigger-http,metadata,,,tagline,,,"The edge gateway for API-driven workflows. Exposes standard HTTP endpoints, authenticates incoming requests, extracts correlation identities, and releases normalized payloads into visual canvas nodes."
+trigger-http.html,trigger-http,metadata,,,badge,,,Spec v1.1
+trigger-http.html,trigger-http,metadata,,,badge,,,RESTful Entry
+trigger-http.html,trigger-http,port,Port Overview,Port Overview,onTrigger,signal,output,
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,path,string,required,"The relative URL path (e.g., /v1/github/merge). Must be unique within the tenant."
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,method,enum,POST,POST | GET | PUT | DELETE
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,correlationExpression,expression,null,"A JSONPath or regex to extract a unique Instance Context ID (e.g., $.body.order_id)."
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,authType,enum,None,"None — Public endpoint. ApiKey — Header validation (e.g., X-API-Key). BasicAuth — Native username and password decoding. HMAC — Cryptographic signature hashing (Best for Stripe/GitHub)."
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,secretRef,string,null,Pointer to a securely stored secret vault reference used for validating incoming tokens.
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,responseMode,enum,AckOnArrival,AckOnArrival — Responds 202 Accepted immediately. Does not wait for workflow execution. RespondOnComplete — Freezes HTTP connection and returns a snapshot of the WorkflowContext when execution halts.
+trigger-http.html,trigger-http,property,Node Properties,HttpWebhookTrigger,successCode,int,200,Status code returned to the external platform upon successful webhook acceptance.
+trigger-http.html,trigger-http,callout,Node Properties,,Shared State Architecture,info,,"Connections between nodes do not carry data payloads. Wires only transmit pure triggers (pulses). When a Webhook fires, it writes the payload directly into the WorkflowContext. Downstream nodes pull variables from this shared memory as needed."
+trigger-http.html,trigger-http,port,Port Detail,Port Detail,onTrigger,signal,,"Fires a control pulse to adjacent downstream nodes. No data is passed over the wire. | payload: // Committed directly to WorkflowContext[nodeId]: { ""metadata"": { ""method"": ""POST"", ""timestamp"": 1711395729 }, ""headers"": { ""content-type"": ""application/json"" }, ""query"": {}, ""body"": { ... } }"
+trigger-manual.html,trigger-manual,metadata,,,title,,,Manual / User Event Trigger
+trigger-manual.html,trigger-manual,metadata,,,tagline,,,The human-in-the-loop entry point. Exposes a button or form within the dashboard or external portal to allow direct manual intervention in workflows.
+trigger-manual.html,trigger-manual,metadata,,,badge,,,Spec v1.1
+trigger-manual.html,trigger-manual,metadata,,,badge,,,User-Driven
+trigger-manual.html,trigger-manual,port,Port Overview,Port Overview,onExecute,signal,output,
+trigger-manual.html,trigger-manual,property,Node Properties,ManualTrigger,buttonLabel,string,"""Run Workflow""",The text displayed on the action button in the dashboard.
+trigger-manual.html,trigger-manual,property,Node Properties,ManualTrigger,inputSchema,json-schema,null,"Defines form fields (text, select, toggle) to be filled by the user before execution."
+trigger-manual.html,trigger-manual,property,Node Properties,ManualTrigger,requiredRoles,array[string],[],RBAC roles allowed to see and trigger this button.
+trigger-manual.html,trigger-manual,property,Node Properties,ManualTrigger,correlationExpression,expression,null,A JSONPath or static value to bind this manual action to a specific instance ID.
+trigger-manual.html,trigger-manual,property,Node Properties,ManualTrigger,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+trigger-manual.html,trigger-manual,callout,Node Properties,,Hybrid Automation,info,,"Manual triggers are often used as ""Overdrive"" signals to force a workflow into a specific state or to provide missing data that automated triggers could not resolve."
+trigger-manual.html,trigger-manual,port,Port Detail,Port Detail,onExecute,signal,,"Fires immediately upon button click/form submission. | payload: // Written to WorkflowContext[nodeId]: { ""user"": { ""id"": ""u_99"", ""email"": ""admin@wbskt.io"" }, ""input"": { ""reason"": ""Emergency Shutdown"", ""override_threshold"": 95 } }"
+trigger-mqtt.html,trigger-mqtt,metadata,,,title,,,MQTT Telemetry Trigger
+trigger-mqtt.html,trigger-mqtt,metadata,,,tagline,,,"The persistent IoT backbone. Maintains long-lived subscriptions to message brokers, handles high-frequency telemetry, and decodes binary payloads for real-time workflow routing."
+trigger-mqtt.html,trigger-mqtt,metadata,,,badge,,,Spec v1.1
+trigger-mqtt.html,trigger-mqtt,metadata,,,badge,,,IoT / Edge
+trigger-mqtt.html,trigger-mqtt,port,Port Overview,Port Overview,onMessage,signal,output,
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,brokerRef,string,required,"Vault reference to broker details (host, port, TLS, credentials)."
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,topic,string,#,"The MQTT topic subscription string. Supports wildcards (e.g., telemetry/+/sensors)."
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,qos,int (0-2),1,Quality of Service level for the subscription.
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,payloadFormat,enum,JSON,JSON — Standard text parsing. Protobuf — Binary decoding via schema. RawBinary — Passes payload as hex/base64 string.
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,schemaRef,string,null,Reference to a .proto file or binary template in the WBSKT Registry. Required for Protobuf.
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,correlationExpression,expression,null,"JSONPath for payload fields, or $topic[index] for topic segments (e.g., $topic[1] for 2nd segment)."
+trigger-mqtt.html,trigger-mqtt,property,Node Properties,MqttTelemetryTrigger,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+trigger-mqtt.html,trigger-mqtt,callout,Node Properties,,Topic-Based Routing,info,,The MQTT Trigger is uniquely capable of extracting identity from the topic metadata. This allows the engine to route messages to the correct instance even if the payload is encrypted or in a proprietary binary format that cannot be parsed by the node itself.
+trigger-mqtt.html,trigger-mqtt,port,Port Detail,Port Detail,onMessage,signal,,"Fires instantly upon message arrival and successful decoding. | payload: // Written to WorkflowContext[nodeId]: { ""metadata"": { ""topic"": ""v1/dev_99/status"", ""qos"": 1, ""retained"": false }, ""payload"": { ""temp"": 24.5, ""humidity"": 48.2, ""status"": ""ONLINE"" } }"
+trigger-polling.html,trigger-polling,metadata,,,title,,,Polling / DB Watcher Trigger
+trigger-polling.html,trigger-polling,metadata,,,tagline,,,"The bridge for legacy systems. Actively monitors external databases, storage buckets, or spreadsheets for state changes and releases normalized data into the canvas."
+trigger-polling.html,trigger-polling,metadata,,,badge,,,Spec v1.1
+trigger-polling.html,trigger-polling,metadata,,,badge,,,Pull-Driven
+trigger-polling.html,trigger-polling,port,Port Overview,Port Overview,onResult,signal,output,
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,sourceType,enum,SqlDatabase,SqlDatabase | S3Bucket | GoogleSheet | RestApi
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,connectionRef,string,required,"Vault reference to credentials (e.g., connection string, AWS keys)."
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,query,string,null,"The SQL query, file path, or API endpoint to poll."
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,pollingInterval,int,5,Wait time between poll attempts.
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,pollingUnit,enum,Minutes,Seconds | Minutes | Hours
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,correlationExpression,expression,null,A JSONPath or regex to extract a unique Instance Context ID from the result row.
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+trigger-polling.html,trigger-polling,property,Node Properties,PollingTrigger,deduplicationKey,expression,null,"Field used to ensure the same record isn't processed twice (e.g., $.id or $.last_modified)."
+trigger-polling.html,trigger-polling,callout,Node Properties,,Stateful Polling,info,,"To prevent re-triggering on the same data, the engine tracks the deduplicationKey in a high-speed cursor store. If a polled row matches a known key, it is skipped unless the data has changed."
+trigger-polling.html,trigger-polling,port,Port Detail,Port Detail,onResult,signal,,"Fires once for every record/row detected in the polling cycle. | payload: // Row data written to WorkflowContext[nodeId]: { ""id"": 1024, ""status"": ""NEW"", ""created_at"": ""2026-03-26T10:00:00Z"", ""payload"": { ... } }"
+trigger-scheduled.html,trigger-scheduled,metadata,,,title,,,Scheduled Trigger
+trigger-scheduled.html,trigger-scheduled,metadata,,,tagline,,,"The internal heartbeat of the engine. Automates workflow execution based on precise time intervals or complex calendar patterns. Unlike event triggers, it originates from the system clock."
+trigger-scheduled.html,trigger-scheduled,metadata,,,badge,,,Spec v1.1
+trigger-scheduled.html,trigger-scheduled,metadata,,,badge,,,Time-Driven
+trigger-scheduled.html,trigger-scheduled,port,Port Overview,Port Overview,onTick,signal,output,
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,scheduleMode,enum,Interval,Interval — Simple repetitive cadence (e.g. Every 5m). Cron — Advanced calendar logic using standard Crontab syntax.
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,intervalValue,int,15,The numeric value for interval mode. Minimum recommended: 1.
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,intervalUnit,enum,Minutes,Seconds | Minutes | Hours | Days
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,cronExpression,string,null,The Cron string (e.g. 0 8 * * 1-5 for 8AM Weekdays).
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,timeZone,string,UTC,Valid IANA timezone string. Critical for DST-aware scheduling.
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,correlationExpression,expression,null,A JSONPath or regex to extract a unique Instance Context ID. Used for correlating schedule ticks to active instances.
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,onMatch,enum,AlwaysCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+trigger-scheduled.html,trigger-scheduled,property,Node Properties,ScheduledTrigger,misfirePolicy,enum,Discard,"FireImmediately — If the server was down during a tick, fire it as soon as it recovers. Discard — Ignore missed ticks and wait for the next scheduled occurrence."
+trigger-scheduled.html,trigger-scheduled,callout,Node Properties,,Context Persistence,info,,"This node utilizes the Shared-State model. No data is passed via output connections. Upon triggering, the engine writes the triggeredAt timestamp and scheduleMeta directly to the WorkflowContext for downstream consumption."
+trigger-scheduled.html,trigger-scheduled,port,Port Detail,Port Detail,onTick,signal,,"Fires a control pulse to downstream nodes. No data payload is included in the transmission. | payload: // Written to WorkflowContext[nodeId]: { ""timestamp"": 1711395729, ""iso"": ""2026-03-25T12:00:00Z"", ""mode"": ""Cron"" }"
+workflow.html,workflow,metadata,,,title,,,Workflow Definitions
+workflow.html,workflow,metadata,,,tagline,,,"The structural blueprint defining execution physics, routing logic, and instance lifecycle. This configuration governs how the engine instantiates workflows across IoT, CI/CD, and Automation verticals."
+workflow.html,workflow,metadata,,,badge,,,Spec v1.2
+workflow.html,workflow,metadata,,,badge,,,Multi-Trigger Enabled
+workflow.html,workflow,metadata,,,badge,,,State-Aware Persistence
+workflow.html,workflow,section_intro,Identity & Routing,,,,,Defines how a workflow is identified within the system and how incoming signals are mapped to specific execution instances.
+workflow.html,workflow,property,Identity & Routing,Workflow Metadata,definitionId,uuid,required,Immutable unique identifier for this workflow template.
+workflow.html,workflow,property,Identity & Routing,Workflow Metadata,name,string,required,The display name used within the WBSKT orchestration dashboard.
+workflow.html,workflow,property,Identity & Routing,Workflow Metadata,description,string,null,Internal documentation describing the workflow's business logic and expected triggers.
+workflow.html,workflow,property,Identity & Routing,Workflow Metadata,triggers,array[obj],[],"List of entry points (HTTP, MQTT, Cron). Supports ""Logical OR"" activation — any trigger can start the flow."
+workflow.html,workflow,property,Identity & Routing,,correlationExpression,expression,null,"A JSONPath/Regex to find the ID in this specific trigger. Example: Trigger A uses $.sensor_id, Trigger B uses $.body.mac_address."
+workflow.html,workflow,property,Identity & Routing,,onMatch,enum,MapOrCreate,"MapOrCreate — (Genesis) Creates a new instance if the resolved ID is unknown. Updates if known. MapOrDiscard — (Signal) Only updates existing instances. If no match is found, the signal is dropped. AlwaysCreate — Ignores the resolved ID and spawns a parallel instance (useful for stateless logs). MapOrReplace — Aborts the existing instance and starts a fresh one with the new payload."
+workflow.html,workflow,section_intro,Execution Physics,,,,,Governs the lifecycle and performance characteristics of the workflow instance during its execution.
+workflow.html,workflow,property,Execution Physics,Lifecycle & Performance,instanceMode,enum,Persistent,Persistent — Full DB state tracking (Safety/Business). Ephemeral — In-memory only (Speed/IoT High-Frequency).
+workflow.html,workflow,property,Execution Physics,Lifecycle & Performance,executionTimeout,duration,0 (infinite),The absolute time limit for a workflow instance before forced termination.
+workflow.html,workflow,property,Execution Physics,Lifecycle & Performance,maxActiveInstances,int,∞,Concurrency cap to prevent system flooding or resource exhaustion.
+workflow.html,workflow,property,Execution Physics,Lifecycle & Performance,priority,int (0-10),5,Execution queue priority. Higher numbers process first in congested environments.
+workflow.html,workflow,section_intro,Error & Resilience,,,,,Configuration for global fault tolerance and recovery mechanisms when nodes encounter failures.
+workflow.html,workflow,property,Error & Resilience,Global Fault Tolerance,globalErrorHandler,nodeId,null,Fallback node triggered if any unhandled error occurs in the flow.
+workflow.html,workflow,property,Error & Resilience,Global Fault Tolerance,defaultRetryPolicy,object,{},Global maxAttempts and backoffStrategy for all failing nodes in this flow.
+workflow.html,workflow,property,Error & Resilience,Global Fault Tolerance,isRecoverable,bool,true,"If true, the engine attempts to resume the flow at the last checkpoint after a server restart."
+workflow.html,workflow,section_intro,Data & Governance,,,,,"Defines the security context, data validation rules, and audit log retention policies."
+workflow.html,workflow,property,Data & Governance,Context & Security,inputSchema,json-schema,null,Validates trigger payload before instance creation. Rejects invalid data early.
+workflow.html,workflow,property,Data & Governance,Context & Security,secretRefs,array[str],[],"Keys to fetch from secure Vault storage (API keys, DB credentials) at runtime."
+workflow.html,workflow,property,Data & Governance,Context & Security,retentionPeriod,duration,30d,How long to keep history of completed instances in the audit log.
+workflow.html,workflow,callout,Data & Governance,,Versioning Policy,warn,,"By default, active instances stick to the version they were started with. Updates to the definition only apply to new instances created after publication."
