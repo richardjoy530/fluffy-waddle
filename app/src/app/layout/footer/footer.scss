@@ -1,0 +1,44 @@
+:host {
+  .footer {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    border-top: var(--mkt-border);
+  }
+
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 36px 28px;
+    border-right: var(--mkt-border);
+    font-size: var(--mkt-text-base);
+    color: var(--mkt-muted);
+
+    &:last-child {
+      border-right: none;
+    }
+
+    a {
+      &:hover {
+        color: var(--mkt-accent);
+      }
+    }
+  }
+
+  .footer-brand {
+    gap: 14px;
+  }
+
+  .footer-copyright {
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-xs);
+    color: var(--mkt-dim);
+  }
+
+  .footer-heading {
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-xs);
+    letter-spacing: 0.1em;
+    color: var(--mkt-fg);
+  }
+}

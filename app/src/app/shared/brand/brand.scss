@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: var(--mkt-weight-bold);
+  font-size: var(--mkt-text-lg);
+
+  .brand-mark {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    font-size: var(--mkt-text-xs);
+  }
+}

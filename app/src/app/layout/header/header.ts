@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Brand } from '../../shared/brand/brand';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, Brand],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
