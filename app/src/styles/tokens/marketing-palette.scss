@@ -1,0 +1,22 @@
+/* wbskt marketing site — primitive palette
+   Raw color values only, theme-independent. Never referenced directly by
+   components — components consume the semantic tokens in marketing-theme.scss. */
+:root {
+  --mkt-palette-black: #111111;
+  --mkt-palette-black-card: #181818;
+  --mkt-palette-black-code: #0a0a0a;
+  --mkt-palette-black-accent-tint: #2a1a10;
+
+  --mkt-palette-white: #ffffff;
+  --mkt-palette-off-white: #f4f4f0;
+  --mkt-palette-gray-300: #bbbbbb;
+  --mkt-palette-gray-400: #999999;
+  --mkt-palette-gray-600: #666666;
+  --mkt-palette-gray-800: #333333;
+
+  --mkt-palette-orange: #e85d26;
+  --mkt-palette-orange-dark: #c2410c;
+  --mkt-palette-orange-tan: #d19a66;
+
+  --mkt-palette-green: #7bb35f;
+}

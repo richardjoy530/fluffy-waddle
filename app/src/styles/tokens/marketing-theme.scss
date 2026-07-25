@@ -1,0 +1,32 @@
+@use './marketing-palette';
+
+/* wbskt marketing site — semantic theme tokens
+   Maps primitives to roles. Dark is the only theme today and is the
+   fallback on :root; a future [data-theme="light"] block can override
+   these same variable names without any component changes. */
+:root,
+[data-theme='dark'] {
+  --mkt-bg: var(--mkt-palette-black);
+  --mkt-bg-card: var(--mkt-palette-black-card);
+  --mkt-bg-code: var(--mkt-palette-black-code);
+  --mkt-bg-accent-subtle: var(--mkt-palette-black-accent-tint);
+
+  --mkt-fg: var(--mkt-palette-off-white);
+  --mkt-on-accent: var(--mkt-palette-white);
+  --mkt-muted: var(--mkt-palette-gray-400);
+  --mkt-dim: var(--mkt-palette-gray-600);
+  --mkt-hairline: var(--mkt-palette-gray-800);
+
+  --mkt-accent: var(--mkt-palette-orange);
+  --mkt-accent-hover: var(--mkt-palette-orange-dark);
+
+  --mkt-success: var(--mkt-palette-green);
+
+  --mkt-code-fg: var(--mkt-palette-gray-300);
+  --mkt-code-number: var(--mkt-palette-orange-tan);
+  --mkt-code-string: var(--mkt-success);
+
+  /* Structural border — the 2px divider used throughout the layout.
+     Color follows --mkt-fg, so it lives here rather than in typography. */
+  --mkt-border: var(--mkt-border-width) solid var(--mkt-fg);
+}

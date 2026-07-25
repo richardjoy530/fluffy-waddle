@@ -1,1 +1,18 @@
-<p>header works!</p>
+<div class="header">
+  <a routerLink="/" class="header-brand">
+    <span class="header-mark">w</span>
+    WBSKT
+  </a>
+
+  <nav class="header-nav">
+    @for (link of navLinks; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="is-active">{{ link.label }}</a>
+    }
+  </nav>
+
+  <div class="header-actions">
+    <!-- TODO: point at console.wbskt.com once the console app exists -->
+    <a href="#" class="header-action">Log in</a>
+    <a href="#" class="header-action header-action-primary">Sign up</a>
+  </div>
+</div>

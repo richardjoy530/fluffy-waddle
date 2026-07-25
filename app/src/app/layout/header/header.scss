@@ -1,0 +1,81 @@
+:host {
+  .header {
+    display: flex;
+    align-items: stretch;
+    border-bottom: var(--mkt-border);
+    font-size: var(--mkt-text-base);
+    position: sticky;
+    top: 0;
+    background: var(--mkt-bg);
+    z-index: 10;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: var(--mkt-weight-bold);
+    font-size: var(--mkt-text-lg);
+    padding: 18px 28px;
+    border-right: var(--mkt-border);
+  }
+
+  .header-mark {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    font-size: var(--mkt-text-xs);
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 0 28px;
+    color: var(--mkt-muted);
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: var(--mkt-fg);
+      }
+
+      &.is-active {
+        color: var(--mkt-accent);
+      }
+    }
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .header-action {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    border-left: var(--mkt-border);
+
+    &:hover {
+      color: var(--mkt-accent);
+    }
+  }
+
+  .header-action-primary {
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    font-weight: var(--mkt-weight-medium);
+
+    &:hover {
+      background: var(--mkt-accent-hover);
+      color: var(--mkt-on-accent);
+    }
+  }
+}

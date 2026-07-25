@@ -1,0 +1,20 @@
+/* wbskt marketing site — typography and structural tokens
+   Theme-independent: sizes, weights and border width don't change between themes. */
+:root {
+  --mkt-font-display: 'Bricolage Grotesque', sans-serif;
+  --mkt-font-mono: 'IBM Plex Mono', monospace;
+
+  /* Type sizes — the shared UI scale (nav, labels, body, buttons).
+     Large page-specific hero/section headlines are set per-component,
+     not from this scale — they vary intentionally by page. */
+  --mkt-text-xs: 12px;
+  --mkt-text-base: 14px;
+  --mkt-text-lg: 16px;
+
+  /* Type weights */
+  --mkt-weight-regular: 400;
+  --mkt-weight-medium: 600;
+  --mkt-weight-bold: 800;
+
+  --mkt-border-width: 2px;
+}
