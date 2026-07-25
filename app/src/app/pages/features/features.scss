@@ -1,0 +1,20 @@
+:host {
+  .hero {
+    padding: 72px 48px 56px;
+    border-bottom: var(--mkt-border);
+  }
+
+  .hero-title {
+    margin: 20px 0 0;
+    font-size: 84px; // page-specific hero size, not part of the shared scale
+    line-height: 0.94;
+    font-weight: var(--mkt-weight-bold);
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    max-width: 14ch;
+
+    .accent {
+      color: var(--mkt-accent);
+    }
+  }
+}

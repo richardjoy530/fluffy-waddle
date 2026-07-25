@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './layout/header/header';
 import { Footer } from './layout/footer/footer';
-import { MAINTENANCE_MODE } from './maintenance.config';
+import { MAINTENANCE_MODE, isDevViewEnabled } from './maintenance.config';
 
 @Component({
   selector: 'app-root',
@@ -11,5 +11,5 @@ import { MAINTENANCE_MODE } from './maintenance.config';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly maintenanceMode = MAINTENANCE_MODE;
+  protected readonly maintenanceMode = MAINTENANCE_MODE && !isDevViewEnabled();
 }

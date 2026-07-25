@@ -1,0 +1,9 @@
+:host {
+  display: inline-block;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-xs);
+  letter-spacing: 0.12em;
+  color: var(--mkt-accent);
+  border: 1px solid var(--mkt-accent);
+  padding: 3px 12px;
+}

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MAINTENANCE_MODE } from './maintenance.config';
+import { MAINTENANCE_MODE, isDevViewEnabled } from './maintenance.config';
 
 const maintenanceRoutes: Routes = [
   {
@@ -44,4 +44,6 @@ const siteRoutes: Routes = [
   },
 ];
 
-export const routes: Routes = MAINTENANCE_MODE ? maintenanceRoutes : siteRoutes;
+const showMaintenance = MAINTENANCE_MODE && !isDevViewEnabled();
+
+export const routes: Routes = showMaintenance ? maintenanceRoutes : siteRoutes;
