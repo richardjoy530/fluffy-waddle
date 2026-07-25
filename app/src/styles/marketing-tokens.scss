@@ -1,0 +1,36 @@
+/* wbskt marketing site — design tokens
+   Scoped to the marketing app only; not shared with any console/product app. */
+:root {
+  /* Surfaces */
+  --mkt-bg: #111111;
+  --mkt-bg-card: #181818;
+  --mkt-bg-code: #0a0a0a;
+  --mkt-bg-accent-subtle: #2a1a10;
+
+  /* Text */
+  --mkt-fg: #f4f4f0;
+  --mkt-on-accent: #ffffff;
+  --mkt-muted: #999999;
+  --mkt-dim: #666666;
+  --mkt-hairline: #333333;
+
+  /* Accent */
+  --mkt-accent: #e85d26;
+  --mkt-accent-hover: #c2410c;
+
+  /* Status */
+  --mkt-success: #7bb35f;
+
+  /* Code */
+  --mkt-code-fg: #bbbbbb;
+  --mkt-code-number: #d19a66;
+  --mkt-code-string: var(--mkt-success);
+
+  /* Structural border — the 2px divider used throughout the layout */
+  --mkt-border-width: 2px;
+  --mkt-border: var(--mkt-border-width) solid var(--mkt-fg);
+
+  /* Type */
+  --mkt-font-display: 'Bricolage Grotesque', sans-serif;
+  --mkt-font-mono: 'IBM Plex Mono', monospace;
+}

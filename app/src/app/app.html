@@ -1,5 +1,7 @@
-<main class="page">
-  <h1>Wbskt</h1>
-  <p>Under construction.</p>
-</main>
+@if (!maintenanceMode) {
+  <app-header />
+}
 <router-outlet />
+@if (!maintenanceMode) {
+  <app-footer />
+}
