@@ -156,6 +156,20 @@
     color: var(--mkt-muted);
   }
 
+  .capabilities {
+    padding: 72px 48px 56px;
+    border-bottom: var(--mkt-border);
+  }
+
+  .capabilities-title {
+    margin: 20px 0 0;
+    font-size: clamp(32px, 5.5vw, 64px); // page-specific section size, not part of the shared scale
+    line-height: 1;
+    font-weight: var(--mkt-weight-bold);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+
   .hero-diagram {
     min-width: 0;
     display: flex;
