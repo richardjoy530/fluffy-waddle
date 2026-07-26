@@ -61,14 +61,12 @@
   </div>
 </section>
 
-<app-ticker
-  [items]="[
+<app-ticker [items]="[
     'sensor.in → logic>35° → open.vent → delay.10m → send.sms',
     'runs that survive restarts',
     'sandboxed marketplace',
     '40,000 live connections'
-  ]"
-/>
+  ]" />
 
 <section class="how">
   <div class="how-intro">
@@ -109,34 +107,38 @@
 </section>
 
 <section class="capability-grid">
-  <app-capability-card
-    label="A. Sockets"
-    heading="Persistent connections"
-    body="Always-open WebSockets to every client. 12ms median command latency, automatic reconnect and resume."
-  />
-  <app-capability-card
-    label="B. Workflows"
-    heading="Runs with memory"
-    body="Stateful execution that pauses on delays, resumes on events and survives platform restarts."
-  />
-  <app-capability-card
-    label="C. Marketplace"
-    heading="Sandboxed integrations"
-    body="Third-party services mount as virtual clients — isolated, permissioned, revocable."
-  />
-  <app-capability-card
-    label="D. SDKs"
-    heading="C#, Python &amp; JS"
-    body="Idiomatic clients for edge devices, backends and browsers. One protocol underneath."
-  />
-  <app-capability-card
-    label="E. Observability"
-    heading="Every run, replayable"
-    body="Full audit trail per run: inputs, branches, commands, acks. Export anywhere."
-  />
-  <app-capability-card
-    label="F. Pricing"
-    heading="No per-task tax"
-    body="Metered on compute and connections only. A million small runs cost what they should."
-  />
+  <app-capability-card label="A. Sockets" heading="Persistent connections"
+    body="Always-open WebSockets to every client. 12ms median command latency, automatic reconnect and resume." />
+  <app-capability-card label="B. Workflows" heading="Runs with memory"
+    body="Stateful execution that pauses on delays, resumes on events and survives platform restarts." />
+  <app-capability-card label="C. Marketplace" heading="Sandboxed integrations"
+    body="Third-party services mount as virtual clients — isolated, permissioned, revocable." />
+  <app-capability-card label="D. SDKs" heading="C#, Python &amp; JS"
+    body="Idiomatic clients for edge devices, backends and browsers. One protocol underneath." />
+  <app-capability-card label="E. Observability" heading="Every run, replayable"
+    body="Full audit trail per run: inputs, branches, commands, acks. Export anywhere." />
+  <app-capability-card label="F. Pricing" heading="No per-task tax"
+    body="Metered on compute and connections only. A million small runs cost what they should." />
+</section>
+
+<section class="sdk">
+  <div class="sdk-copy">
+    <app-eyebrow label="FIG.04 — SDK" />
+    <h2 class="sdk-title">Ten lines to a live line.</h2>
+    <p class="sdk-sub">
+      Register a client, subscribe to a channel, act on commands. The SDK handles reconnects,
+      backoff and resumption.
+    </p>
+    <a href="#" class="sdk-cta">Read the docs →</a>
+  </div>
+
+  <div class="sdk-code">
+    <pre><code><span class="code-comment">// hold the line open</span>
+<span class="code-keyword">const</span> client = <span class="code-keyword">await</span> wbskt.connect({{ '{' }} token {{ '}' }});
+client.on(<span class="code-string">'command:open.vent'</span>, <span class="code-keyword">async</span> (cmd) => {{ '{' }}
+  <span class="code-keyword">await</span> vent.open(cmd.zone);
+  cmd.ack();
+{{ '}' }});
+client.emit(<span class="code-string">'sensor.in'</span>, {{ '{' }} temp: <span class="code-number">36.2</span> {{ '}' }});</code></pre>
+  </div>
 </section>

@@ -1,35 +1,69 @@
+$mkt-stack-breakpoint: 860px;
+
+@mixin stack {
+  @media (max-width: $mkt-stack-breakpoint) {
+    @content;
+  }
+}
+
+@mixin section-grid($columns) {
+  display: grid;
+  grid-template-columns: $columns;
+
+  @include stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+// border-right on desktop, collapsing to border-bottom once columns stack
+@mixin stack-divider {
+  border-right: var(--mkt-border);
+
+  @include stack {
+    border-right: none;
+    border-bottom: var(--mkt-border);
+    @content;
+  }
+}
+
+// page-specific hero/section headline sizes, not part of the shared token scale
+@mixin display-heading($min, $preferred, $max, $letter-spacing: -0.03em, $line-height: 1) {
+  font-size: clamp($min, $preferred, $max);
+  line-height: $line-height;
+  font-weight: var(--mkt-weight-bold);
+  letter-spacing: $letter-spacing;
+  text-transform: uppercase;
+}
+
+@mixin mono-label {
+  display: block;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-xs);
+  letter-spacing: 0.12em;
+  color: var(--mkt-accent);
+  text-transform: uppercase;
+}
+
 :host {
   .hero {
-    display: grid;
-    grid-template-columns: 1fr 0.72fr;
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-    }
+    @include section-grid(1fr 0.72fr);
   }
 
   .hero-copy {
     min-width: 0;
     padding: 88px 48px 64px;
-    border-right: var(--mkt-border);
     display: flex;
     flex-direction: column;
     gap: 26px;
 
-    @media (max-width: 860px) {
-      border-right: none;
-      border-bottom: var(--mkt-border);
+    @include stack-divider {
       padding: 56px 24px 48px;
     }
   }
 
   .hero-title {
     margin: 0;
-    font-size: clamp(40px, 9vw, 92px); // page-specific hero size, not part of the shared scale
-    line-height: 0.94;
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
+    @include display-heading(40px, 9vw, 92px, -0.04em, 0.94);
     overflow-wrap: break-word;
 
     .accent {
@@ -93,52 +127,34 @@
   }
 
   .how {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    @include section-grid(repeat(4, 1fr));
     border-bottom: var(--mkt-border);
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   .how-intro,
   .how-step {
     min-width: 0;
     padding: 56px 40px 48px;
-    border-right: var(--mkt-border);
 
-    @media (max-width: 860px) {
-      border-right: none;
-      border-bottom: var(--mkt-border);
-    }
+    @include stack-divider;
   }
 
   .how-step:last-child {
     border-right: none;
 
-    @media (max-width: 860px) {
+    @include stack {
       border-bottom: none;
     }
   }
 
   .how-eyebrow,
   .how-step-label {
-    display: block;
-    font-family: var(--mkt-font-mono);
-    font-size: var(--mkt-text-xs);
-    letter-spacing: 0.12em;
-    color: var(--mkt-accent);
-    text-transform: uppercase;
+    @include mono-label;
   }
 
   .how-title {
     margin: 16px 0 0;
-    font-size: clamp(28px, 3.4vw, 40px);
-    line-height: 1;
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    @include display-heading(28px, 3.4vw, 40px);
     max-width: 8ch;
   }
 
@@ -163,28 +179,19 @@
 
   .capabilities-title {
     margin: 20px 0 0;
-    font-size: clamp(32px, 5.5vw, 64px); // page-specific section size, not part of the shared scale
-    line-height: 1;
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    @include display-heading(32px, 5.5vw, 64px);
   }
 
   .capability-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    @include section-grid(repeat(3, 1fr));
     border-bottom: var(--mkt-border);
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   app-capability-card {
     border-right: var(--mkt-border);
     border-bottom: var(--mkt-border);
 
-    @media (max-width: 860px) {
+    @include stack {
       border-right: none;
     }
   }
@@ -196,13 +203,83 @@
   app-capability-card:nth-last-child(-n + 3) {
     border-bottom: none;
 
-    @media (max-width: 860px) {
+    @include stack {
       border-bottom: var(--mkt-border);
     }
   }
 
   app-capability-card:last-child {
     border-bottom: none;
+  }
+
+  .sdk {
+    @include section-grid(1fr 1fr);
+    border-bottom: var(--mkt-border);
+  }
+
+  .sdk-copy {
+    min-width: 0;
+    padding: 72px 48px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+
+    @include stack-divider {
+      padding: 56px 24px 48px;
+    }
+  }
+
+  .sdk-title {
+    margin: 0;
+    @include display-heading(28px, 3.6vw, 52px);
+  }
+
+  .sdk-sub {
+    margin: 0;
+    font-size: var(--mkt-text-lg);
+    line-height: 1.6;
+    color: var(--mkt-muted);
+    max-width: 40ch;
+  }
+
+  .sdk-cta {
+    border: var(--mkt-border);
+    padding: 15px 28px;
+    font-weight: var(--mkt-weight-medium);
+    font-size: var(--mkt-text-lg);
+    color: var(--mkt-fg);
+  }
+
+  .sdk-code {
+    min-width: 0;
+    padding: 40px;
+    background: var(--mkt-bg-code);
+    overflow-x: auto;
+
+    pre {
+      margin: 0;
+      font-family: var(--mkt-font-mono);
+      font-size: var(--mkt-text-lg);
+      line-height: 1.8;
+      color: var(--mkt-code-fg);
+    }
+  }
+
+  .code-comment {
+    color: var(--mkt-dim);
+  }
+
+  .code-keyword {
+    color: var(--mkt-code-keyword);
+  }
+
+  .code-string {
+    color: var(--mkt-code-string);
+  }
+
+  .code-number {
+    color: var(--mkt-code-number);
   }
 
   .hero-diagram {
