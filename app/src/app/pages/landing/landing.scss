@@ -170,6 +170,41 @@
     text-transform: uppercase;
   }
 
+  .capability-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: var(--mkt-border);
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  app-capability-card {
+    border-right: var(--mkt-border);
+    border-bottom: var(--mkt-border);
+
+    @media (max-width: 860px) {
+      border-right: none;
+    }
+  }
+
+  app-capability-card:nth-child(3n) {
+    border-right: none;
+  }
+
+  app-capability-card:nth-last-child(-n + 3) {
+    border-bottom: none;
+
+    @media (max-width: 860px) {
+      border-bottom: var(--mkt-border);
+    }
+  }
+
+  app-capability-card:last-child {
+    border-bottom: none;
+  }
+
   .hero-diagram {
     min-width: 0;
     display: flex;
