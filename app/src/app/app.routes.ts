@@ -24,19 +24,19 @@ const siteRoutes: Routes = [
   },
   {
     path: 'solutions',
-    loadComponent: () => import('./pages/solutions/solutions').then((m) => m.Solutions),
+    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
   },
   {
     path: 'pricing',
-    loadComponent: () => import('./pages/pricing/pricing').then((m) => m.Pricing),
+    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
   },
   {
     path: 'docs',
-    loadComponent: () => import('./pages/docs/docs').then((m) => m.Docs),
+    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
   },
   {
     path: 'about',
-    loadComponent: () => import('./pages/about/about').then((m) => m.About),
+    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
   },
   {
     path: '**',

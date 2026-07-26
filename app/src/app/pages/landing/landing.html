@@ -1,1 +1,62 @@
-<p>landing works!</p>
+<section class="hero">
+  <div class="hero-copy">
+    <h1 class="hero-title">
+      <span class="accent">40,000 sockets.</span><br />
+      One command deck.
+    </h1>
+    <p class="hero-sub">
+      Every device, service and model on a live line. Workflows with memory. Enterprise
+      control without the per-task tax.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="hero-cta">Start building →</a>
+      <a href="#sdk" class="hero-cta-secondary">$ npm i &#64;wbskt/sdk</a>
+    </div>
+    <div class="hero-stats">
+      <span><strong>99.98%</strong> UPTIME</span>
+      <span><strong>12ms</strong> LATENCY</span>
+      <span class="accent"><strong>$0</strong> PER-TASK</span>
+    </div>
+  </div>
+
+  <div class="hero-diagram">
+    <svg viewBox="0 0 340 300" class="diagram-svg">
+      <g class="wires" fill="none">
+        <path
+          d="M60 50 C 130 50 130 150 170 150 M60 250 C 130 250 130 150 170 150 M60 150 L 170 150 M170 150 C 220 150 220 80 280 80 M170 150 C 220 150 220 220 280 220"
+        ></path>
+      </g>
+      <path
+        class="wire-active"
+        d="M60 50 C 130 50 130 150 170 150 C 220 150 220 220 280 220"
+        fill="none"
+      ></path>
+      <g class="nodes">
+        <rect class="node node-active" x="28" y="34" width="66" height="30" rx="6"></rect>
+        <text x="38" y="53">sensor.in</text>
+
+        <rect class="node" x="28" y="135" width="66" height="30" rx="6"></rect>
+        <text x="40" y="154">schedule</text>
+
+        <rect class="node" x="28" y="235" width="66" height="30" rx="6"></rect>
+        <text x="42" y="254">webhook</text>
+
+        <rect class="node node-logic" x="137" y="135" width="66" height="30" rx="6"></rect>
+        <text x="147" y="154">logic&gt;35°</text>
+
+        <rect class="node" x="247" y="65" width="66" height="30" rx="6"></rect>
+        <text x="257" y="84">open.vent</text>
+
+        <rect class="node node-highlight" x="247" y="205" width="66" height="30" rx="6"></rect>
+        <text class="text-accent" x="259" y="224">send.sms</text>
+      </g>
+      <circle class="pulse" cx="115" cy="90" r="3">
+        <animate attributeName="opacity" values="1;.15;1" dur="1.8s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+    <div class="diagram-status">
+      <span class="status-label">workflow temp-alert-flow · run #2047</span>
+      <span class="status-live">● EXECUTING</span>
+    </div>
+  </div>
+</section>
