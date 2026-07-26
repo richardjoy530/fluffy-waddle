@@ -9,5 +9,5 @@ import { Component, computed, input } from '@angular/core';
 export class Ticker {
   readonly items = input.required<string[]>();
 
-  readonly content = computed(() => this.items().join(' ///// ') + ' /////');
+  readonly content = computed(() => this.items().join(' ///// ') + ' ///// ');
 }
