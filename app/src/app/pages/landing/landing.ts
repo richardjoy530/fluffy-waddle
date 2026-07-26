@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Ticker } from '../../shared/ticker/ticker';
 
 @Component({
   selector: 'app-landing',
-  imports: [],
+  imports: [Ticker],
   templateUrl: './landing.html',
   styleUrl: './landing.scss',
 })
