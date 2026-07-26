@@ -1,0 +1,37 @@
+<svg [attr.viewBox]="viewBox()" class="diagram-svg">
+  <g class="wires" fill="none">
+    <path [attr.d]="wires()"></path>
+  </g>
+  <path class="wire-active" [attr.d]="activeWire()" fill="none"></path>
+  <g class="nodes">
+    @for (node of nodes(); track node.label) {
+      <rect
+        class="node"
+        [class.node-active]="node.variant === 'active'"
+        [class.node-logic]="node.variant === 'logic'"
+        [class.node-highlight]="node.variant === 'highlight'"
+        [attr.x]="node.x"
+        [attr.y]="node.y"
+        [attr.width]="node.width ?? 66"
+        [attr.height]="node.height ?? 30"
+        rx="6"
+      ></rect>
+      <text
+        class="node-label"
+        [class.text-accent]="node.variant === 'highlight'"
+        [attr.x]="node.x + (node.width ?? 66) / 2"
+        [attr.y]="node.y + (node.height ?? 30) / 2 + 3"
+        >{{ node.label }}</text
+      >
+    }
+  </g>
+  <circle class="pulse" [attr.cx]="pulse().x" [attr.cy]="pulse().y" r="3">
+    <animate attributeName="opacity" values="1;.15;1" dur="1.8s" repeatCount="indefinite" />
+  </circle>
+</svg>
+@if (statusLabel(); as label) {
+  <div class="diagram-status">
+    <span class="status-label">{{ label }}</span>
+    <span class="status-live">● {{ statusState() }}</span>
+  </div>
+}

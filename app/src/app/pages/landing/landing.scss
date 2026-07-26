@@ -73,7 +73,7 @@ $mkt-stack-breakpoint: 860px;
 
   .hero-sub {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--mkt-text-lead);
     line-height: 1.6;
     color: var(--mkt-muted);
     max-width: 46ch;
@@ -109,7 +109,7 @@ $mkt-stack-breakpoint: 860px;
     gap: 36px;
     margin-top: 10px;
     font-family: var(--mkt-font-mono);
-    font-size: 13px;
+    font-size: var(--mkt-text-sm);
     color: var(--mkt-muted);
 
     strong {
@@ -214,7 +214,6 @@ $mkt-stack-breakpoint: 860px;
 
   .sdk {
     @include section-grid(1fr 1fr);
-    border-bottom: var(--mkt-border);
   }
 
   .sdk-copy {
@@ -237,7 +236,7 @@ $mkt-stack-breakpoint: 860px;
 
   .sdk-sub {
     margin: 0;
-    font-size: var(--mkt-text-lg);
+    font-size: var(--mkt-text-md);
     line-height: 1.6;
     color: var(--mkt-muted);
     max-width: 40ch;
@@ -282,82 +281,4 @@ $mkt-stack-breakpoint: 860px;
     color: var(--mkt-code-number);
   }
 
-  .hero-diagram {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .diagram-svg {
-    flex: 1;
-    min-height: 380px;
-    background: radial-gradient(340px 220px at 55% 40%, var(--mkt-bg-accent-subtle), transparent 65%);
-  }
-
-  .nodes {
-    font-family: var(--mkt-font-mono);
-    font-size: var(--mkt-text-2xs);
-  }
-
-  .wires path {
-    stroke: rgba(244, 244, 240, 0.18);
-    stroke-width: 1.2;
-  }
-
-  .wire-active {
-    stroke: var(--mkt-accent);
-    stroke-width: 1.6;
-  }
-
-  .node {
-    fill: var(--mkt-bg-card);
-    stroke: rgba(244, 244, 240, 0.25);
-  }
-
-  .node-active {
-    stroke: var(--mkt-accent);
-    stroke-opacity: 0.8;
-  }
-
-  .node-logic {
-    stroke: rgba(244, 244, 240, 0.45);
-  }
-
-  .node-highlight {
-    fill: var(--mkt-bg-accent-subtle);
-    stroke: var(--mkt-accent);
-  }
-
-  text {
-    fill: rgba(244, 244, 240, 0.75);
-  }
-
-  .text-accent {
-    fill: var(--mkt-accent);
-  }
-
-  .pulse {
-    fill: var(--mkt-accent);
-  }
-
-  .diagram-status {
-    border-top: var(--mkt-border);
-    padding: 15px 24px;
-    font-family: var(--mkt-font-mono);
-    font-size: var(--mkt-text-xs);
-    color: var(--mkt-muted);
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .status-label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .status-live {
-    color: var(--mkt-accent);
-  }
 }

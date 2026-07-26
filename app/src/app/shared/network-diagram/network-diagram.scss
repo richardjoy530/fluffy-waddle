@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.diagram-svg {
+  flex: 1;
+  min-height: 380px;
+  background: radial-gradient(340px 220px at 55% 40%, var(--mkt-bg-accent-subtle), transparent 65%);
+}
+
+.nodes {
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-2xs);
+}
+
+.wires path {
+  stroke: rgba(244, 244, 240, 0.18);
+  stroke-width: 1.2;
+}
+
+.wire-active {
+  stroke: var(--mkt-accent);
+  stroke-width: 1.6;
+}
+
+.node {
+  fill: var(--mkt-bg-card);
+  stroke: rgba(244, 244, 240, 0.25);
+}
+
+.node-active {
+  stroke: var(--mkt-accent);
+  stroke-opacity: 0.8;
+}
+
+.node-logic {
+  stroke: rgba(244, 244, 240, 0.45);
+}
+
+.node-highlight {
+  fill: var(--mkt-bg-accent-subtle);
+  stroke: var(--mkt-accent);
+}
+
+text {
+  fill: rgba(244, 244, 240, 0.75);
+}
+
+.node-label {
+  text-anchor: middle;
+}
+
+.text-accent {
+  fill: var(--mkt-accent);
+}
+
+.pulse {
+  fill: var(--mkt-accent);
+}
+
+.diagram-status {
+  border-top: var(--mkt-border);
+  padding: 15px 24px;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-xs);
+  color: var(--mkt-muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-live {
+  color: var(--mkt-accent);
+}

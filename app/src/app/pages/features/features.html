@@ -1,4 +1,36 @@
-<section class="hero">
+<section class="capabilities">
   <app-eyebrow label="FIG.01 — CAPABILITIES" />
-  <h1 class="hero-title">Everything on a <span class="accent">live line.</span></h1>
+  <h1 class="capabilities-title">Everything on a <span class="accent">live line.</span></h1>
+</section>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="hero-label">A. Persistent sockets</span>
+    <h1 class="hero-title">The connection never drops. On purpose.</h1>
+    <p class="hero-sub">
+      Every client — an edge device, a backend, a browser — holds one always-open WebSocket.
+      Commands travel down it in 12ms median; telemetry travels up. Reconnects, backoff and
+      message resumption are the SDK's problem, not yours.
+    </p>
+    <div class="hero-stats">
+      <span><strong>99.98%</strong> UPTIME</span>
+      <span><strong>40k</strong> CONNS/WORKSPACE</span>
+    </div>
+  </div>
+
+  <app-network-diagram
+    viewBox="0 0 400 320"
+    [nodes]="[
+      { x: 24, y: 44, width: 76, label: 'edge-01', variant: 'active' },
+      { x: 24, y: 144, width: 76, label: 'edge-02' },
+      { x: 24, y: 244, width: 76, label: 'browser' },
+      { x: 160, y: 142, width: 80, height: 36, label: 'wbskt', variant: 'highlight' },
+      { x: 300, y: 44, width: 76, label: 'backend' },
+      { x: 300, y: 144, width: 76, label: 'saas' },
+      { x: 300, y: 244, width: 76, label: 'agent', variant: 'active' }
+    ]"
+    wires="M200 160 L 70 60 M200 160 L 70 160 M200 160 L 70 260 M200 160 L 330 60 M200 160 L 330 160 M200 160 L 330 260"
+    activeWire="M200 160 L 70 60 M200 160 L 330 260"
+    [pulse]="{ x: 135, y: 110 }"
+  />
 </section>
