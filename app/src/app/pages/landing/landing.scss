@@ -250,35 +250,4 @@ $mkt-stack-breakpoint: 860px;
     color: var(--mkt-fg);
   }
 
-  .sdk-code {
-    min-width: 0;
-    padding: 40px;
-    background: var(--mkt-bg-code);
-    overflow-x: auto;
-
-    pre {
-      margin: 0;
-      font-family: var(--mkt-font-mono);
-      font-size: var(--mkt-text-lg);
-      line-height: 1.8;
-      color: var(--mkt-code-fg);
-    }
-  }
-
-  .code-comment {
-    color: var(--mkt-dim);
-  }
-
-  .code-keyword {
-    color: var(--mkt-code-keyword);
-  }
-
-  .code-string {
-    color: var(--mkt-code-string);
-  }
-
-  .code-number {
-    color: var(--mkt-code-number);
-  }
-
 }

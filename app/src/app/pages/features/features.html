@@ -4,10 +4,10 @@
 </section>
 
 <section class="hero">
-  <div class="hero-copy">
-    <span class="hero-label">A. Persistent sockets</span>
-    <h1 class="hero-title">The connection never drops. On purpose.</h1>
-    <p class="hero-sub">
+  <div class="section-copy">
+    <span class="section-label">A. Persistent sockets</span>
+    <h2 class="section-title">The connection never drops. On purpose.</h2>
+    <p class="section-body">
       Every client — an edge device, a backend, a browser — holds one always-open WebSocket.
       Commands travel down it in 12ms median; telemetry travels up. Reconnects, backoff and
       message resumption are the SDK's problem, not yours.
@@ -33,4 +33,45 @@
     activeWire="M200 160 L 70 60 M200 160 L 330 260"
     [pulse]="{ x: 135, y: 110 }"
   />
+</section>
+
+<section class="section-b">
+  <app-terminal class="terminal">
+    <div><span class="code-comment">// runs survive anything</span></div>
+    <div>run #2047 <span class="code-string">STARTED</span> &nbsp;trigger: sensor.in</div>
+    <div>run #2047 BRANCH &nbsp;&nbsp;logic &gt; 35° = true</div>
+    <div>run #2047 <span class="code-number">PAUSED</span> &nbsp;&nbsp;delay 10m — state persisted</div>
+    <div><span class="code-comment">-- platform restart --</span></div>
+    <div>run #2047 <span class="code-string">RESUMED</span> &nbsp;from checkpoint 3/5</div>
+    <div>run #2047 <span class="code-keyword">COMMAND</span> &nbsp;send.sms → ack 41ms</div>
+    <div>run #2047 <span class="code-string">DONE</span> &nbsp;&nbsp;&nbsp;&nbsp;5/5 steps · 10m 02s</div>
+  </app-terminal>
+  <div class="section-copy">
+    <span class="section-label">B. Stateful workflows</span>
+    <h2 class="section-title">Runs with memory.</h2>
+    <p class="section-body">
+      A run isn't a function invocation — it's a durable object. It waits on delays and events
+      without burning compute, checkpoints every step, and resumes exactly where it stopped
+      after any restart. Every branch and ack is in the audit trail, replayable.
+    </p>
+  </div>
+</section>
+
+<section class="section-c">
+  <div class="section-copy">
+    <span class="section-label">C. Sandboxed marketplace</span>
+    <h2 class="section-title">Integrations that can't overreach.</h2>
+    <p class="section-body">
+      Third-party services mount as virtual clients — same protocol as your hardware, none of
+      the trust. Each one runs in a sandbox with explicit channel permissions you grant and
+      revoke per workspace.
+    </p>
+    <a href="#" class="section-cta">Browse the marketplace →</a>
+  </div>
+  <div class="virtual-clients">
+    <app-vc-card name="twilio.sms" status="MOUNTED · send only" variant="ok" />
+    <app-vc-card name="slack.notify" status="MOUNTED · 2 channels" variant="ok" />
+    <app-vc-card name="openai.agent" status="PENDING GRANT" variant="pending" />
+    <app-vc-card name="sheets.append" status="REVOKED" variant="revoked" />
+  </div>
 </section>

@@ -1,0 +1,9 @@
+<span class="label">VIRTUAL CLIENT</span>
+<span class="name">{{ name() }}</span>
+<span
+  class="status"
+  [class.status-ok]="variant() === 'ok'"
+  [class.status-pending]="variant() === 'pending'"
+  [class.status-revoked]="variant() === 'revoked'"
+  >● {{ status() }}</span
+>

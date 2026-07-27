@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 24px;
+}
+
+.label {
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-micro);
+  color: var(--mkt-muted);
+}
+
+.name {
+  font-size: var(--mkt-text-md);
+  font-weight: var(--mkt-weight-medium);
+}
+
+.status {
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-micro);
+}
+
+.status-ok {
+  color: var(--mkt-success);
+}
+
+.status-pending {
+  color: var(--mkt-code-number);
+}
+
+.status-revoked {
+  color: var(--mkt-accent);
+}

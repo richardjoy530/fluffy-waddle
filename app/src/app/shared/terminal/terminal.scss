@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 44px 40px;
+  background: var(--mkt-bg-code);
+  overflow-x: auto;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-sm);
+  line-height: 1.9;
+  color: var(--mkt-code-fg);
+
+  ::ng-deep pre {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+
+  ::ng-deep .code-comment {
+    color: var(--mkt-dim);
+  }
+
+  ::ng-deep .code-keyword {
+    color: var(--mkt-code-keyword);
+  }
+
+  ::ng-deep .code-string {
+    color: var(--mkt-code-string);
+  }
+
+  ::ng-deep .code-number {
+    color: var(--mkt-code-number);
+  }
+}

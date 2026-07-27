@@ -106,7 +106,7 @@
     <a href="#" class="sdk-cta">Read the docs →</a>
   </div>
 
-  <div class="sdk-code">
+  <app-terminal>
     <pre><code><span class="code-comment">// hold the line open</span>
 <span class="code-keyword">const</span> client = <span class="code-keyword">await</span> wbskt.connect({{ '{' }} token {{ '}' }});
 client.on(<span class="code-string">'command:open.vent'</span>, <span class="code-keyword">async</span> (cmd) => {{ '{' }}
@@ -114,5 +114,5 @@ client.on(<span class="code-string">'command:open.vent'</span>, <span class="cod
   cmd.ack();
 {{ '}' }});
 client.emit(<span class="code-string">'sensor.in'</span>, {{ '{' }} temp: <span class="code-number">36.2</span> {{ '}' }});</code></pre>
-  </div>
+  </app-terminal>
 </section>
