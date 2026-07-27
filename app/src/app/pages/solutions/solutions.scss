@@ -1,6 +1,21 @@
 @use '../../../styles/mixins/marketing-mixins' as *;
 
 :host {
+  .hero {
+    padding: 72px 48px 56px;
+    border-bottom: var(--mkt-border);
+  }
+
+  .hero-title {
+    margin: 20px 0 0;
+    @include display-heading(32px, 8vw, 84px, -0.04em, 0.94);
+    max-width: 14ch;
+
+    .accent {
+      color: var(--mkt-accent);
+    }
+  }
+
   .solutions-grid {
     @include section-grid(repeat(3, 1fr));
   }
@@ -8,4 +23,55 @@
   app-solution-card {
     @include grid-cell-borders(3);
   }
+
+  .field {
+    @include section-grid(0.9fr 1.1fr);
+    border-top: var(--mkt-border);
+  }
+
+  .field-copy {
+    min-width: 0;
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+
+    @include stack-divider;
+  }
+
+  .field-title {
+    margin: 0;
+    @include display-heading(28px, 3.4vw, 40px);
+  }
+
+  .field-body {
+    margin: 0;
+    font-size: var(--mkt-text-md);
+    line-height: 1.65;
+    color: var(--mkt-muted);
+    max-width: 46ch;
+  }
+
+  .field-stats {
+    display: flex;
+    gap: 28px;
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-xs);
+    color: var(--mkt-muted);
+
+    strong {
+      color: var(--mkt-fg);
+      font-weight: var(--mkt-weight-medium);
+    }
+
+    .accent {
+      color: var(--mkt-accent);
+
+      strong {
+        color: var(--mkt-accent);
+      }
+    }
+  }
+
 }

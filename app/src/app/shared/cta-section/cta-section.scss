@@ -1,0 +1,42 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  border-top: var(--mkt-border);
+  padding: 72px 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  background: radial-gradient(700px 340px at 50% 120%, var(--mkt-bg-accent-subtle), transparent 70%);
+}
+
+.title {
+  margin: 0;
+  @include display-heading(32px, 6vw, 56px, -0.04em, 0.96);
+}
+
+.actions {
+  display: flex;
+}
+
+.primary {
+  background: var(--mkt-accent);
+  color: var(--mkt-on-accent);
+  padding: 15px 28px;
+  font-weight: var(--mkt-weight-medium);
+  font-size: var(--mkt-text-lg);
+
+  &:hover {
+    background: var(--mkt-accent-hover);
+  }
+}
+
+.secondary {
+  border: var(--mkt-border);
+  border-left: none;
+  padding: 15px 28px;
+  font-size: var(--mkt-text-lg);
+  font-family: var(--mkt-font-mono);
+  color: var(--mkt-fg);
+}

@@ -1,3 +1,8 @@
+<section class="hero">
+  <app-eyebrow label="FIG.01 — DEPLOYMENTS" />
+  <h1 class="hero-title">Wherever things need <span class="accent">commanding.</span></h1>
+</section>
+
 <section class="solutions-grid">
   <app-solution-card
     tag="01 · INDUSTRIAL IOT"
@@ -30,3 +35,36 @@
     body="Long experiments as long runs: checkpoint every reading, resume after restarts, replay the full trail."
     stack="audit trail · replay" />
 </section>
+
+<section class="field">
+  <div class="field-copy">
+    <app-eyebrow label="FIG.02 — IN THE FIELD" />
+    <h2 class="field-title">A greenhouse that texts before it overheats.</h2>
+    <p class="field-body">
+      Temperature sensors stream on live sockets. A workflow watches the threshold, opens the
+      vents, waits ten minutes, and escalates by SMS only if the zone is still hot — one run,
+      five steps, zero polling.
+    </p>
+    <div class="field-stats">
+      <span><strong>140</strong> SENSORS</span>
+      <span><strong>6</strong> ZONES</span>
+      <span class="accent"><strong>0</strong> CRON JOBS</span>
+    </div>
+  </div>
+  <app-terminal>
+    <div><span class="code-comment">// temp-alert-flow · zone 4</span></div>
+    <div>14:02:11 sensor.in &nbsp;&nbsp;<span class="code-number">36.2°</span> — threshold breached</div>
+    <div>14:02:11 open.vent &nbsp;<span class="code-string">ack 38ms</span></div>
+    <div>14:02:11 delay.10m &nbsp;<span class="code-comment">run paused, state persisted</span></div>
+    <div>14:12:11 sensor.in &nbsp;<span class="code-number">35.8°</span> — still hot</div>
+    <div>14:12:12 send.sms &nbsp;&nbsp;<span class="code-keyword">→ +31 6 ·· ·· 41 · delivered</span></div>
+    <div>14:12:12 run #2047 &nbsp;<span class="code-string">DONE</span> · cost: 0.4 wf-sec</div>
+  </app-terminal>
+</section>
+
+<app-cta-section
+  title="Your fleet is waiting."
+  primaryLabel="Start building →"
+  primaryHref="#"
+  secondaryLabel="See pricing"
+  secondaryHref="#" />
