@@ -1,0 +1,7 @@
+<app-eyebrow [label]="eyebrowLabel()" />
+<h1 class="title" [style.max-width]="maxWidth()">
+  {{ titlePrefix() }} <span class="accent">{{ titleAccent() }}</span>
+</h1>
+@if (sub(); as subText) {
+  <p class="sub">{{ subText }}</p>
+}

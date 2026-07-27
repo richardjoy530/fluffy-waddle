@@ -1,0 +1,24 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  display: block;
+  padding: 72px 48px 56px;
+  border-bottom: var(--mkt-border);
+}
+
+.title {
+  margin: 20px 0 0;
+  @include display-heading(32px, 8vw, 84px, -0.04em, 0.94);
+
+  .accent {
+    color: var(--mkt-accent);
+  }
+}
+
+.sub {
+  margin: 18px 0 0;
+  font-size: var(--mkt-text-lg);
+  line-height: 1.6;
+  color: var(--mkt-muted);
+  max-width: 56ch;
+}

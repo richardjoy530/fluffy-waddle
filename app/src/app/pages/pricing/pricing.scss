@@ -1,0 +1,179 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  .tiers {
+    @include section-grid(1fr 1fr);
+  }
+
+  .tier {
+    min-width: 0;
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    @include stack-divider;
+  }
+
+  .tier-scale {
+    border-right: none;
+    background: var(--mkt-bg-card);
+  }
+
+  .tier-label {
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-xs);
+    letter-spacing: 0.1em;
+    color: var(--mkt-muted);
+  }
+
+  .tier-label-accent {
+    color: var(--mkt-accent);
+  }
+
+  .tier-price {
+    font-size: 64px; // page-specific price display, not part of the shared scale
+    font-weight: var(--mkt-weight-bold);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .tier-price-suffix {
+    font-size: var(--mkt-text-lead);
+    font-weight: var(--mkt-weight-regular);
+    color: var(--mkt-muted);
+  }
+
+  .tier-desc {
+    margin: 0;
+    font-size: var(--mkt-text-base);
+    line-height: 1.6;
+    color: var(--mkt-muted);
+  }
+
+  .tier-features {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-sm);
+    color: var(--mkt-code-fg);
+    border-top: 1px solid var(--mkt-hairline);
+
+    > span {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--mkt-hairline);
+    }
+
+    > span:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .tier-feature-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tier-feature-value {
+    color: var(--mkt-fg);
+  }
+
+  .tier-feature-accent {
+    color: var(--mkt-accent);
+  }
+
+  .tier-actions {
+    display: flex;
+    margin-top: 6px;
+  }
+
+  .tier-cta-primary {
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    padding: 13px 24px;
+    font-size: var(--mkt-text-md);
+    font-weight: var(--mkt-weight-medium);
+
+    &:hover {
+      background: var(--mkt-accent-hover);
+    }
+  }
+
+  .tier-cta-secondary {
+    border: var(--mkt-border);
+    padding: 13px 24px;
+    font-size: var(--mkt-text-md);
+    font-weight: var(--mkt-weight-medium);
+    color: var(--mkt-fg);
+  }
+
+  // standalone (Builder tier) vs paired with the primary button (Scale tier)
+  .tier > .tier-cta-secondary {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  .tier-actions .tier-cta-secondary {
+    border-left: none;
+    font-family: var(--mkt-font-mono);
+    font-weight: var(--mkt-weight-regular);
+  }
+
+  .faqs {
+    @include section-grid(260px 1fr);
+    border-top: var(--mkt-border);
+  }
+
+  .faq-intro {
+    padding: 40px 28px;
+
+    @include stack-divider;
+  }
+
+  .faq-label {
+    @include mono-label;
+  }
+
+  .faq-heading {
+    margin: 8px 0 0;
+    font-size: 30px; // page-specific section heading, not part of the shared scale
+    font-weight: var(--mkt-weight-bold);
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-row {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--mkt-hairline);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+
+  .faq-row:last-child {
+    border-bottom: none;
+  }
+
+  .faq-q {
+    font-weight: var(--mkt-weight-medium);
+    font-size: var(--mkt-text-lg);
+  }
+
+  .faq-a {
+    margin: 0;
+    font-size: var(--mkt-text-base);
+    line-height: 1.6;
+    color: var(--mkt-muted);
+  }
+}

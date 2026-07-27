@@ -1,21 +1,6 @@
 @use '../../../styles/mixins/marketing-mixins' as *;
 
 :host {
-  .capabilities {
-    padding: 72px 48px 56px;
-    border-bottom: var(--mkt-border);
-  }
-
-  .capabilities-title {
-    margin: 20px 0 0;
-    @include display-heading(32px, 8vw, 84px, -0.04em, 0.94);
-    max-width: 14ch;
-
-    .accent {
-      color: var(--mkt-accent);
-    }
-  }
-
   .hero,
   .section-b,
   .section-c {
