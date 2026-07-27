@@ -1,0 +1,78 @@
+/* wbskt marketing site — shared layout/typography mixins
+   Used by page-level styleUrls across app/src/app/pages/*. Angular compiles each
+   component styleUrl independently, so this must be @use'd per-file (unlike the
+   --mkt-* CSS custom properties, which cascade globally without an import). */
+
+$mkt-stack-breakpoint: 860px;
+
+@mixin stack {
+  @media (max-width: $mkt-stack-breakpoint) {
+    @content;
+  }
+}
+
+@mixin section-grid($columns) {
+  display: grid;
+  grid-template-columns: $columns;
+
+  @include stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+// border-right on desktop, collapsing to border-bottom once columns stack
+@mixin stack-divider {
+  border-right: var(--mkt-border);
+
+  @include stack {
+    border-right: none;
+    border-bottom: var(--mkt-border);
+    @content;
+  }
+}
+
+// full border-grid cell: right+bottom borders, collapsing the last column/row's
+// borders, and swapping right-borders for bottom-borders once the grid stacks
+// to a single column. $columns must match the grid's column count.
+@mixin grid-cell-borders($columns) {
+  border-right: var(--mkt-border);
+  border-bottom: var(--mkt-border);
+
+  @include stack {
+    border-right: none;
+  }
+
+  &:nth-child(#{$columns}n) {
+    border-right: none;
+  }
+
+  &:nth-last-child(-n + #{$columns}) {
+    border-bottom: none;
+
+    @include stack {
+      border-bottom: var(--mkt-border);
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// page-specific hero/section headline sizes, not part of the shared token scale
+@mixin display-heading($min, $preferred, $max, $letter-spacing: -0.03em, $line-height: 1) {
+  font-size: clamp($min, $preferred, $max);
+  line-height: $line-height;
+  font-weight: var(--mkt-weight-bold);
+  letter-spacing: $letter-spacing;
+  text-transform: uppercase;
+}
+
+@mixin mono-label {
+  display: block;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-xs);
+  letter-spacing: 0.12em;
+  color: var(--mkt-accent);
+  text-transform: uppercase;
+}

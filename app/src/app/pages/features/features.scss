@@ -1,3 +1,5 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
 :host {
   .capabilities {
     padding: 72px 48px 56px;
@@ -6,11 +8,7 @@
 
   .capabilities-title {
     margin: 20px 0 0;
-    font-size: clamp(32px, 8vw, 84px); // page-specific hero size, not part of the shared scale
-    line-height: 0.94;
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
+    @include display-heading(32px, 8vw, 84px, -0.04em, 0.94);
     max-width: 14ch;
 
     .accent {
@@ -21,12 +19,7 @@
   .hero,
   .section-b,
   .section-c {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-    }
+    @include section-grid(1fr 1fr);
   }
 
   .section-b,
@@ -42,19 +35,8 @@
     justify-content: center;
     gap: 16px;
 
-    @media (max-width: 860px) {
+    @include stack-divider {
       padding: 56px 24px 48px;
-    }
-  }
-
-  .hero .section-copy,
-  .section-b .section-copy,
-  .section-c .section-copy {
-    border-right: var(--mkt-border);
-
-    @media (max-width: 860px) {
-      border-right: none;
-      border-bottom: var(--mkt-border);
     }
   }
 
@@ -64,21 +46,12 @@
   }
 
   .section-label {
-    display: block;
-    font-family: var(--mkt-font-mono);
-    font-size: var(--mkt-text-xs);
-    letter-spacing: 0.12em;
-    color: var(--mkt-accent);
-    text-transform: uppercase;
+    @include mono-label;
   }
 
   .section-title {
     margin: 0;
-    font-size: clamp(28px, 3.4vw, 40px); // page-specific section size, not part of the shared scale
-    line-height: 1;
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    @include display-heading(28px, 3.4vw, 40px);
   }
 
   .section-body {
@@ -113,45 +86,90 @@
   }
 
   .terminal {
-    border-right: var(--mkt-border);
-
-    @media (max-width: 860px) {
-      border-right: none;
-      border-bottom: var(--mkt-border);
-    }
+    @include stack-divider;
   }
 
   .virtual-clients {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-    }
+    @include section-grid(1fr 1fr);
   }
 
   app-vc-card {
-    border-right: var(--mkt-border);
-    border-bottom: var(--mkt-border);
-
-    @media (max-width: 860px) {
-      border-right: none;
-    }
+    @include grid-cell-borders(2);
   }
 
-  app-vc-card:nth-child(2n) {
+  .specs {
+    border-top: var(--mkt-border);
+    @include section-grid(repeat(4, 1fr));
+  }
+
+  .spec-item {
+    min-width: 0;
+    padding: 26px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    @include stack-divider;
+  }
+
+  .spec-item:last-child {
     border-right: none;
-  }
 
-  app-vc-card:nth-last-child(-n + 2) {
-    border-bottom: none;
-
-    @media (max-width: 860px) {
-      border-bottom: var(--mkt-border);
+    @include stack {
+      border-bottom: none;
     }
   }
 
-  app-vc-card:last-child {
-    border-bottom: none;
+  .spec-value {
+    font-size: 30px; // page-specific stat size, not part of the shared scale
+    font-weight: var(--mkt-weight-bold);
+    letter-spacing: -0.02em;
+  }
+
+  .spec-label {
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-tag);
+    color: var(--mkt-muted);
+  }
+
+  .cta {
+    border-top: var(--mkt-border);
+    padding: 72px 48px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    background: radial-gradient(700px 340px at 50% 120%, var(--mkt-bg-accent-subtle), transparent 70%);
+  }
+
+  .cta-title {
+    margin: 0;
+    @include display-heading(32px, 6vw, 56px, -0.04em, 0.96);
+  }
+
+  .cta-actions {
+    display: flex;
+  }
+
+  .cta-primary {
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    padding: 15px 28px;
+    font-weight: var(--mkt-weight-medium);
+    font-size: var(--mkt-text-lg);
+
+    &:hover {
+      background: var(--mkt-accent-hover);
+    }
+  }
+
+  .cta-secondary {
+    border: var(--mkt-border);
+    border-left: none;
+    padding: 15px 28px;
+    font-size: var(--mkt-text-lg);
+    font-family: var(--mkt-font-mono);
+    color: var(--mkt-fg);
   }
 }

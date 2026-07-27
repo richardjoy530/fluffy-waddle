@@ -1,48 +1,4 @@
-$mkt-stack-breakpoint: 860px;
-
-@mixin stack {
-  @media (max-width: $mkt-stack-breakpoint) {
-    @content;
-  }
-}
-
-@mixin section-grid($columns) {
-  display: grid;
-  grid-template-columns: $columns;
-
-  @include stack {
-    grid-template-columns: 1fr;
-  }
-}
-
-// border-right on desktop, collapsing to border-bottom once columns stack
-@mixin stack-divider {
-  border-right: var(--mkt-border);
-
-  @include stack {
-    border-right: none;
-    border-bottom: var(--mkt-border);
-    @content;
-  }
-}
-
-// page-specific hero/section headline sizes, not part of the shared token scale
-@mixin display-heading($min, $preferred, $max, $letter-spacing: -0.03em, $line-height: 1) {
-  font-size: clamp($min, $preferred, $max);
-  line-height: $line-height;
-  font-weight: var(--mkt-weight-bold);
-  letter-spacing: $letter-spacing;
-  text-transform: uppercase;
-}
-
-@mixin mono-label {
-  display: block;
-  font-family: var(--mkt-font-mono);
-  font-size: var(--mkt-text-xs);
-  letter-spacing: 0.12em;
-  color: var(--mkt-accent);
-  text-transform: uppercase;
-}
+@use '../../../styles/mixins/marketing-mixins' as *;
 
 :host {
   .hero {
@@ -188,28 +144,7 @@ $mkt-stack-breakpoint: 860px;
   }
 
   app-capability-card {
-    border-right: var(--mkt-border);
-    border-bottom: var(--mkt-border);
-
-    @include stack {
-      border-right: none;
-    }
-  }
-
-  app-capability-card:nth-child(3n) {
-    border-right: none;
-  }
-
-  app-capability-card:nth-last-child(-n + 3) {
-    border-bottom: none;
-
-    @include stack {
-      border-bottom: var(--mkt-border);
-    }
-  }
-
-  app-capability-card:last-child {
-    border-bottom: none;
+    @include grid-cell-borders(3);
   }
 
   .sdk {
