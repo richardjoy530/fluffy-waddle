@@ -1,0 +1,41 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 180px;
+  padding: 36px 32px;
+
+  &:hover {
+    background: var(--mkt-bg-card);
+  }
+}
+
+.tag {
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-tag);
+  color: var(--mkt-accent);
+}
+
+.title {
+  margin: 0;
+  font-size: 24px; // page-specific card-title size, not part of the shared scale
+  line-height: 1;
+  font-weight: var(--mkt-weight-bold);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.body {
+  margin: 0;
+  font-size: var(--mkt-text-sm);
+  line-height: 1.6;
+  color: var(--mkt-muted);
+}
+
+.stack {
+  margin-top: auto;
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-tag);
+  color: var(--mkt-dim);
+}

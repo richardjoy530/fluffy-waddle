@@ -24,7 +24,7 @@ const siteRoutes: Routes = [
   },
   {
     path: 'solutions',
-    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
+    loadComponent: () => import('./pages/solutions/solutions').then((m) => m.Solutions),
   },
   {
     path: 'pricing',

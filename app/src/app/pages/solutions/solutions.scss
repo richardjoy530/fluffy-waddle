@@ -1,0 +1,35 @@
+:host {
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  app-solution-card {
+    border-right: var(--mkt-border);
+    border-bottom: var(--mkt-border);
+
+    @media (max-width: 860px) {
+      border-right: none;
+    }
+  }
+
+  app-solution-card:nth-child(3n) {
+    border-right: none;
+  }
+
+  app-solution-card:nth-last-child(-n + 3) {
+    border-bottom: none;
+
+    @media (max-width: 860px) {
+      border-bottom: var(--mkt-border);
+    }
+  }
+
+  app-solution-card:last-child {
+    border-bottom: none;
+  }
+}
