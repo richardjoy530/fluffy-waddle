@@ -32,7 +32,7 @@ const siteRoutes: Routes = [
   },
   {
     path: 'docs',
-    loadComponent: () => import('./pages/maintenance/maintenance').then((m) => m.Maintenance),
+    loadComponent: () => import('./pages/docs/docs').then((m) => m.Docs),
   },
   {
     path: 'about',

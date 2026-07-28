@@ -1,1 +1,67 @@
-<p>docs works!</p>
+<section class="hero">
+  <app-eyebrow label="FIG.01 — DOCUMENTATION" />
+  <h1 class="hero-title">Read the <span class="accent">manual.</span></h1>
+  <!-- <div class="search">
+    <span class="search-input">Search the docs… connect, channels, delays</span>
+    <span class="search-key">⌘K</span>
+  </div> -->
+</section>
+
+<section class="docs-grid">
+  <app-doc-card
+    tag="01"
+    title="Quickstart"
+    body="Token to live socket in ten minutes. The shortest path to a connected client."
+    count="4 guides"
+    href="#" />
+  <app-doc-card
+    tag="02"
+    title="SDKs"
+    body="C#, Python and JavaScript references. Connection lifecycle, channels, acks."
+    count="3 references"
+    href="#" />
+  <app-doc-card
+    tag="03"
+    title="Workflows"
+    body="Triggers, logic, delays, joins. How state, checkpoints and resumption work."
+    count="12 guides"
+    href="#" />
+  <app-doc-card
+    tag="04"
+    title="Marketplace"
+    body="Mounting virtual clients, permission grants, publishing your own integration."
+    count="8 guides"
+    href="#" />
+  <app-doc-card
+    tag="05"
+    title="API reference"
+    body="REST and WebSocket protocol reference for everything the SDKs wrap."
+    count="full spec"
+    href="#" />
+  <app-doc-card
+    tag="06"
+    title="CLI"
+    body="Tokens, deploys, tailing runs from the terminal. wbskt --help, but readable."
+    count="20 commands"
+    href="#" />
+</section>
+
+<section class="quickstart">
+  <div class="quickstart-copy">
+    <app-eyebrow label="FIG.02 — QUICKSTART" />
+    <h2 class="quickstart-title">Connected in ten minutes.</h2>
+    <p class="quickstart-body">
+      Install the SDK, mint a client token in the console, open the socket. Your first
+      workflow can be watching that client before your coffee cools.
+    </p>
+    <a href="#" class="quickstart-cta">Open quickstart →</a>
+  </div>
+  <app-terminal>
+    <div><span class="code-comment">$</span> npm i &#64;wbskt/sdk</div>
+    <div><span class="code-comment">$</span> wbskt token create --client edge-01</div>
+    <div><span class="code-string">✓</span> token wsk_live_····9f42 written to .env</div>
+    <div><span class="code-comment">$</span> node connect.js</div>
+    <div><span class="code-string">✓</span> edge-01 connected · channel sensor.in live</div>
+    <div><span class="code-keyword">●</span> awaiting commands…</div>
+  </app-terminal>
+</section>

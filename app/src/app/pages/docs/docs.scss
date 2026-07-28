@@ -1,0 +1,93 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  .hero {
+    padding: 64px 48px 48px;
+    border-bottom: var(--mkt-border);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  app-eyebrow {
+    align-self: flex-start;
+  }
+
+  .hero-title {
+    margin: 0;
+    @include display-heading(32px, 7vw, 72px, -0.04em, 0.94);
+
+    .accent {
+      color: var(--mkt-accent);
+    }
+  }
+
+  .search {
+    display: flex;
+    max-width: 640px;
+  }
+
+  .search-input {
+    border: var(--mkt-border);
+    padding: 14px 20px;
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-base);
+    color: var(--mkt-dim);
+    flex: 1;
+  }
+
+  .search-key {
+    background: var(--mkt-accent);
+    color: var(--mkt-on-accent);
+    padding: 14px 24px;
+    font-weight: var(--mkt-weight-medium);
+    font-size: var(--mkt-text-base);
+    border: 2px solid var(--mkt-accent);
+  }
+
+  .docs-grid {
+    @include section-grid(repeat(3, 1fr));
+  }
+
+  app-doc-card {
+    @include grid-cell-borders(3);
+  }
+
+  .quickstart {
+    @include section-grid(0.9fr 1.1fr);
+    border-top: var(--mkt-border);
+  }
+
+  .quickstart-copy {
+    min-width: 0;
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+
+    @include stack-divider;
+  }
+
+  .quickstart-title {
+    margin: 0;
+    @include display-heading(28px, 3.4vw, 40px);
+  }
+
+  .quickstart-body {
+    margin: 0;
+    font-size: var(--mkt-text-md);
+    line-height: 1.65;
+    color: var(--mkt-muted);
+    max-width: 44ch;
+  }
+
+  .quickstart-cta {
+    align-self: flex-start;
+    border: var(--mkt-border);
+    padding: 11px 20px;
+    font-size: var(--mkt-text-sm);
+    font-family: var(--mkt-font-mono);
+    color: var(--mkt-fg);
+  }
+}
