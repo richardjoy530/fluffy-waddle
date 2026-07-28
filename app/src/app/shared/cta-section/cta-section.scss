@@ -16,6 +16,12 @@
   @include display-heading(32px, 6vw, 56px, -0.04em, 0.96);
 }
 
+.sub {
+  margin: 0;
+  font-size: var(--mkt-text-md);
+  color: var(--mkt-muted);
+}
+
 .actions {
   display: flex;
 }

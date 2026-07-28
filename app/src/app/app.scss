@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // legacy Edge/IE
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Chromium Edge — fully custom thumb below
+  }
+}
+
+.scroll-thumb {
+  position: fixed;
+  right: 5px;
+  width: 5px;
+  border-radius: 999px;
+  background: var(--mkt-hairline);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 50;
+
+  &.visible {
+    opacity: 1;
+  }
+}

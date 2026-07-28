@@ -8,6 +8,7 @@ import { Component, input } from '@angular/core';
 })
 export class CtaSection {
   readonly title = input.required<string>();
+  readonly sub = input<string | null>(null);
   readonly primaryLabel = input.required<string>();
   readonly primaryHref = input.required<string>();
   readonly secondaryLabel = input.required<string>();

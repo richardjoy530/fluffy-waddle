@@ -1,4 +1,7 @@
 <h2 class="title">{{ title() }}</h2>
+@if (sub(); as subText) {
+  <p class="sub">{{ subText }}</p>
+}
 <div class="actions">
   <a [href]="primaryHref()" class="primary">{{ primaryLabel() }}</a>
   <a [href]="secondaryHref()" class="secondary">{{ secondaryLabel() }}</a>

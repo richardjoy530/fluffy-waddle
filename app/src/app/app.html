@@ -1,7 +1,17 @@
 @if (!maintenanceMode) {
   <app-header />
 }
-<router-outlet />
-@if (!maintenanceMode) {
-  <app-footer />
+<div class="scroll-area" #scrollArea (scroll)="onScroll()">
+  <router-outlet />
+  @if (!maintenanceMode) {
+    <app-footer />
+  }
+</div>
+@if (canScroll()) {
+  <div
+    class="scroll-thumb"
+    [class.visible]="isScrolling()"
+    [style.top.px]="thumbTop()"
+    [style.height.px]="thumbHeight()"
+  ></div>
 }
