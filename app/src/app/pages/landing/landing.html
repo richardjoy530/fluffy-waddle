@@ -2,10 +2,10 @@
   <div class="hero-copy">
     <h1 class="hero-title">
       <span class="accent">40,000 sockets.</span><br />
-      One workflow IDE.
+      One place to run it all.
     </h1>
     <p class="hero-sub">
-      Every device, service and model on a live line. Workflows with memory. Enterprise
+      Every device, service and model, always connected. Workflows with memory. Enterprise
       control without the per-task tax.
     </p>
     <div class="hero-actions">
@@ -98,7 +98,7 @@
 <section class="sdk">
   <div class="sdk-copy">
     <app-eyebrow label="FIG.04 — SDK" />
-    <h2 class="sdk-title">Ten lines to a live line.</h2>
+    <h2 class="sdk-title">Ten lines to a live connection.</h2>
     <p class="sdk-sub">
       Register a client, subscribe to a channel, act on commands. The SDK handles reconnects,
       backoff and resumption.
@@ -107,7 +107,7 @@
   </div>
 
   <app-terminal>
-    <pre><code><span class="code-comment">// hold the line open</span>
+    <pre><code><span class="code-comment">// keep the socket open</span>
 <span class="code-keyword">const</span> client = <span class="code-keyword">await</span> wbskt.connect({{ '{' }} token {{ '}' }});
 client.on(<span class="code-string">'command:open.vent'</span>, <span class="code-keyword">async</span> (cmd) => {{ '{' }}
   <span class="code-keyword">await</span> vent.open(cmd.zone);
