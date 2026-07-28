@@ -124,23 +124,8 @@
     border-top: var(--mkt-border);
   }
 
-  .faq-intro {
-    padding: 40px 28px;
-
+  app-section-intro {
     @include stack-divider;
-  }
-
-  .faq-label {
-    @include mono-label;
-  }
-
-  .faq-heading {
-    margin: 8px 0 0;
-    font-size: 30px; // page-specific section heading, not part of the shared scale
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    line-height: 1;
   }
 
   .faq-list {

@@ -1,0 +1,94 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  .hero {
+    padding: 88px 48px 72px;
+    border-bottom: var(--mkt-border);
+  }
+
+  .hero-title {
+    margin: 22px 0 0;
+    @include display-heading(32px, 7vw, 76px, -0.04em, 0.96);
+    max-width: 20ch;
+
+    .accent {
+      color: var(--mkt-accent);
+    }
+  }
+
+  .hero-sub {
+    margin: 24px 0 0;
+    font-size: var(--mkt-text-copy);
+    line-height: 1.65;
+    color: var(--mkt-muted);
+    max-width: 58ch;
+  }
+
+  .principles {
+    @include section-grid(260px 1fr);
+  }
+
+  app-section-intro {
+    @include stack-divider;
+  }
+
+  .principle-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .principle-row {
+    padding: 26px 32px;
+    border-bottom: 1px solid var(--mkt-hairline);
+    display: grid;
+    grid-template-columns: 44px 1fr 1.3fr;
+    gap: 24px;
+    align-items: baseline;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+
+  .principle-row:last-child {
+    border-bottom: none;
+  }
+
+  .principle-n {
+    font-family: var(--mkt-font-mono);
+    font-size: var(--mkt-text-sm);
+    color: var(--mkt-accent);
+  }
+
+  .principle-title {
+    font-weight: var(--mkt-weight-bold);
+    font-size: 19px; // page-specific card-title size, not part of the shared scale
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .principle-body {
+    margin: 0;
+    font-size: var(--mkt-text-base);
+    line-height: 1.6;
+    color: var(--mkt-muted);
+  }
+
+  .stats {
+    border-top: var(--mkt-border);
+    @include section-grid(repeat(4, 1fr));
+  }
+
+  app-spec-item {
+    @include stack-divider;
+  }
+
+  app-spec-item:last-child {
+    border-right: none;
+
+    @include stack {
+      border-bottom: none;
+    }
+  }
+}

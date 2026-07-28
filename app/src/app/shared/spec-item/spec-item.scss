@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 26px 32px;
+}
+
+.value {
+  font-size: 30px; // page-specific stat size, not part of the shared scale
+  font-weight: var(--mkt-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+.value.accent {
+  color: var(--mkt-accent);
+}
+
+.label {
+  font-family: var(--mkt-font-mono);
+  font-size: var(--mkt-text-tag);
+  color: var(--mkt-muted);
+}

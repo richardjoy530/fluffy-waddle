@@ -1,0 +1,19 @@
+@use '../../../styles/mixins/marketing-mixins' as *;
+
+:host {
+  display: block;
+  padding: 40px 28px;
+}
+
+.label {
+  @include mono-label;
+}
+
+.heading {
+  margin: 8px 0 0;
+  font-size: 30px; // page-specific section heading, not part of the shared scale
+  font-weight: var(--mkt-weight-bold);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+}

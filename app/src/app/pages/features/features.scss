@@ -87,34 +87,15 @@
     @include section-grid(repeat(4, 1fr));
   }
 
-  .spec-item {
-    min-width: 0;
-    padding: 26px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
+  app-spec-item {
     @include stack-divider;
   }
 
-  .spec-item:last-child {
+  app-spec-item:last-child {
     border-right: none;
 
     @include stack {
       border-bottom: none;
     }
   }
-
-  .spec-value {
-    font-size: 30px; // page-specific stat size, not part of the shared scale
-    font-weight: var(--mkt-weight-bold);
-    letter-spacing: -0.02em;
-  }
-
-  .spec-label {
-    font-family: var(--mkt-font-mono);
-    font-size: var(--mkt-text-tag);
-    color: var(--mkt-muted);
-  }
-
 }

@@ -1,1 +1,57 @@
-<p>about works!</p>
+<section class="hero">
+  <app-eyebrow label="FIG.01 — THE POSITION" />
+  <h1 class="hero-title">
+    Automation forgot about the <span class="accent">physical world.</span> We didn't.
+  </h1>
+  <p class="hero-sub">
+    The last decade of automation was built for webhooks between SaaS apps — stateless,
+    fire-and-forget, taxed per task. That model breaks the moment a greenhouse, a vehicle or a
+    lab instrument enters the loop. wbskt started from the other end: hold a live line to
+    everything, keep state in the platform, and charge for what actually runs.
+  </p>
+</section>
+
+<section class="principles">
+  <app-section-intro label="FIG.02" heading="Operating principles" />
+  <div class="principle-list">
+    <div class="principle-row">
+      <span class="principle-n">01</span>
+      <div class="principle-title">The line stays open</div>
+      <p class="principle-body">
+        Polling is a workaround, not an architecture. If it matters enough to automate, it
+        matters enough to hold a live connection.
+      </p>
+    </div>
+    <div class="principle-row">
+      <span class="principle-n">02</span>
+      <div class="principle-title">State is the platform's job</div>
+      <p class="principle-body">
+        Engineers should write logic, not checkpointing code. Runs pause, resume and survive
+        restarts because the platform remembers.
+      </p>
+    </div>
+    <div class="principle-row">
+      <span class="principle-n">03</span>
+      <div class="principle-title">Trust is granted, not assumed</div>
+      <p class="principle-body">
+        Every integration is sandboxed with explicit, revocable permissions. Convenience never
+        buys its way past isolation.
+      </p>
+    </div>
+    <div class="principle-row">
+      <span class="principle-n">04</span>
+      <div class="principle-title">Price the work, not the count</div>
+      <p class="principle-body">
+        Charging per task punishes exactly the systems automation is for. We meter compute and
+        connections — nothing else.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <app-spec-item value="2023" label="FIRST SOCKET OPENED" />
+  <app-spec-item value="40k" label="LIVE CONNECTIONS TODAY" />
+  <app-spec-item value="14" label="PEOPLE, THREE TIME ZONES" />
+  <app-spec-item value="$0" label="PER-TASK FEES, EVER" [accent]="true" />
+</section>
