@@ -16,6 +16,13 @@
   }
 }
 
+.scroll-hitzone {
+  position: fixed;
+  right: 0;
+  width: 16px;
+  z-index: 50;
+}
+
 .scroll-thumb {
   position: fixed;
   right: 5px;
@@ -23,11 +30,21 @@
   border-radius: 999px;
   background: var(--mkt-hairline);
   opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  z-index: 50;
+  cursor: grab;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, width 0.15s ease, right 0.15s ease;
 
   &.visible {
     opacity: 1;
+  }
+
+  &:hover,
+  &:active {
+    width: 7px;
+    right: 4px;
+  }
+
+  &:active {
+    cursor: grabbing;
   }
 }

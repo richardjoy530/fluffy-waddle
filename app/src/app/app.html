@@ -9,9 +9,18 @@
 </div>
 @if (canScroll()) {
   <div
-    class="scroll-thumb"
-    [class.visible]="isScrolling()"
-    [style.top.px]="thumbTop()"
-    [style.height.px]="thumbHeight()"
-  ></div>
+    class="scroll-hitzone"
+    [style.top.px]="trackTop()"
+    [style.height.px]="trackHeight()"
+    (mouseenter)="onHoverZoneEnter()"
+    (mouseleave)="onHoverZoneLeave()"
+  >
+    <div
+      class="scroll-thumb"
+      [class.visible]="isScrolling() || isHovering() || isDragging()"
+      [style.top.px]="thumbTop()"
+      [style.height.px]="thumbHeight()"
+      (mousedown)="onThumbMouseDown($event)"
+    ></div>
+  </div>
 }

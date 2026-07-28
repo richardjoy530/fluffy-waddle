@@ -76,3 +76,36 @@ $mkt-stack-breakpoint: 860px;
   color: var(--mkt-accent);
   text-transform: uppercase;
 }
+
+// Internal scroll for a panel whose content may exceed its box (e.g. a fixed-height
+// column in a split layout). Overrides the default grid/flex item min-height:auto so
+// overflow-y:auto actually engages instead of the panel just growing past its box.
+// scrollbar-gutter:stable keeps the reserved width identical whether or not the panel
+// is currently scrollable, so nothing shifts when content height changes between states.
+// Thin, theme-colored, arrow-less scrollbar — not a true zero-space overlay (Chrome
+// removed the non-standard `overflow: overlay` this would take), but the closest
+// practical approximation with standard CSS.
+@mixin scrollable-panel {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mkt-hairline) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--mkt-hairline);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+}
