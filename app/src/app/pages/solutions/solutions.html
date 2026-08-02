@@ -1,49 +1,51 @@
 <app-page-hero
-  eyebrowLabel="FIG.01 — DEPLOYMENTS"
-  titlePrefix="Command and control,"
-  titleAccent="anywhere." />
+  eyebrowLabel="WHO IT'S FOR"
+  titlePrefix="Built for the teams whose automation"
+  titleAccent="controls real equipment."
+  sub="If the thing you are automating has a motor, a sensor or a serial number, the tools built for moving data between SaaS apps will let you down. These are the places wbskt is designed for."
+  maxWidth="22ch" />
 
 <section class="solutions-grid">
   <app-solution-card
-    tag="01 · INDUSTRIAL IOT"
+    tag="INDUSTRIAL IOT"
     title="Factory floors"
-    body="Sensors, PLCs and actuators on live sockets. Threshold logic and escalation without a single cron job."
+    body="Sensors, PLCs and actuators on live connections. Threshold logic and escalation paths that react the moment a reading changes, without a single cron job."
     stack="C# SDK · edge gateways" />
   <app-solution-card
-    tag="02 · SMART FACILITIES"
+    tag="SMART FACILITIES"
     title="Buildings &amp; greenhouses"
-    body="Climate, access and energy under one command deck. Workflows that wait hours cost nothing while paused."
+    body="Climate, access and energy systems under one set of controls. Workflows that wait hours between steps cost nothing while they are paused."
     stack="Python SDK · schedules" />
   <app-solution-card
-    tag="03 · FLEET &amp; LOGISTICS"
+    tag="FLEET &amp; LOGISTICS"
     title="Vehicles in motion"
-    body="Telemetry up, commands down, over connections built to survive flaky cellular links and resume cleanly."
+    body="Telemetry up, commands down, over connections built to expect patchy cellular coverage and to pick up cleanly once the signal returns."
     stack="JS SDK · resumable runs" />
   <app-solution-card
-    tag="04 · AI OPERATIONS"
-    title="Agents with hands"
-    body="Mount models as virtual clients. Agents act on the physical world through permissioned, revocable channels."
+    tag="LABS &amp; RESEARCH"
+    title="Instrument control"
+    body="Long experiments run as long workflows: record every reading, resume after a restart, and replay the full history when you write up the results."
+    stack="audit trail · replay" />
+  <app-solution-card
+    tag="AI OPERATIONS"
+    title="Agents that act"
+    body="Connect a model as a virtual client and let it operate real equipment through channels you grant explicitly and can revoke at any time."
     stack="marketplace · sandboxing" />
   <app-solution-card
-    tag="05 · SAAS ORCHESTRATION"
-    title="Service-to-service"
-    body="Replace webhook spaghetti with stateful flows that join events from many services and never double-fire."
+    tag="SERVICE ORCHESTRATION"
+    title="Backends that coordinate"
+    body="Replace tangled webhook chains with workflows that hold state, wait for events from several services at once, and never fire twice."
     stack="virtual clients · joins" />
-  <app-solution-card
-    tag="06 · LABS &amp; RESEARCH"
-    title="Instrument control"
-    body="Long experiments as long runs: checkpoint every reading, resume after restarts, replay the full trail."
-    stack="audit trail · replay" />
 </section>
 
 <section class="field">
   <div class="field-copy">
-    <app-eyebrow label="FIG.02 — IN THE FIELD" />
+    <app-eyebrow label="A WORKED EXAMPLE" />
     <h2 class="field-title">A greenhouse that texts before it overheats.</h2>
     <p class="field-body">
-      Temperature sensors stream on live sockets. A workflow watches the threshold, opens the
-      vents, waits ten minutes, and escalates by SMS only if the zone is still hot — one run,
-      five steps, zero polling.
+      Temperature sensors report continuously over live connections. A workflow watches for the
+      threshold, opens the vents, waits ten minutes, and only escalates by SMS if the zone is
+      still too hot. One run, five steps, and nothing polling in between.
     </p>
     <div class="field-stats">
       <span><strong>140</strong> SENSORS</span>
@@ -53,17 +55,17 @@
   </div>
   <app-terminal>
     <div><span class="code-comment">// temp-alert-flow · zone 4</span></div>
-    <div>14:02:11 sensor.in &nbsp;&nbsp;<span class="code-number">36.2°</span> — threshold breached</div>
-    <div>14:02:11 open.vent &nbsp;<span class="code-string">ack 38ms</span></div>
-    <div>14:02:11 delay.10m &nbsp;<span class="code-comment">run paused, state persisted</span></div>
-    <div>14:12:11 sensor.in &nbsp;<span class="code-number">35.8°</span> — still hot</div>
+    <div>14:02:11 sensor.in &nbsp;&nbsp;<span class="code-number">36.2°</span> — above threshold</div>
+    <div>14:02:11 open.vent &nbsp;<span class="code-string">acknowledged</span></div>
+    <div>14:02:11 delay.10m &nbsp;<span class="code-comment">run paused, state saved</span></div>
+    <div>14:12:11 sensor.in &nbsp;<span class="code-number">35.8°</span> — still too hot</div>
     <div>14:12:12 send.sms &nbsp;&nbsp;<span class="code-keyword">→ +31 6 ·· ·· 41 · delivered</span></div>
-    <div>14:12:12 run #2047 &nbsp;<span class="code-string">DONE</span> · cost: 0.4 wf-sec</div>
+    <div>14:12:12 run #2047 &nbsp;<span class="code-string">DONE</span> · 5 steps</div>
   </app-terminal>
 </section>
 
 <app-cta-section
-  title="Connect your first client."
+  title="Connect your first device."
   primaryLabel="Start building →"
   primaryHref="#"
   secondaryLabel="See pricing"

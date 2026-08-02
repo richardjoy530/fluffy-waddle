@@ -20,10 +20,9 @@
 .title {
   margin: 0;
   font-size: 24px; // page-specific card-title size, not part of the shared scale
-  line-height: 1;
+  line-height: 1.15;
   font-weight: var(--mkt-weight-bold);
   letter-spacing: -0.02em;
-  text-transform: uppercase;
 }
 
 .body {

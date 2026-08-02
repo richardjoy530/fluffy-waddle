@@ -1,65 +1,64 @@
 <section class="hero">
-  <app-eyebrow label="FIG.01 — THE POSITION" />
+  <app-eyebrow label="WHY WE BUILT THIS" />
   <h1 class="hero-title">
-    Automation forgot about the <span class="accent">physical world.</span> We didn't.
+    Automation skipped over <span class="accent">the physical world.</span>
   </h1>
   <p class="hero-sub">
-    The last decade of automation was built for webhooks between SaaS apps — stateless,
-    fire-and-forget, taxed per task. That model breaks the moment a greenhouse, a vehicle or a
-    lab instrument enters the loop. wbskt started from the other end: hold a live connection to
-    everything, keep state in the platform, and charge for what actually runs.
+    The last decade of automation tooling was built to move data between SaaS apps: stateless,
+    fire-and-forget, and billed by the task. That model starts to break the moment a greenhouse,
+    a vehicle or a lab instrument is part of the loop — things that go offline, take minutes to
+    respond, and cannot simply be retried from the beginning. wbskt was built from the other
+    end: hold a live connection to everything, keep the state in the platform, and charge for
+    the work that actually runs.
   </p>
 </section>
 
 <section class="principles">
-  <app-section-intro label="FIG.02" heading="Operating principles" />
+  <app-section-intro label="HOW WE BUILD" heading="Operating principles" />
   <div class="principle-list">
     <div class="principle-row">
       <span class="principle-n">01</span>
       <div class="principle-title">The connection stays open</div>
       <p class="principle-body">
-        Polling is a workaround, not an architecture. If it matters enough to automate, it
-        matters enough to hold a live connection.
+        Polling is a workaround for not having a connection. If something matters enough to
+        automate, it matters enough to stay connected to.
       </p>
     </div>
     <div class="principle-row">
       <span class="principle-n">02</span>
       <div class="principle-title">State is the platform's job</div>
       <p class="principle-body">
-        Engineers should write logic, not checkpointing code. Runs pause, resume and survive
-        restarts because the platform remembers.
+        Engineers should be writing the logic, not the code that saves its progress. Runs pause,
+        resume and survive restarts because the platform remembers for them.
       </p>
     </div>
     <div class="principle-row">
       <span class="principle-n">03</span>
       <div class="principle-title">Trust is granted, not assumed</div>
       <p class="principle-body">
-        Every integration is sandboxed with explicit, revocable permissions. Convenience never
-        buys its way past isolation.
+        Every integration is sandboxed with permissions you grant explicitly and can revoke at
+        any time. Convenience never buys its way past isolation.
       </p>
     </div>
     <div class="principle-row">
       <span class="principle-n">04</span>
       <div class="principle-title">Price the work, not the count</div>
       <p class="principle-body">
-        Charging per task punishes exactly the systems automation is for. We meter compute and
-        connections — nothing else.
+        Charging per task penalizes exactly the systems that automation exists to serve. We
+        meter connections and compute, and nothing else.
       </p>
     </div>
   </div>
 </section>
 
-<section class="stats">
-  <app-spec-item value="2023" label="FIRST SOCKET OPENED" />
-  <app-spec-item value="40k" label="LIVE CONNECTIONS TODAY" />
-  <app-spec-item value="14" label="PEOPLE, THREE TIME ZONES" />
-  <app-spec-item value="$0" label="PER-TASK FEES, EVER" [accent]="true" />
-</section>
+<!-- Company facts (founded, team size, deployments) belong here once there are real
+     figures to publish. The previous placeholders were invented and have been removed
+     rather than left to ship as if they were measured. -->
 
 <app-cta-section
-  title="Come hold the line."
-  sub="We hire engineers who have shipped things that hum, spin or overheat."
+  title="Come and build it with us."
+  sub="We hire engineers who have shipped software that controls things in the real world."
   primaryLabel="Open roles →"
   primaryHref="#"
-  secondaryLabel="hello@wbskt.io"
-  secondaryHref="#" />
+  secondaryLabel="hello@wbskt.com"
+  secondaryHref="mailto:hello@wbskt.com" />

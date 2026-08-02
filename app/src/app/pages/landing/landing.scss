@@ -19,8 +19,9 @@
 
   .hero-title {
     margin: 0;
-    @include display-heading(40px, 9vw, 92px, -0.04em, 0.94);
+    @include display-heading(36px, 6.4vw, 68px, -0.03em, 1.02);
     overflow-wrap: break-word;
+    text-wrap: balance;
 
     .accent {
       color: var(--mkt-accent);
@@ -52,7 +53,7 @@
   }
 
   .hero-cta-secondary {
-    border: var(--mkt-border);
+    border: var(--mkt-border-strong);
     border-left: none;
     padding: 15px 28px;
     font-size: var(--mkt-text-lg);
@@ -135,7 +136,8 @@
 
   .capabilities-title {
     margin: 20px 0 0;
-    @include display-heading(32px, 5.5vw, 64px);
+    @include display-heading(28px, 4.2vw, 48px);
+    text-wrap: balance;
   }
 
   .capability-grid {
@@ -178,7 +180,7 @@
   }
 
   .sdk-cta {
-    border: var(--mkt-border);
+    border: var(--mkt-border-strong);
     padding: 15px 28px;
     font-weight: var(--mkt-weight-medium);
     font-size: var(--mkt-text-lg);

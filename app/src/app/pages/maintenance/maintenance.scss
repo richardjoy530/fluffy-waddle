@@ -21,11 +21,10 @@
 
 .maintenance-title {
   margin: 0;
-  font-size: 64px; // page-specific hero size, not part of the shared scale
-  line-height: 0.96;
+  font-size: 52px; // page-specific hero size, not part of the shared scale
+  line-height: 1.05;
   font-weight: var(--mkt-weight-bold);
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.03em;
 }
 
 .maintenance-body {

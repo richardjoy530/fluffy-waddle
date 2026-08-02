@@ -1,79 +1,81 @@
 <app-page-hero
-  eyebrowLabel="FIG.01 — PRICING"
-  titlePrefix="Compute + connections."
-  titleAccent="Nothing per task."
-  sub="A million small runs cost what they should. You pay for live connections and workflow-seconds of actual compute — a paused run is free."
-  maxWidth="16ch" />
+  eyebrowLabel="PRICING"
+  titlePrefix="You pay for connections and compute."
+  titleAccent="Never per task."
+  sub="Most automation platforms charge for every task they run, which punishes exactly the systems that run constantly. wbskt bills for the devices you keep connected and the seconds your workflows actually spend working. A run that is waiting costs nothing."
+  maxWidth="20ch" />
 
 <section class="tiers">
   <div class="tier">
     <span class="tier-label">BUILDER</span>
     <div class="tier-price">$0<span class="tier-price-suffix">/mo</span></div>
-    <p class="tier-desc">Everything unlocked. For prototypes, home labs and small fleets.</p>
+    <p class="tier-desc">Every feature included. For prototypes, home labs and small deployments.</p>
     <div class="tier-features">
-      <span>100 live connections</span>
-      <span>10,000 workflow-seconds /mo</span>
-      <span>Unlimited workflows &amp; paused runs</span>
+      <span>100 connected clients</span>
+      <span>10,000 workflow-seconds per month</span>
+      <span>Unlimited workflows and paused runs</span>
       <span>Full marketplace access</span>
-      <span>7-day audit retention</span>
+      <span>7 days of run history</span>
     </div>
     <a href="#" class="tier-cta-secondary">Start free</a>
   </div>
   <div class="tier tier-scale">
     <span class="tier-label tier-label-accent">SCALE</span>
     <div class="tier-price">Usage<span class="tier-price-suffix">-based</span></div>
-    <p class="tier-desc">Metered past the free tier. Volume pricing negotiable at fleet scale.</p>
+    <p class="tier-desc">Metered once you pass the free tier. Talk to us about volume rates for large fleets.</p>
     <div class="tier-features">
-      <span class="tier-feature-row"><span>Connections beyond 100</span><span class="tier-feature-value">$0.40 /conn/mo</span></span>
-      <span class="tier-feature-row"><span>Workflow compute</span><span class="tier-feature-value">$0.90 /1k wf-sec</span></span>
-      <span class="tier-feature-row"><span>Paused runs</span><span class="tier-feature-value tier-feature-accent">free, always</span></span>
-      <span>SSO, roles &amp; policy controls</span>
-      <span>1-year audit retention · 99.9% SLA</span>
+      <span class="tier-feature-row"><span>Clients beyond the first 100</span><span class="tier-feature-value">$0.40 per client / mo</span></span>
+      <span class="tier-feature-row"><span>Workflow compute</span><span class="tier-feature-value">$0.90 per 1,000 wf-sec</span></span>
+      <span class="tier-feature-row"><span>Paused runs</span><span class="tier-feature-value tier-feature-accent">always free</span></span>
+      <span>Single sign-on, roles and policy controls</span>
+      <span>1 year of run history</span>
     </div>
     <div class="tier-actions">
-      <a href="#" class="tier-cta-primary">Start metered</a>
+      <a href="#" class="tier-cta-primary">Get started</a>
       <a href="#" class="tier-cta-secondary">Talk to sales</a>
     </div>
   </div>
 </section>
 
 <section class="faqs">
-  <app-section-intro label="FIG.02" heading="Fair questions" />
+  <app-section-intro label="QUESTIONS" heading="Fair questions" />
   <div class="faq-list">
     <div class="faq-row">
       <div class="faq-q">What is a workflow-second?</div>
       <p class="faq-a">
-        One second of a run actively executing — evaluating logic, sending commands,
-        processing events. Time spent waiting on a delay or an event is paused and free.
+        One second of a run actively doing something — checking a condition, sending a command,
+        handling an event. Time spent waiting on a delay or an event is paused, and paused time
+        is not billed.
       </p>
     </div>
     <div class="faq-row">
-      <div class="faq-q">What counts as a connection?</div>
+      <div class="faq-q">What counts as a connected client?</div>
       <p class="faq-a">
-        Any client holding a live socket during the billing hour: a device, a backend, a
-        browser session, or a mounted marketplace integration.
+        Anything holding a live connection during the billing hour: a device, a backend
+        service, a browser session, or a marketplace integration you have connected.
       </p>
     </div>
     <div class="faq-row">
-      <div class="faq-q">Really no per-task fee?</div>
+      <div class="faq-q">Is there really no per-task fee?</div>
       <p class="faq-a">
-        Really. A workflow that fires 100,000 times doing 20ms of work each costs ~2,000
-        wf-sec — about $1.80. On per-task platforms that's a mortgage payment.
+        No. A workflow that fires 100,000 times and does about 20 milliseconds of work each
+        time adds up to roughly 2,000 workflow-seconds — under two dollars. Priced per task,
+        the same work would cost orders of magnitude more.
       </p>
     </div>
     <div class="faq-row">
-      <div class="faq-q">Can I cap my spend?</div>
+      <div class="faq-q">Can I cap what I spend?</div>
       <p class="faq-a">
-        Yes. Hard budget limits per workspace — hit the cap and new runs queue instead of
-        billing. Live connections stay up.
+        Yes. Set a hard budget per workspace. When you reach it, new runs queue rather than
+        bill, and your existing connections stay up.
       </p>
     </div>
   </div>
 </section>
 
 <app-cta-section
-  title="Pay for compute, not tasks."
+  title="Pay for the work, not the count."
   primaryLabel="Start free →"
   primaryHref="#"
-  secondaryLabel="docs/pricing"
+  secondaryLabel="Pricing docs"
   secondaryHref="#" />

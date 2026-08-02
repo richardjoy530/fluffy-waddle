@@ -24,5 +24,7 @@
   --mkt-weight-medium: 600;
   --mkt-weight-bold: 800;
 
-  --mkt-border-width: 2px;
+  /* Structural grid line. 1px against a dim rule reads as considered infrastructure;
+     the previous 2px full-contrast rule fought the content for attention. */
+  --mkt-border-width: 1px;
 }

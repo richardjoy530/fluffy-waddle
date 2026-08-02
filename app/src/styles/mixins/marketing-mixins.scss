@@ -59,13 +59,15 @@ $mkt-stack-breakpoint: 860px;
   }
 }
 
-// page-specific hero/section headline sizes, not part of the shared token scale
-@mixin display-heading($min, $preferred, $max, $letter-spacing: -0.03em, $line-height: 1) {
+// page-specific hero/section headline sizes, not part of the shared token scale.
+// Sentence case by design: headlines carry the sentences that explain the product,
+// and all-caps at every level flattens the hierarchy and costs readability at length.
+// UPPERCASE is reserved for the small mono labels in @mixin mono-label.
+@mixin display-heading($min, $preferred, $max, $letter-spacing: -0.02em, $line-height: 1.05) {
   font-size: clamp($min, $preferred, $max);
   line-height: $line-height;
   font-weight: var(--mkt-weight-bold);
   letter-spacing: $letter-spacing;
-  text-transform: uppercase;
 }
 
 @mixin mono-label {

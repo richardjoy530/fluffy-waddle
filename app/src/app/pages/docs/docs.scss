@@ -15,7 +15,8 @@
 
   .hero-title {
     margin: 0;
-    @include display-heading(32px, 7vw, 72px, -0.04em, 0.94);
+    @include display-heading(30px, 4.8vw, 54px, -0.03em, 1.05);
+    text-wrap: balance;
 
     .accent {
       color: var(--mkt-accent);
@@ -28,7 +29,7 @@
   }
 
   .search-input {
-    border: var(--mkt-border);
+    border: var(--mkt-border-strong);
     padding: 14px 20px;
     font-family: var(--mkt-font-mono);
     font-size: var(--mkt-text-base);
@@ -84,7 +85,7 @@
 
   .quickstart-cta {
     align-self: flex-start;
-    border: var(--mkt-border);
+    border: var(--mkt-border-strong);
     padding: 11px 20px;
     font-size: var(--mkt-text-sm);
     font-family: var(--mkt-font-mono);

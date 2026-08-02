@@ -8,7 +8,8 @@
 
 .title {
   margin: 20px 0 0;
-  @include display-heading(32px, 8vw, 84px, -0.04em, 0.94);
+  @include display-heading(32px, 5.6vw, 60px, -0.03em, 1.02);
+  text-wrap: balance;
 
   .accent {
     color: var(--mkt-accent);

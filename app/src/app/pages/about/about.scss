@@ -8,7 +8,8 @@
 
   .hero-title {
     margin: 22px 0 0;
-    @include display-heading(32px, 7vw, 76px, -0.04em, 0.96);
+    @include display-heading(30px, 4.8vw, 54px, -0.03em, 1.05);
+    text-wrap: balance;
     max-width: 20ch;
 
     .accent {
@@ -65,7 +66,6 @@
     font-weight: var(--mkt-weight-bold);
     font-size: 19px; // page-specific card-title size, not part of the shared scale
     letter-spacing: -0.02em;
-    text-transform: uppercase;
   }
 
   .principle-body {
@@ -75,20 +75,4 @@
     color: var(--mkt-muted);
   }
 
-  .stats {
-    border-top: var(--mkt-border);
-    @include section-grid(repeat(4, 1fr));
-  }
-
-  app-spec-item {
-    @include stack-divider;
-  }
-
-  app-spec-item:last-child {
-    border-right: none;
-
-    @include stack {
-      border-bottom: none;
-    }
-  }
 }

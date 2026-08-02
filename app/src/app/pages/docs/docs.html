@@ -1,6 +1,6 @@
 <section class="hero">
-  <app-eyebrow label="FIG.01 — DOCUMENTATION" />
-  <h1 class="hero-title">Read the <span class="accent">manual.</span></h1>
+  <app-eyebrow label="DOCUMENTATION" />
+  <h1 class="hero-title">Everything you need to <span class="accent">get connected.</span></h1>
   <!-- <div class="search">
     <span class="search-input">Search the docs… connect, channels, delays</span>
     <span class="search-key">⌘K</span>
@@ -11,50 +11,50 @@
   <app-doc-card
     tag="01"
     title="Quickstart"
-    body="Token to live socket in ten minutes. The shortest path to a connected client."
+    body="From an access token to a connected client in about ten minutes. Start here."
     count="4 guides"
     href="#" />
   <app-doc-card
     tag="02"
     title="SDKs"
-    body="C#, Python and JavaScript references. Connection lifecycle, channels, acks."
+    body="C#, Python and JavaScript references covering the connection lifecycle, channels and acknowledgements."
     count="3 references"
     href="#" />
   <app-doc-card
     tag="03"
     title="Workflows"
-    body="Triggers, logic, delays, joins. How state, checkpoints and resumption work."
+    body="Triggers, conditions, delays and joins, and how a run saves and restores its state."
     count="12 guides"
     href="#" />
   <app-doc-card
     tag="04"
     title="Marketplace"
-    body="Mounting virtual clients, permission grants, publishing your own integration."
+    body="Connecting virtual clients, granting and revoking permissions, and publishing your own integration."
     count="8 guides"
     href="#" />
   <app-doc-card
     tag="05"
     title="API reference"
-    body="REST and WebSocket protocol reference for everything the SDKs wrap."
+    body="The full REST and WebSocket protocol reference that the SDKs are built on."
     count="full spec"
     href="#" />
   <app-doc-card
     tag="06"
     title="CLI"
-    body="Tokens, deploys, tailing runs from the terminal. wbskt --help, but readable."
+    body="Manage tokens, deploy workflows and follow runs live from your terminal."
     count="20 commands"
     href="#" />
 </section>
 
 <section class="quickstart">
   <div class="quickstart-copy">
-    <app-eyebrow label="FIG.02 — QUICKSTART" />
+    <app-eyebrow label="QUICKSTART" />
     <h2 class="quickstart-title">Connected in ten minutes.</h2>
     <p class="quickstart-body">
-      Install the SDK, mint a client token in the console, open the socket. Your first
-      workflow can be watching that client before your coffee cools.
+      Install the SDK, create a client token in the console, and open the connection. Your
+      first workflow can be watching that client before your coffee goes cold.
     </p>
-    <a href="#" class="quickstart-cta">Open quickstart →</a>
+    <a href="#" class="quickstart-cta">Open the quickstart →</a>
   </div>
   <app-terminal>
     <div><span class="code-comment">$</span> npm i &#64;wbskt/sdk</div>
@@ -62,6 +62,6 @@
     <div><span class="code-string">✓</span> token wsk_live_····9f42 written to .env</div>
     <div><span class="code-comment">$</span> node connect.js</div>
     <div><span class="code-string">✓</span> edge-01 connected · channel sensor.in live</div>
-    <div><span class="code-keyword">●</span> awaiting commands…</div>
+    <div><span class="code-keyword">●</span> waiting for commands…</div>
   </app-terminal>
 </section>

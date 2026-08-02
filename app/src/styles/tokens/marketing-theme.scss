@@ -27,7 +27,11 @@
   --mkt-code-number: var(--mkt-palette-orange-tan);
   --mkt-code-string: var(--mkt-success);
 
-  /* Structural border — the 2px divider used throughout the layout.
-     Color follows --mkt-fg, so it lives here rather than in typography. */
-  --mkt-border: var(--mkt-border-width) solid var(--mkt-fg);
+  /* Structural border — the divider used throughout the layout.
+     Color is a role, so it lives here rather than in typography. */
+  --mkt-border: var(--mkt-border-width) solid var(--mkt-border-color);
+  --mkt-border-color: var(--mkt-palette-gray-800);
+  /* Emphasis border for interactive surfaces (buttons, outlined CTAs) that still
+     need to read as a hard edge against the dim structural grid. */
+  --mkt-border-strong: var(--mkt-border-width) solid var(--mkt-palette-gray-600);
 }

@@ -13,7 +13,8 @@
 
 .title {
   margin: 0;
-  @include display-heading(32px, 6vw, 56px, -0.04em, 0.96);
+  @include display-heading(28px, 4.4vw, 44px, -0.03em, 1.05);
+  text-wrap: balance;
 }
 
 .sub {
@@ -39,7 +40,7 @@
 }
 
 .secondary {
-  border: var(--mkt-border);
+  border: var(--mkt-border-strong);
   border-left: none;
   padding: 15px 28px;
   font-size: var(--mkt-text-lg);

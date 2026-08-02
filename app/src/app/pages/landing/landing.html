@@ -1,21 +1,21 @@
 <section class="hero">
   <div class="hero-copy">
     <h1 class="hero-title">
-      <span class="accent">40,000 sockets.</span><br />
-      One place to run it all.
+      Automation that reaches<br />
+      <span class="accent">the physical world.</span>
     </h1>
     <p class="hero-sub">
-      Every device, service and model, always connected. Workflows with memory. Enterprise
-      control without the per-task tax.
+      wbskt holds a live connection to every device, gateway and service you operate, then
+      runs workflows across them that survive delays, restarts and unreliable networks.
     </p>
     <div class="hero-actions">
       <a href="#" class="hero-cta">Start building →</a>
       <a href="#sdk" class="hero-cta-secondary">$ npm i &#64;wbskt/sdk</a>
     </div>
     <div class="hero-stats">
-      <span><strong>99.98%</strong> UPTIME</span>
-      <span><strong>12ms</strong> LATENCY</span>
-      <span class="accent"><strong>$0</strong> PER-TASK</span>
+      <span><strong>Always-on</strong> CONNECTIONS</span>
+      <span><strong>Durable</strong> WORKFLOW RUNS</span>
+      <span class="accent"><strong>$0</strong> PER-TASK FEES</span>
     </div>
   </div>
 
@@ -36,78 +36,80 @@
 </section>
 
 <app-ticker [items]="[
-    'sensor.in → logic>35° → open.vent → delay.10m → send.sms',
+    'a live connection to every device',
     'runs that survive restarts',
-    'sandboxed marketplace',
-    '40,000 live connections'
+    'no polling, no cron jobs',
+    'permissions you grant and revoke',
+    'no per-task fees'
   ]" />
 
 <section class="how">
   <div class="how-intro">
-    <span class="how-eyebrow">Fig.02</span>
+    <span class="how-eyebrow">Getting started</span>
     <h2 class="how-title">How it works</h2>
   </div>
 
   <div class="how-step">
     <span class="how-step-label">01 · Connect</span>
-    <h3 class="how-step-title">Open a socket, keep it open</h3>
+    <h3 class="how-step-title">Open a connection and keep it open</h3>
     <p class="how-step-body">
-      C#, Python &amp; JS SDKs hold a persistent WebSocket from any device or service. No
-      polling, no cold starts.
+      Our C#, Python and JavaScript SDKs hold a persistent connection from any device, gateway
+      or backend. Events arrive the moment they happen — no polling loops, no cold starts.
     </p>
   </div>
 
   <div class="how-step">
-    <span class="how-step-label">02 · Orchestrate</span>
-    <h3 class="how-step-title">Wire logic in the workflow IDE</h3>
+    <span class="how-step-label">02 · Automate</span>
+    <h3 class="how-step-title">Build the logic in the workflow editor</h3>
     <p class="how-step-body">
-      Triggers, conditions, delays, joins. Runs are stateful — they pause, resume and survive
-      restarts.
+      Triggers, conditions, delays and joins. Runs keep their own state, so a workflow can wait
+      minutes or days without losing its place or burning compute.
     </p>
   </div>
 
   <div class="how-step">
     <span class="how-step-label">03 · Act</span>
-    <h3 class="how-step-title">Command anything downstream</h3>
+    <h3 class="how-step-title">Send commands back to your hardware</h3>
     <p class="how-step-body">
-      Fire commands back down the same socket, or through sandboxed marketplace integrations.
+      Control any connected device over the same connection it reports on, or reach outside
+      services through sandboxed marketplace integrations.
     </p>
   </div>
 </section>
 
 <section class="capabilities">
-  <app-eyebrow label="FIG.03 — CAPABILITIES" />
-  <h2 class="capabilities-title">Built for the always-on.</h2>
+  <app-eyebrow label="CAPABILITIES" />
+  <h2 class="capabilities-title">Everything a connected fleet needs.</h2>
 </section>
 
 <section class="capability-grid">
-  <app-capability-card label="A. Sockets" heading="Persistent connections"
-    body="Always-open WebSockets to every client. 12ms median command latency, automatic reconnect and resume." />
-  <app-capability-card label="B. Workflows" heading="Runs with memory"
-    body="Stateful execution that pauses on delays, resumes on events and survives platform restarts." />
-  <app-capability-card label="C. Marketplace" heading="Sandboxed integrations"
-    body="Third-party services mount as virtual clients — isolated, permissioned, revocable." />
-  <app-capability-card label="D. SDKs" heading="C#, Python &amp; JS"
-    body="Idiomatic clients for edge devices, backends and browsers. One protocol underneath." />
-  <app-capability-card label="E. Observability" heading="Every run, replayable"
-    body="Full audit trail per run: inputs, branches, commands, acks. Export anywhere." />
-  <app-capability-card label="F. Pricing" heading="No per-task tax"
-    body="Metered on compute and connections only. A million small runs cost what they should." />
+  <app-capability-card label="Connections" heading="Devices stay online"
+    body="Every client holds one always-open connection. The SDK handles reconnects, backoff and picking up missed messages after a drop." />
+  <app-capability-card label="Workflows" heading="Runs that keep their place"
+    body="Execution state lives in the platform. A run pauses on a delay, waits on an event, and resumes exactly where it stopped after a restart." />
+  <app-capability-card label="Integrations" heading="Scoped to what you grant"
+    body="Outside services connect as virtual clients, each sandboxed with explicit channel permissions you can revoke at any time." />
+  <app-capability-card label="SDKs" heading="C#, Python and JavaScript"
+    body="Idiomatic clients for edge devices, backends and browsers, all speaking one protocol underneath." />
+  <app-capability-card label="Audit trail" heading="Every run, replayable"
+    body="Inputs, branches, commands and acknowledgements are recorded per run, so you can see exactly what happened and export it anywhere." />
+  <app-capability-card label="Pricing" heading="No fee per task"
+    body="You are billed for live connections and the compute your workflows actually use. A million small runs cost what they should." />
 </section>
 
 <section class="sdk">
   <div class="sdk-copy">
-    <app-eyebrow label="FIG.04 — SDK" />
-    <h2 class="sdk-title">Ten lines to a live connection.</h2>
+    <app-eyebrow label="SDKs" />
+    <h2 class="sdk-title">A live connection in ten lines.</h2>
     <p class="sdk-sub">
-      Register a client, subscribe to a channel, act on commands. The SDK handles reconnects,
-      backoff and resumption.
+      Register a client, subscribe to a channel, act on the commands that arrive. Reconnects,
+      backoff and message resumption are handled for you.
     </p>
     <a href="#" class="sdk-cta">Read the docs →</a>
   </div>
 
   <app-terminal>
-    <pre><code><span class="code-comment">// keep the socket open</span>
+    <pre><code><span class="code-comment">// connect once and stay connected</span>
 <span class="code-keyword">const</span> client = <span class="code-keyword">await</span> wbskt.connect({{ '{' }} token {{ '}' }});
 client.on(<span class="code-string">'command:open.vent'</span>, <span class="code-keyword">async</span> (cmd) => {{ '{' }}
   <span class="code-keyword">await</span> vent.open(cmd.zone);

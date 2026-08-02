@@ -29,6 +29,13 @@
     gap: 14px;
   }
 
+  .footer-tagline {
+    font-size: var(--mkt-text-sm);
+    line-height: 1.55;
+    color: var(--mkt-muted);
+    max-width: 30ch;
+  }
+
   .footer-copyright {
     font-family: var(--mkt-font-mono);
     font-size: var(--mkt-text-xs);
