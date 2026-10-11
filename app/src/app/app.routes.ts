@@ -22,6 +22,31 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
   },
   {
+    path: 'docs',
+    pathMatch: 'full',
+    redirectTo: 'docs/connect',
+  },
+  {
+    path: 'docs/connect',
+    title: 'Connect a board · WBSKT docs',
+    loadComponent: () => import('./pages/docs/connect/connect').then((m) => m.DocsConnect),
+  },
+  {
+    path: 'docs/first-rule',
+    title: 'Your first rule · WBSKT docs',
+    loadComponent: () => import('./pages/docs/first-rule/first-rule').then((m) => m.DocsFirstRule),
+  },
+  {
+    path: 'docs/messages',
+    title: 'Readings and commands · WBSKT docs',
+    loadComponent: () => import('./pages/docs/messages/messages').then((m) => m.DocsMessages),
+  },
+  {
+    path: 'docs/troubleshooting',
+    title: 'Troubleshooting · WBSKT docs',
+    loadComponent: () => import('./pages/docs/troubleshooting/troubleshooting').then((m) => m.DocsTroubleshooting),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
