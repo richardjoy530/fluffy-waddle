@@ -1,59 +1,28 @@
-# App
+# wbskt.com
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.32.
+The WBSKT marketing site, built with Angular and deployed to GitHub Pages from `master`.
 
-## Development server
+## Pages
 
-To start a local development server, run:
+| Route | Page |
+|---|---|
+| `/` | Home |
+| `/features` | Features |
+| `/get-started` | Get started guide |
 
-```bash
-ng serve
-```
+The page templates in `src/app/pages` and the styles in `src/styles/_canvas.scss` are ported from the design canvas. Button and link targets (sign up, log in, GitHub, docs) live in `src/app/links.ts`.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Run it locally
 
 ```bash
-ng generate component component-name
+npm ci
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Then open http://localhost:4200/.
+
+## Build
 
 ```bash
-ng generate --help
+npm run build -- --configuration production
 ```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

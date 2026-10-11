@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { NetworkDiagram } from '../../shared/network-diagram/network-diagram';
-import { VcCard } from '../../shared/vc-card/vc-card';
-import { Terminal } from '../../shared/terminal/terminal';
-import { CtaSection } from '../../shared/cta-section/cta-section';
-import { PageHero } from '../../shared/page-hero/page-hero';
-import { SpecItem } from '../../shared/spec-item/spec-item';
+import { RouterLink } from '@angular/router';
+import { handleCopyClick } from '../copy';
 
 @Component({
   selector: 'app-features',
-  imports: [NetworkDiagram, VcCard, Terminal, CtaSection, PageHero, SpecItem],
+  imports: [RouterLink],
   templateUrl: './features.html',
-  styleUrl: './features.scss',
+  host: { '(click)': 'onClick($event)' },
 })
-export class Features {}
+export class Features {
+  protected onClick(event: MouseEvent): void {
+    handleCopyClick(event);
+  }
+}

@@ -1,19 +1,26 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Brand } from '../../shared/brand/brand';
+import { Component, inject, signal } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CLOSE_ICON, MENU_ICON } from '../icons';
+import { LINKS } from '../../links';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Brand],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
 })
 export class Header {
-  protected readonly navLinks = [
-    { path: '/features', label: 'Features' },
-    { path: '/solutions', label: 'Solutions' },
-    { path: '/pricing', label: 'Pricing' },
-    { path: '/docs', label: 'Docs' },
-    { path: '/about', label: 'About' },
-  ];
+  protected readonly links = LINKS;
+  protected readonly open = signal(false);
+  private readonly sanitizer = inject(DomSanitizer);
+  protected readonly menuIcon = this.sanitizer.bypassSecurityTrustHtml(MENU_ICON);
+  protected readonly closeIcon = this.sanitizer.bypassSecurityTrustHtml(CLOSE_ICON);
+
+  constructor() {
+    inject(Router).events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        this.open.set(false);
+      }
+    });
+  }
 }
