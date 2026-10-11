@@ -17,6 +17,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/get-started/get-started').then((m) => m.GetStarted),
   },
   {
+    path: 'privacy',
+    title: 'Privacy · WBSKT',
+    loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

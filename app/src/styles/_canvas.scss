@@ -60,7 +60,8 @@
 .mk .code .bar{display:flex;align-items:center;height:46px;padding:0 22px;font-size:12.5px;color:#76736c}
 .mk .code .bar span:last-child{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
 .mk .code pre{margin:0;padding:6px 24px 26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13.5px;line-height:24px;color:#cfccc5;white-space:pre}
-.mk .code input{display:none}
+.mk .code input{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+.mk #lg-ino:focus-visible ~ .bar [for=lg-ino],.mk #lg-cs:focus-visible ~ .bar [for=lg-cs],.mk #lg-py:focus-visible ~ .bar [for=lg-py]{outline:2px solid #60a5fa;outline-offset:-2px}
 .mk .code .lt{display:flex;gap:4px;margin-left:-10px}
 .mk .code .lt label{padding:6px 10px;border-radius:8px;cursor:pointer;color:#76736c}
 .mk .code .lt label:hover{color:#b5b1a8}
@@ -244,6 +245,22 @@
 .mk .piece{position:absolute;overflow:hidden;border-radius:12px;background:#111111;box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 18px 40px rgba(0,0,0,0.45)}
 /* phone */
 
+/* privacy */
+.mk .pv{max-width:880px;margin:0 auto}
+.mk header .pv{padding:96px 0 0}
+.mk .pv .kick{display:block;margin-bottom:18px;font-size:13px;color:#f0a07a}
+.mk .pv .lead{max-width:640px}
+.mk .pv .note{margin:20px 0 0}
+.mk section.pvsec:not(.shotin *){padding:72px 0 0}
+.mk .pvb{display:grid;grid-template-columns:220px 1fr;gap:40px;padding:36px 0;border-top:1px solid rgba(255,255,255,0.07)}
+.mk .pvb p{margin:0 0 14px;font-size:15.5px;line-height:1.7;color:#9d9991}
+.mk .pvb p:last-child{margin-bottom:0}
+.mk .pvb p b{font-weight:500;color:#ecebe7}
+.mk .pvtab{margin:0 0 18px;border-radius:16px;background:#1a1a19;overflow:hidden}
+.mk .pvt{display:flex;justify-content:space-between;padding:13px 20px;font-size:14.5px;color:#9d9991}
+.mk .pvt + .pvt{border-top:1px solid rgba(255,255,255,0.05)}
+.mk .pvt b{font-weight:500;color:#ecebe7}
+
 .mk .ui{position:relative;padding:28px;border-radius:24px;background:#1a1a19}
 .mk .win{position:relative;border-radius:16px;background:#1f1f1e;box-shadow:0 0 0 1px rgba(255,255,255,0.06);overflow:hidden;font-size:13px;color:#d6d3cc}
 .mk .wh{display:flex;align-items:center;gap:10px;height:52px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,0.06)}
@@ -411,4 +428,8 @@
 .mk .st .code pre{font-size:10px;padding:4px 12px 18px}
 .mk .live .val{font-size:21px}
 .mk .fin{margin:0 0 32px}
+.mk header .pv{padding-top:56px}
+.mk section.pvsec:not(.shotin *){padding-top:40px}
+.mk .pvb{grid-template-columns:1fr;gap:14px;padding:28px 0}
+.mk .pvt{padding:12px 16px;font-size:14px}
 }

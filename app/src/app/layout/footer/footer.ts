@@ -14,6 +14,7 @@ import { LINKS } from '../../links';
         <span class="fl2">
           <a [href]="links.github">GitHub</a>
           <a [href]="links.docs">Docs</a>
+          <a routerLink="/privacy">Privacy</a>
         </span>
       </div>
     </footer>
