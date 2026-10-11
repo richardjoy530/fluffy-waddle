@@ -1,17 +1,32 @@
-<div class="header">
-  <a routerLink="/" class="header-brand">
-    <app-brand />
-  </a>
-
-  <nav class="header-nav">
-    @for (link of navLinks; track link.path) {
-      <a [routerLink]="link.path" routerLinkActive="is-active">{{ link.label }}</a>
-    }
+<div class="wrap">
+  <nav>
+    <a class="logo" routerLink="/"><i>w</i>WBSKT</a>
+    <span class="links">
+      <a routerLink="/features" routerLinkActive="on">Features</a>
+      <a routerLink="/" fragment="ideas">Ideas</a>
+      <a routerLink="/get-started" routerLinkActive="on">Get started</a>
+      <a [href]="links.docs">Docs</a>
+      <a [href]="links.github">GitHub</a>
+    </span>
+    <span class="sp"></span>
+    <a class="login" [href]="links.login">Log in</a>
+    <a class="btn" [href]="links.signup">Start free</a>
+    <button
+      class="burger"
+      type="button"
+      [attr.aria-expanded]="open()"
+      aria-label="Menu"
+      (click)="open.set(!open())"
+      [innerHTML]="open() ? closeIcon : menuIcon"
+    ></button>
   </nav>
-
-  <div class="header-actions">
-    <!-- TODO: point at console.wbskt.com once the console app exists -->
-    <a href="https://console.dev.wbskt.com/login" class="header-action">Log in</a>
-    <a href="https://console.dev.wbskt.com/signup" class="header-action header-action-primary">Sign up</a>
-  </div>
+</div>
+<div class="mnav" [class.open]="open()">
+  <a routerLink="/features">Features</a>
+  <a routerLink="/" fragment="ideas">Ideas</a>
+  <a routerLink="/get-started">Get started</a>
+  <a [href]="links.docs">Docs</a>
+  <a [href]="links.github">GitHub</a>
+  <a [href]="links.login">Log in</a>
+  <a class="btn" [href]="links.signup">Start free</a>
 </div>

@@ -1,11 +1,25 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Brand } from '../../shared/brand/brand';
+import { LINKS } from '../../links';
 
 @Component({
   selector: 'app-footer',
-  imports: [RouterLink, Brand],
-  templateUrl: './footer.html',
-  styleUrl: './footer.scss',
+  imports: [RouterLink],
+  template: `
+    <footer>
+      <div class="wrap">
+        <a class="logo" routerLink="/"><i>w</i>WBSKT</a>
+        <span class="copy">Made for makers · © {{ year }}</span>
+        <span class="sp"></span>
+        <span class="fl2">
+          <a [href]="links.github">GitHub</a>
+          <a [href]="links.docs">Docs</a>
+        </span>
+      </div>
+    </footer>
+  `,
 })
-export class Footer {}
+export class Footer {
+  protected readonly links = LINKS;
+  protected readonly year = new Date().getFullYear();
+}
