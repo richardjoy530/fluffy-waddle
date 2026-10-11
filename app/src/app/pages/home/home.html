@@ -27,11 +27,11 @@
 <section><div class="wrap"><div class="split">
   <div><h2>A few lines of code</h2><p class="lead" style="font-size:16.5px;margin-top:14px">Add your key and your Wi‑Fi, then send whatever your sensor measures.</p>
     <div class="langs"><span>Arduino &amp; ESP32</span><span>Raspberry Pi</span><span>.NET</span></div></div>
-  <div class="code tabbed"><input type="radio" name="lang" id="lg-ino" aria-label="Arduino" checked><input type="radio" name="lang" id="lg-cs" aria-label="C#"><input type="radio" name="lang" id="lg-py" aria-label="Python">
-    <div class="bar"><span class="lt"><label for="lg-ino">greenhouse.ino</label><label for="lg-cs">Program.cs</label><label for="lg-py">greenhouse.py</label></span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div>
-    <pre class="p-ino"><span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
+  <div class="code tabbed"><input type="radio" class="r1" name="lang" id="lang-ino" aria-label="Arduino" checked><input type="radio" class="r2" name="lang" id="lang-cs" aria-label="C#"><input type="radio" class="r3" name="lang" id="lang-py" aria-label="Python">
+    <div class="bar"><span class="lt"><label class="l1" for="lang-ino">greenhouse.ino</label><label class="l2" for="lang-cs">Program.cs</label><label class="l3" for="lang-py">greenhouse.py</label></span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div>
+    <pre class="p1"><span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
 
-<span class="f">Wbskt</span> wbskt(<span class="s">"your-device-key"</span>);
+<span class="f">Wbskt</span> wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
 
 <span class="k">void</span> <span class="f">setup</span>() &#123;
   wbskt.<span class="f">begin</span>(<span class="s">"home-wifi"</span>, <span class="s">"wifi-password"</span>);
@@ -41,9 +41,9 @@
   <span class="k">float</span> temp = <span class="f">readTemperature</span>();
   wbskt.<span class="f">send</span>(<span class="s">"reading"</span>, <span class="s">"temp"</span>, temp);
   <span class="f">delay</span>(<span class="nm">60000</span>);
-&#125;</pre><pre class="p-cs"><span class="k">using</span> Wbskt.Client.Sdk;
+&#125;</pre><pre class="p2"><span class="k">using</span> Wbskt.Client.Sdk;
 
-<span class="k">var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"your-device-key"</span>);
+<span class="k">var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
 <span class="k">await</span> wbskt.<span class="f">StartAsync</span>();
 
 <span class="k">while</span> (<span class="k">true</span>)
@@ -51,10 +51,10 @@
     <span class="k">var</span> temp = <span class="f">ReadTemperature</span>();
     <span class="k">await</span> wbskt.<span class="f">SendAsync</span>(<span class="s">"reading"</span>, <span class="k">new</span> &#123; temp &#125;);
     <span class="k">await</span> Task.<span class="f">Delay</span>(TimeSpan.<span class="f">FromMinutes</span>(<span class="nm">1</span>));
-&#125;</pre><pre class="p-py"><span class="k">import</span> time
+&#125;</pre><pre class="p3"><span class="k">import</span> time
 <span class="k">from</span> wbskt <span class="k">import</span> <span class="f">Wbskt</span>
 
-wbskt = <span class="f">Wbskt</span>(<span class="s">"your-device-key"</span>)
+wbskt = <span class="f">Wbskt</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>)
 wbskt.<span class="f">start</span>()
 
 <span class="k">while</span> <span class="k">True</span>:
@@ -73,6 +73,15 @@ wbskt.<span class="f">start</span>()
   </div>
 </div></section>
 
+<section><div class="wrap"><div class="share">
+  <div><h2>Show us what you build</h2><p>Post your project on GitHub with a photo, the parts you used and your rule. We'll feature our favourites here, and other makers can borrow your idea.</p>
+    <div class="ctas"><a class="btn quiet" href="https://github.com/wbskt/Wbskt/discussions"> Share your project</a></div></div>
+  <div class="tiles3">
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span><h3>A photo</h3><p>Your build where it lives, wires and all.</p></div>
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><h3>The parts</h3><p>The board, the sensors and anything you printed.</p></div>
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><h3>The rule</h3><p>What it watches and what it does about it.</p></div>
+  </div>
+</div></div></section>
 <section><div class="wrap">
   <div class="beta"><div class="tx"><h2>Free, for good</h2><p>Every feature, no card needed, and no trial that runs out. Sign up, connect a board and keep building.</p></div>
     <div class="ctas"><a class="btn" href="https://console.dev.wbskt.com/signup">Start free</a><span class="note">Have an account? <a href="https://console.dev.wbskt.com/login">Log in</a></span></div></div>

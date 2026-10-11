@@ -1,0 +1,33 @@
+<div class="wrap"><div class="docs">
+  <aside class="dnav"><h4>Docs</h4><div class="dlinks"><a class="dl" routerLink="/get-started">Get started</a><a class="dl" routerLink="/docs/connect" routerLinkActive="on">Connect a board</a><a class="dl" routerLink="/docs/first-rule" routerLinkActive="on">Your first rule</a><a class="dl" routerLink="/docs/messages" routerLinkActive="on">Readings and commands</a><a class="dl" routerLink="/docs/troubleshooting" routerLinkActive="on">Troubleshooting</a></div><div class="help"><b>Need a hand?</b>Ask on GitHub and we'll help you out.<a href="https://github.com/wbskt/Wbskt/issues"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> Ask on GitHub</a></div></aside>
+  <main class="dmain">
+    <span class="kick">Docs</span>
+    <h1>Connect a board</h1>
+    <p class="lead">Every board joins WBSKT the same way. It starts up with a name and a policy's PIN, then shows up in your console.</p>
+    <div class="dsec"><h2>1. Copy a policy PIN</h2><p>A <b>policy</b> is a group of devices that share one PIN, like <b>greenhouse</b> or <b>workshop</b>. In the console, open <b>Policies</b>, pick one or create one, and choose <b>Copy PIN</b>.</p><div class="keybox"><code>K7PX…HT4R</code><span class="cp" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div><p>Anyone with the PIN can add devices to that policy, so keep it to yourself. If it ever leaks, choose <b>Rotate PIN</b> and the old one stops working.</p></div>
+    <div class="dsec"><h2>2. Add a few lines to your code</h2><p>Give your board a name you'll recognise and paste in the PIN. The library connects to Wi‑Fi and to WBSKT for you.</p><div class="code tabbed"><input type="radio" class="r1" name="join" id="join-ino" aria-label="Arduino" checked><input type="radio" class="r2" name="join" id="join-cs" aria-label="C#"><input type="radio" class="r3" name="join" id="join-py" aria-label="Python">
+    <div class="bar"><span class="lt"><label class="l1" for="join-ino">greenhouse.ino</label><label class="l2" for="join-cs">Program.cs</label><label class="l3" for="join-py">greenhouse.py</label></span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div>
+    <pre class="p1"><span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
+
+<span class="f">Wbskt</span> wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
+
+<span class="k">void</span> <span class="f">setup</span>() &#123;
+  wbskt.<span class="f">begin</span>(<span class="s">"home-wifi"</span>, <span class="s">"wifi-password"</span>);
+&#125;
+
+<span class="k">void</span> <span class="f">loop</span>() &#123;
+  wbskt.<span class="f">loop</span>();
+&#125;</pre><pre class="p2"><span class="k">using</span> Wbskt.Client.Sdk;
+
+<span class="k">var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
+<span class="k">await</span> wbskt.<span class="f">StartAsync</span>();</pre><pre class="p3"><span class="c"># Coming soon: the Python library is not out yet.</span>
+<span class="k">from</span> wbskt <span class="k">import</span> <span class="f">Wbskt</span>
+
+wbskt = <span class="f">Wbskt</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>)
+wbskt.<span class="f">start</span>()</pre></div><p>Each board needs its own name. Use the same PIN for every board in the policy.</p></div>
+    <div class="dsec"><h2>3. Approve it</h2><p>Open <b>Clients</b> in the console. Your board appears under its policy within a few seconds.</p><div class="live"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg></span><span><div class="nm2">greenhouse-sensor</div><div class="pend"><b></b>Pending</div></span><span class="apr">Approve</span></div><p>If the policy asks for approval, the board waits as <b>Pending</b> until you choose <b>Approve</b>. Policies that don't ask let new boards straight in.</p></div>
+    <div class="dsec"><h2>Staying connected</h2><p>The library reconnects by itself after a Wi‑Fi drop or a power cut. While it's offline, readings wait on the board, up to 1,000 of them, and go out in order once it's back, each marked with the time it was taken.</p><div class="tip"><span class="tipl">Tip</span>Set the policy to ask for approval while you're trying things out, so a typo in a name doesn't add a stray board.</div></div>
+
+    <div class="dpn"><span></span><a class="dn" routerLink="/docs/first-rule"><small>Next</small>Your first rule</a></div>
+  </main>
+</div></div>
