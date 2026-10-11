@@ -5,7 +5,9 @@ export function handleCopyClick(event: MouseEvent): void {
     return;
   }
   const box = button.closest('.code, .keybox');
-  const text = box?.querySelector('pre, code')?.textContent ?? '';
+  // Tabbed code boxes hold one <pre> per language; copy the one on show.
+  const shown = Array.from(box?.querySelectorAll<HTMLElement>('pre, code') ?? []).find(el => el.getClientRects().length > 0);
+  const text = shown?.textContent ?? '';
   if (!text || !navigator.clipboard) {
     return;
   }

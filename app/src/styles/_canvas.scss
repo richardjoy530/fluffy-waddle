@@ -60,6 +60,14 @@
 .mk .code .bar{display:flex;align-items:center;height:46px;padding:0 22px;font-size:12.5px;color:#76736c}
 .mk .code .bar span:last-child{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
 .mk .code pre{margin:0;padding:6px 24px 26px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13.5px;line-height:24px;color:#cfccc5;white-space:pre}
+.mk .code input{display:none}
+.mk .code .lt{display:flex;gap:4px;margin-left:-10px}
+.mk .code .lt label{padding:6px 10px;border-radius:8px;cursor:pointer;color:#76736c}
+.mk .code .lt label:hover{color:#b5b1a8}
+.mk .tabbed .p-cs,.mk .tabbed .p-py{display:none}
+.mk #lg-cs:checked ~ .p-ino,.mk #lg-py:checked ~ .p-ino{display:none}
+.mk #lg-cs:checked ~ .p-cs,.mk #lg-py:checked ~ .p-py{display:block}
+.mk #lg-ino:checked ~ .bar [for=lg-ino],.mk #lg-cs:checked ~ .bar [for=lg-cs],.mk #lg-py:checked ~ .bar [for=lg-py]{color:#ece9e2;background:rgba(255,255,255,0.06)}
 .mk .k{color:#b9a5f0}.mk .s{color:#a3cd8c}.mk .nm{color:#f0a07a}.mk .f{color:#8fbcf5}.mk .c{color:#6a6761}
 .mk .ideas{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:48px}
 .mk .idea{display:flex;align-items:flex-start;gap:16px;padding:22px 24px;border-radius:18px;background:#1a1a19}
@@ -382,6 +390,8 @@
 .mk .split{grid-template-columns:1fr;gap:36px}
 .mk .code pre{padding:4px 16px 20px;font-size:10.5px;line-height:20px}
 .mk .code .bar{padding:0 16px}
+.mk .code .lt{margin-left:-8px;gap:0}
+.mk .code .lt label{padding:5px 8px;font-size:11.5px}
 .mk .ideas{grid-template-columns:1fr;margin-top:32px}
 .mk .idea{padding:18px}
 .mk .beta{flex-direction:column;align-items:stretch;gap:28px;padding:32px 24px;border-radius:24px}
