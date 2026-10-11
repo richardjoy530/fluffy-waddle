@@ -10,7 +10,7 @@ The WBSKT marketing site, built with Angular and deployed to GitHub Pages from `
 | `/features` | Features |
 | `/get-started` | Get started guide |
 
-The page templates in `src/app/pages` and the styles in `src/styles/_canvas.scss` are ported from the design canvas. Button and link targets (sign up, log in, GitHub, docs) live in `src/app/links.ts`.
+The page templates in `src/app/pages` and the styles in `src/styles/_canvas.scss` are ported from the design canvas. Outside links (sign up, log in, GitHub) live in `src/app/links.ts`. The docs are pages on this site, under `src/app/pages/docs`.
 
 ## Run it locally
 
