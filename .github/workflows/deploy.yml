@@ -37,8 +37,9 @@ jobs:
         working-directory: app
         run: npm run build -- --configuration production
 
-      - name: Add SPA fallback for deep links
-        run: cp app/dist/app/browser/index.html app/dist/app/browser/404.html
+      # Every route is prerendered to its own index.html; the client-only shell answers anything else.
+      - name: Add SPA fallback for unknown paths
+        run: cp app/dist/app/browser/index.csr.html app/dist/app/browser/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
