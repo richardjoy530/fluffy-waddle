@@ -125,25 +125,6 @@
 .mk .fin p{margin:2px 0 0;font-size:14.5px;color:#9d9991}
 
 /* hero A: split with a glimpse of the product */
-.mk .heroA{display:grid;grid-template-columns:1fr 470px;gap:72px;align-items:center;padding:88px 0 0}
-.mk .heroA .lead{max-width:480px}
-.mk .heroA h1{font-size:56px}
-.mk .stack{position:relative;display:flex;flex-direction:column;gap:0}
-.mk .gl{padding:18px 20px;border-radius:18px;background:#1a1a19}
-.mk .gl + .join{width:1px;height:22px;margin-left:38px;background:rgba(255,255,255,0.1)}
-.mk .gl .row{display:flex;align-items:center;gap:12px}
-.mk .gl .ic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,0.05);color:#c9c6bf}
-.mk .gl .ic.b{background:rgba(127,180,247,0.1);color:#8fbcf5}
-.mk .gl .ic.o{background:rgba(232,93,38,0.12);color:#f0a07a}
-.mk .gl .t1{font-size:14px;font-weight:500;color:#ecebe7}
-.mk .gl .t2{font-size:12.5px;color:#7d7a73}
-.mk .gl .big{margin-left:auto;font-size:28px;font-weight:500;letter-spacing:-0.02em;color:#f2f1ed}
-.mk .gl .big small{display:block;text-align:right;font-size:12px;font-weight:400;letter-spacing:0;color:#d19a66}
-.mk .gl .acts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.mk .gl .act{display:flex;align-items:center;gap:10px;height:40px;padding:0 14px;border-radius:11px;background:#20201f;font-size:13.5px;color:#d6d3cc}
-.mk .gl .act em{margin-left:auto;font-style:normal;font-size:12px;color:#93c47a}
-.mk .gl .act i{width:6px;height:6px;border-radius:50%;background:#7bb35f}
-.mk .gl.msg2 p{margin:8px 0 0;font-size:14px;line-height:1.5;color:#ecebe7}
 /* hero B: centred, with an activity feed */
 .mk .heroB{padding:104px 0 0;text-align:center}
 .mk .heroB .lead{margin-left:auto;margin-right:auto}
@@ -431,9 +412,6 @@
 .mk .bar6 .ib{display:inline-flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;border-radius:8px}
 
 @media (max-width: 760px) {
-.mk .heroA h1{font-size:40px}
-.mk .heroA{grid-template-columns:1fr;gap:48px;padding-top:48px}
-.mk .gl .big{font-size:24px}
 .mk .fsec{grid-template-columns:1fr;gap:32px;padding-top:88px}
 .mk .fsec.rev > :first-child{order:0}
 .mk .wrap{padding:0 20px}
