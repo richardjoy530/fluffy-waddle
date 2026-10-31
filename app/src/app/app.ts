@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './layout/header/header';
 import { Footer } from './layout/footer/footer';
+import { Seo } from './seo';
 
 @Component({
   selector: 'app-root',
@@ -14,4 +15,8 @@ import { Footer } from './layout/footer/footer';
     </div>
   `,
 })
-export class App {}
+export class App {
+  constructor() {
+    inject(Seo).start();
+  }
+}
