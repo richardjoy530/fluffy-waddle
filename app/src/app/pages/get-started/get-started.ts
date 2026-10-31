@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { handleCopyClick } from '../copy';
+import { LINKS } from '../../links';
 
 @Component({
   selector: 'app-get-started',
@@ -7,6 +8,8 @@ import { handleCopyClick } from '../copy';
   host: { '(click)': 'onClick($event)' },
 })
 export class GetStarted {
+  protected readonly links = LINKS;
+
   protected onClick(event: MouseEvent): void {
     handleCopyClick(event);
   }

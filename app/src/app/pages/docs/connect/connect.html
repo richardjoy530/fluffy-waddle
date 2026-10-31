@@ -20,11 +20,10 @@
 &#125;</pre><pre class="p2"><span class="k">using</span> Wbskt.Client.Sdk;
 
 <span class="k">var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
-<span class="k">await</span> wbskt.<span class="f">StartAsync</span>();</pre><pre class="p3"><span class="c"># Coming soon: the Python library is not out yet.</span>
-<span class="k">from</span> wbskt <span class="k">import</span> <span class="f">Wbskt</span>
+<span class="k">await</span> wbskt.<span class="f">StartAsync</span>();</pre><pre class="p3"><span class="k">from</span> wbskt <span class="k">import</span> <span class="f">Wbskt</span>
 
 wbskt = <span class="f">Wbskt</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>)
-wbskt.<span class="f">start</span>()</pre></div><p>Each board needs its own name. Use the same PIN for every board in the policy.</p></div>
+wbskt.<span class="f">start</span>()</pre></div><div class="tip soon2"><span class="tipl">Coming with version 1.0</span>The Arduino, .NET and Python libraries are being finished, and this is how they'll look. <a [href]="links.sdks">Follow along on GitHub</a></div><p>Each board needs its own name. Use the same PIN for every board in the policy.</p></div>
     <div class="dsec"><h2>3. Approve it</h2><p>Open <b>Clients</b> in the console. Your board appears under its policy within a few seconds.</p><div class="live"><span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg></span><span><div class="nm2">greenhouse-sensor</div><div class="pend"><b></b>Pending</div></span><span class="apr">Approve</span></div><p>If the policy asks for approval, the board waits as <b>Pending</b> until you choose <b>Approve</b>. Policies that don't ask let new boards straight in.</p></div>
     <div class="dsec"><h2>Staying connected</h2><p>The library reconnects by itself after a Wi‑Fi drop or a power cut. While it's offline, readings wait on the board, up to 1,000 of them, and go out in order once it's back, each marked with the time it was taken.</p><div class="tip"><span class="tipl">Tip</span>Set the policy to ask for approval while you're trying things out, so a typo in a name doesn't add a stray board.</div></div>
 
