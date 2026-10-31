@@ -1,17 +1,17 @@
 <header><div class="wrap"><div class="heroA">
   <div>
     <h1>Your projects, looked after.<br><span>Even while you sleep.</span></h1>
-    <p class="lead">Connect a board, set a simple rule, and get a message when something needs you. WBSKT takes care of the rest.</p>
-    <div class="ctas"><a class="btn" href="https://console.dev.wbskt.com/signup">Start free</a><a class="btn quiet" routerLink="/features">See the features</a></div>
+    <p class="lead">Connect a board and build rules that wait, check again and act, then message you. They keep going through Wi‑Fi drops and restarts, so you can stop checking.</p>
+    <div class="ctas"><a class="btn" [href]="links.signup">Start free</a><a class="btn quiet" routerLink="/features">See the features</a></div>
     <p class="note"><b></b>Free for good. Every feature, no card needed.</p>
   </div>
   <div class="stack">
     <div class="gl"><div class="row"><span class="ic b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg></span><span><div class="t1">greenhouse-sensor</div><div class="t2">Online · just now</div></span><span class="big">1.8 °C<small>below 2 °C</small></span></div></div>
     <div class="join"></div>
-    <div class="gl"><div class="row"><span class="ic o"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span><div class="t1">Frost alert</div><div class="t2">When it drops below 2 °C</div></span></div>
-      <div class="acts"><div class="act"><i></i>Turn the heater on<em>done</em></div><div class="act"><i></i>Message me on Telegram<em>sent</em></div></div></div>
+    <div class="gl"><div class="row"><span class="ic o"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span><div class="t1">Frost alert</div><div class="t2">When it stays below 2 °C for 10 minutes</div></span></div>
+      <div class="acts"><div class="act"><i></i>Turn the heater on<em>done</em></div><div class="act"><i></i>Check again in 15 minutes<em>3.4 °C</em></div><div class="act"><i></i>Message me on Telegram<em>sent</em></div></div></div>
     <div class="join"></div>
-    <div class="gl msg2"><div class="mt" style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#9d9991"><span class="tg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 3.46 21 2l-1.46 6.46"/><path d="m21 2-9.5 9.5"/><path d="M21 2 10 22l-2.5-8L2 11.5z"/></svg></span><span>Greenhouse</span><span style="margin-left:auto;color:#6f6c66">2:52 am</span></div><p>It's 1.8 °C. I switched the heater on.</p></div>
+    <div class="gl msg2"><div class="mt" style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#9d9991"><span class="tg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 3.46 21 2l-1.46 6.46"/><path d="m21 2-9.5 9.5"/><path d="M21 2 10 22l-2.5-8L2 11.5z"/></svg></span><span>Greenhouse</span><span style="margin-left:auto;color:#6f6c66">3:07 am</span></div><p>It was below 2 °C for 10 minutes, so I switched the heater on. It's 3.4 °C now.</p></div>
   </div>
 </div></div></header>
 
@@ -24,9 +24,24 @@
   </div>
 </div></section>
 
+<section><div class="wrap">
+  <div class="shead"><h2>Rules that do more than ping you</h2><p>Most maker platforms stop at "if it's above X, send a message". A WBSKT rule can wait, check again and take several steps, and it keeps going when things go wrong.</p></div>
+  <div class="tiles3 wide">
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/></svg></span><h3>Waits for it to last</h3><p>Start only when a reading holds, like below 2 °C for 10 minutes, so a door opened for a second doesn't wake you up.</p></div>
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><h3>Takes several steps</h3><p>Switch the heater on, wait, check again, then message you. Branch when the answer isn't the one you expected.</p></div>
+    <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span><h3>Doesn't lose its place</h3><p>Each step is saved as it runs. A failed step tries again, a restart picks up where it stopped, and every run is kept.</p></div>
+  </div>
+  <div class="shot2"><input type="radio" class="r1" name="shot" id="shot-run" aria-label="A run" checked><input type="radio" class="r2" name="shot" id="shot-design" aria-label="The designer">
+    <div class="bar"><span class="lt"><label class="l1" for="shot-run">Watch a run</label><label class="l2" for="shot-design">Build a rule</label></span><span class="cap">Frost alert, in the console</span></div>
+    <img class="p1" src="shots/run.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The WBSKT console showing a Frost alert run: the device reading started it, the heater step is retrying after a failed try, and the phone message has been sent.">
+    <img class="p2" src="shots/designer.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The WBSKT workflow designer: a Frost alert rule that checks the heater, then splits into turning it on and messaging a phone, with a step list to drag new steps from.">
+  </div>
+</div></section>
+
 <section><div class="wrap"><div class="split">
   <div><h2>A few lines of code</h2><p class="lead" style="font-size:16.5px;margin-top:14px">Add your key and your Wi‑Fi, then send whatever your sensor measures.</p>
-    <div class="langs"><span>Arduino &amp; ESP32</span><span>Raspberry Pi</span><span>.NET</span></div></div>
+    <div class="langs"><span>Arduino &amp; ESP32<em>soon</em></span><span>Raspberry Pi<em>soon</em></span><span>.NET<em>soon</em></span></div>
+    <p class="soon"><b>Coming with version 1.0.</b> The libraries are being finished, and this is how they'll look. <a [href]="links.sdks">Follow along on GitHub</a></p></div>
   <div class="code tabbed"><input type="radio" class="r1" name="lang" id="lang-ino" aria-label="Arduino" checked><input type="radio" class="r2" name="lang" id="lang-cs" aria-label="C#"><input type="radio" class="r3" name="lang" id="lang-py" aria-label="Python">
     <div class="bar"><span class="lt"><label class="l1" for="lang-ino">greenhouse.ino</label><label class="l2" for="lang-cs">Program.cs</label><label class="l3" for="lang-py">greenhouse.py</label></span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div>
     <pre class="p1"><span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
@@ -66,23 +81,38 @@ wbskt.<span class="f">start</span>()
 <section><div class="wrap">
   <div class="shead" id="ideas"><h2>Ideas to start with</h2><p>Small projects that are nice to have running in the background.</p></div>
   <div class="ideas">
-    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><div><h3>Frost alert</h3><p>When the greenhouse drops below 2 °C, turn the heater on and message me.</p></div></div>
-    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg></span><div><h3>Garage left open</h3><p>When the door is still open after 10 pm, send a reminder.</p></div></div>
-    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span><div><h3>Thirsty plants</h3><p>When the soil has been dry for an hour, run the pump for 20 seconds.</p></div></div>
+    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><div><h3>Frost alert</h3><p>When the greenhouse stays below 2 °C for 10 minutes, turn the heater on, check again in 15 minutes and message me.</p></div></div>
+    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg></span><div><h3>Garage left open</h3><p>When the door is still open after 10 pm, close it. If it doesn't report closed within a minute, message me.</p></div></div>
+    <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span><div><h3>Thirsty plants</h3><p>When the soil has been dry for an hour, run the pump for 20 seconds. Still dry 10 minutes later? Message me.</p></div></div>
     <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg></span><div><h3>Print finished</h3><p>When the 3D printer goes quiet, send an email.</p></div></div>
   </div>
 </div></section>
 
+<section><div class="wrap">
+  <div class="shead" id="compare"><h2>How WBSKT compares</h2><p>The platforms makers usually weigh up, side by side. We're ahead on rules and behind on a few things we're still building.</p></div>
+  <div class="cmp"><table>
+    <thead><tr><th scope="col"><span class="vh">Feature</span></th><th scope="col" class="us">WBSKT</th><th scope="col">Arduino Cloud</th><th scope="col">Blynk</th><th scope="col">Adafruit IO</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Free plan</th><td class="us">No device cap</td><td>2 devices</td><td>5 devices</td><td>10 feeds</td></tr>
+      <tr><th scope="row">First paid plan</th><td class="us">None</td><td>$72 a year</td><td>$415 a month</td><td>$99 a year</td></tr>
+      <tr><th scope="row">Rules that wait for a reading to last</th><td class="us y">Yes</td><td class="n">No</td><td class="p">Partly</td><td class="n">No</td></tr>
+      <tr><th scope="row">Several steps, waits and branches</th><td class="us y">Yes</td><td class="n">No</td><td class="p">Basic</td><td class="p">Basic</td></tr>
+      <tr><th scope="row">Commands with delivery receipts</th><td class="us y">Yes</td><td class="p">Synced variables</td><td class="p">Virtual pins</td><td class="n">No</td></tr>
+      <tr><th scope="row">Arduino and ESP32 library</th><td class="us p">Coming in 1.0</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
+      <tr><th scope="row">Charts</th><td class="us p">Coming soon</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
+      <tr><th scope="row">Phone app</th><td class="us n">No</td><td class="y">Yes</td><td class="y">Yes</td><td class="p">Web only</td></tr>
+    </tbody>
+  </table></div>
+  <p class="cmpnote">Checked in October 2026 against each platform's public pricing and docs; Blynk's prices are from May 2026. Plans change, so check before you choose.</p>
+</div></section>
+
 <section><div class="wrap"><div class="share">
   <div><h2>Show us what you build</h2><p>Post your project on GitHub with a photo, the parts you used and your rule. We'll feature our favourites here, and other makers can borrow your idea.</p>
-    <div class="ctas"><a class="btn quiet" href="https://github.com/wbskt/Wbskt/discussions"> Share your project</a></div></div>
+    <div class="ctas"><a class="btn quiet" href="https://github.com/wbskt/Wbskt/discussions">Share your project</a></div></div>
   <div class="tiles3">
     <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span><h3>A photo</h3><p>Your build where it lives, wires and all.</p></div>
     <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><h3>The parts</h3><p>The board, the sensors and anything you printed.</p></div>
     <div class="tile3"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><h3>The rule</h3><p>What it watches and what it does about it.</p></div>
   </div>
 </div></div></section>
-<section><div class="wrap">
-  <div class="beta"><div class="tx"><h2>Free, for good</h2><p>Every feature, no card needed, and no trial that runs out. Sign up, connect a board and keep building.</p></div>
-    <div class="ctas"><a class="btn" href="https://console.dev.wbskt.com/signup">Start free</a><span class="note">Have an account? <a href="https://console.dev.wbskt.com/login">Log in</a></span></div></div>
-</div></section>
+<app-free-plan />
