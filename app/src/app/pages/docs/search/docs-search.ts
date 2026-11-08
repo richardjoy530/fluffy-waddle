@@ -1,4 +1,13 @@
-import { Component, ElementRef, computed, effect, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DOCUMENT,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCS_PAGES } from '../docs-nav';
 import { DOCS_SECTIONS } from '../docs-sections';
@@ -111,6 +120,9 @@ function buildIndex(): DocsHit[] {
 })
 export class DocsSearch {
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
+  // Where focus was before the search opened, to give it back on close.
+  private returnFocus: HTMLElement | null = null;
   protected readonly state = inject(DocsSearchState);
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('q');
   private readonly list = viewChild<ElementRef<HTMLElement>>('list');
@@ -149,8 +161,17 @@ export class DocsSearch {
 
   constructor() {
     effect(() => {
-      if (this.state.open()) {
+      const open = this.state.open();
+      const body = this.document.body;
+      if (open) {
+        this.returnFocus = this.document.activeElement as HTMLElement | null;
         setTimeout(() => this.input()?.nativeElement.focus());
+      } else {
+        this.returnFocus?.focus?.();
+        this.returnFocus = null;
+      }
+      if (body) {
+        body.style.overflow = open ? 'hidden' : '';
       }
     });
   }
