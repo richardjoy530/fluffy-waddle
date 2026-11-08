@@ -1,0 +1,93 @@
+<div class="dx">
+  <div class="wrap dxw">
+    <div class="docs" [class.wide]="!sections().length">
+      <div class="mbar">
+        <button
+          type="button"
+          class="mmenu"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="docs-menu"
+          (click)="menuOpen.set(!menuOpen())"
+        >
+          <app-docs-icon name="list" [size]="16" />
+          <span>{{ page()?.label ?? 'Docs' }}</span>
+          <app-docs-icon [name]="menuOpen() ? 'chevD' : 'chevR'" [size]="15" />
+        </button>
+        <button type="button" class="msearch" aria-label="Search docs" (click)="search.show()">
+          <app-docs-icon name="search" [size]="17" />
+        </button>
+      </div>
+      <aside class="dnav" [class.open]="menuOpen()" id="docs-menu" aria-label="Docs">
+        <button type="button" class="sbtn" (click)="search.show()">
+          <app-docs-icon name="search" [size]="15" />Search docs<kbd>⌘K</kbd>
+        </button>
+        @for (group of nav; track group.id) {
+          <div class="x-grp" [class.open]="isOpen(group.id)">
+            <button
+              type="button"
+              class="gh"
+              [attr.aria-expanded]="isOpen(group.id)"
+              [attr.aria-controls]="'grp-' + group.id"
+              (click)="toggle(group.id)"
+            >
+              {{ group.title }}<app-docs-icon [name]="isOpen(group.id) ? 'chevD' : 'chevR'" [size]="14" />
+            </button>
+            @if (isOpen(group.id)) {
+              <div class="gl" [id]="'grp-' + group.id">
+                @for (link of group.links; track link.path) {
+                  <a
+                    [routerLink]="link.path"
+                    routerLinkActive="on"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    ariaCurrentWhenActive="page"
+                    >{{ link.label }}</a
+                  >
+                }
+              </div>
+            }
+          </div>
+        }
+        <div class="x-help">
+          <b>Need a hand?</b>Ask on GitHub and we'll help you out.
+          <a href="https://github.com/wbskt/Wbskt/issues"
+            ><app-docs-icon name="github" [size]="14" /> Ask on GitHub</a
+          >
+        </div>
+      </aside>
+
+      <article class="dmain">
+        @if (page(); as p) {
+          <div class="crumb">
+            <a routerLink="/docs">Docs</a><span aria-hidden="true">/</span><span>{{ p.group.title }}</span
+            ><span aria-hidden="true">/</span><span>{{ p.label }}</span>
+          </div>
+        }
+        <router-outlet />
+        <div class="dpn" role="navigation" aria-label="Previous and next page">
+          @if (prev(); as p) {
+            <a [routerLink]="p.path"><small>Previous</small>{{ p.label }}</a>
+          } @else {
+            <span></span>
+          }
+          @if (next(); as n) {
+            <a class="dn" [routerLink]="n.path"><small>Next</small>{{ n.label }}</a>
+          }
+        </div>
+      </article>
+
+      @if (sections().length) {
+        <aside class="toc" aria-label="On this page">
+          <div class="th">On this page</div>
+          <div class="tl2">
+            @for (s of sections(); track s.id) {
+              <a [routerLink]="[]" [fragment]="s.id" [class.on]="activeSection() === s.id">{{
+                s.label
+              }}</a>
+            }
+          </div>
+        </aside>
+      }
+    </div>
+  </div>
+  <app-docs-search />
+</div>

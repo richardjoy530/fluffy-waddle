@@ -1,18 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { handleCopyClick } from '../../copy';
-import { LINKS } from '../../../links';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-docs-connect',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink],
   templateUrl: './connect.html',
-  host: { '(click)': 'onClick($event)' },
 })
-export class DocsConnect {
-  protected readonly links = LINKS;
-
-  protected onClick(event: MouseEvent): void {
-    handleCopyClick(event);
-  }
-}
+export class DocsConnect {}

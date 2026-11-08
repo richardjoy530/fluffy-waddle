@@ -1,0 +1,101 @@
+<h1 class="x-t">Error codes</h1>
+<p class="lead">
+  Every error WBSKT returns carries a <code>code</code> to branch on and a <code>traceId</code> to
+  quote when you ask for help. Codes never change meaning; new ones are only added.
+</p>
+<div class="code">
+  <div class="bar">
+    <span class="tab on">404 application/problem+json</span>
+    <button type="button" class="cpy" data-copy><app-docs-icon name="copy" [size]="13" /> Copy</button>
+  </div>
+  <pre>&#123;
+  <span class="s">"status"</span>: <span class="nm">404</span>,
+  <span class="s">"title"</span>: <span class="s">"Not Found"</span>,
+  <span class="s">"detail"</span>: <span class="s">"No such client."</span>,
+  <span class="s">"code"</span>: <span class="s">"CLIENT_NOT_FOUND"</span>,
+  <span class="s">"traceId"</span>: <span class="s">"00-4bf92f3577b34da6a3ce929d0e0e4736-00"</span>
+&#125;</pre>
+</div>
+<p class="enote">
+  A <code>400</code> from validation also carries <code>errors</code>, each field with its messages.
+  A <code>429</code> or <code>503</code> carries a <code>Retry-After</code> header: wait that many
+  seconds, then try again. The WebSocket has its own
+  <a routerLink="/docs/protocol" fragment="close-codes">close codes</a>.
+</p>
+
+<div class="ehead">
+  <div class="field">
+    <app-docs-icon name="search" [size]="16" />
+    <label for="ec">Filter codes</label>
+    <input
+      #ec
+      id="ec"
+      type="search"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Filter by code or words, e.g. POLICY or expired"
+      [value]="query()"
+      (input)="query.set(ec.value)"
+    />
+  </div>
+</div>
+<div class="chips" role="group" aria-label="Status">
+  @for (f of filters; track f.label) {
+    <button
+      type="button"
+      class="chip"
+      [class.on]="filter() === f"
+      [attr.aria-pressed]="filter() === f"
+      (click)="filter.set(f)"
+    >
+      {{ f.label }}
+    </button>
+  }
+</div>
+<p class="ecount" aria-live="polite">
+  @if (shown() === total) {
+    {{ total }} codes
+  } @else {
+    {{ shown() }} of {{ total }} codes
+  }
+</p>
+
+@for (g of groups(); track g.id) {
+  <div class="egrp">
+    <h2 [id]="g.id">{{ g.title }}<small>{{ g.codes.length }} {{ g.codes.length === 1 ? 'code' : 'codes' }}</small></h2>
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Code</th>
+            <th scope="col">Status</th>
+            <th scope="col">Means, and what to do</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of g.codes; track e.code) {
+            <tr [id]="e.code">
+              <td><code>{{ e.code }}</code></td>
+              <td><span class="x-pill" [class]="tone(e.status)">{{ e.status }}</span></td>
+              <td [innerHTML]="e.text"></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+} @empty {
+  <div class="enone">
+    No code matches that. <button type="button" class="linkish" (click)="clear()">Show all codes</button>
+  </div>
+}
+
+<div class="egrp">
+  <h2 id="plans-and-limits">Plans and limits</h2>
+  <p class="enote">
+    Reaching a plan's limit slows or pauses things. It never charges you. Running out of clients
+    shows up as <code>POLICY_LIMIT_REACHED</code> when a board registers. The codes for running out
+    of credits or messages arrive with billing; see
+    <a routerLink="/docs/billing" fragment="what-happens-at-a-limit">what happens at a limit</a>.
+  </p>
+</div>

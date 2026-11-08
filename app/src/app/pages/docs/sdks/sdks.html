@@ -1,0 +1,56 @@
+<h1 class="x-t">SDKs</h1>
+<p class="lead">Libraries that do the protocol for you: register once, keep credentials, reconnect politely, buffer while offline and confirm commands. Pick the one for your board or language.</p>
+
+<div class="dsec first"><div class="sdks"><div class="sdk"><span class="x-top"><span class="x-lg" style="background:rgba(0,151,157,0.16);color:#5ccdd2" aria-hidden="true">ino</span><b>ESP32 / Arduino</b><span class="x-pill p-blue sm">Beta 0.9</span></span><p>For ESP32 boards. TLS WebSocket, credentials in NVS, an offline buffer and firmware updates.</p><span class="inst">Library Manager → Wbskt</span><a class="go" href="https://github.com/wbskt/Wbskt.Arduino">Read the README <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"></path></svg></a></div><div class="sdk"><span class="x-top"><span class="x-lg" style="background:rgba(185,165,240,0.14);color:#c7b7f3" aria-hidden="true">.NET</span><b>.NET</b><span class="x-pill p-blue sm">Beta 0.9</span></span><p>For Raspberry Pi, PCs and servers. The reference implementation of the protocol.</p><span class="inst">dotnet add package Wbskt.Client --prerelease</span><a class="go" href="https://github.com/wbskt/Wbskt/tree/master/Clients/Wbskt.Client.Sdk">Read the README <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"></path></svg></a></div><div class="sdk"><span class="x-top"><span class="x-lg" style="background:rgba(217,163,95,0.14);color:#e0b57a" aria-hidden="true">py</span><b>Python</b><span class="x-pill p-amber sm">Coming soon</span></span><p>For Raspberry Pi and scripts. asyncio, the same behaviour as the others.</p><span class="inst">pip install wbskt</span><a class="go" href="https://github.com/wbskt/Wbskt/tree/master/Clients/python">Read the README <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"></path></svg></a></div></div></div>
+
+<div class="dsec"><h2 id="hello-wbskt">Hello, WBSKT</h2><p>The same few lines in each: connect with a name and a policy PIN, send a reading, take a command.</p>
+<div class="code tabbed"><input type="radio" class="r1" name="hello" id="hello-ino" aria-label="Arduino" checked><input type="radio" class="r2" name="hello" id="hello-cs" aria-label="C#"><input type="radio" class="r3" name="hello" id="hello-py" aria-label="Python">
+<div class="bar"><span class="lt"><label class="l1" for="hello-ino">greenhouse.ino</label><label class="l2" for="hello-cs">Program.cs</label><label class="l3" for="hello-py">greenhouse.py</label></span><button type="button" class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg> Copy</button></div>
+<pre class="p1"><span class="k">#include</span> <span class="s">&lt;WiFi.h&gt;</span>
+<span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
+
+WbsktClient wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"483920"</span>);
+
+<span class="k">void</span> <span class="f">setup</span>() &#123;
+  WiFi.<span class="f">begin</span>(<span class="s">"home-wifi"</span>, <span class="s">"wifi-password"</span>);
+  wbskt.<span class="f">onMessage</span>([](const WbsktMessage&amp; message) &#123;
+    <span class="k">if</span> (<span class="f">strcmp</span>(message.type, <span class="s">"heater"</span>) == <span class="nm">0</span>) &#123;
+      <span class="f">switchHeater</span>(message.payload[<span class="s">"on"</span>]);
+    &#125;
+  &#125;);
+  wbskt.<span class="f">begin</span>();
+&#125;
+
+<span class="k">void</span> <span class="f">loop</span>() &#123;
+  wbskt.<span class="f">loop</span>();
+  <span class="k">static unsigned long</span> last = <span class="nm">0</span>;
+  <span class="k">if</span> (<span class="f">millis</span>() - last &lt; <span class="nm">10000</span>) <span class="k">return</span>;
+  last = <span class="f">millis</span>();
+  JsonDocument reading;
+  reading[<span class="s">"celsius"</span>] = <span class="f">readTemperature</span>();
+  wbskt.<span class="f">send</span>(<span class="s">"temperature"</span>, reading);
+&#125;</pre><pre class="p2"><span class="k">using</span> Wbskt.Client.Sdk;
+
+<span class="k">await using var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"483920"</span>);
+
+wbskt.OnMessageReceived += (type, payload, commandId) =&gt;
+&#123;
+    <span class="k">if</span> (type == <span class="s">"heater"</span>) heater.<span class="f">Switch</span>(payload);
+&#125;;
+
+<span class="k">await</span> wbskt.<span class="f">StartAsync</span>();
+<span class="k">await</span> wbskt.<span class="f">SendAsync</span>(<span class="s">"temperature"</span>, <span class="k">new</span> &#123; celsius = <span class="f">ReadTemperature</span>() &#125;);</pre><pre class="p3"><span class="k">from</span> wbskt <span class="k">import</span> WbsktClient
+
+client = <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, policy_pin=<span class="s">"483920"</span>)
+
+<span class="k">def</span> <span class="f">handle</span>(message):
+    <span class="k">if</span> message.type == <span class="s">"heater"</span>:
+        heater.<span class="f">switch</span>(message.payload[<span class="s">"on"</span>])
+
+client.on_message = handle
+client.<span class="f">start</span>()
+client.<span class="f">send</span>(<span class="s">"temperature"</span>, &#123;<span class="s">"celsius"</span>: <span class="f">read_temperature</span>()&#125;)</pre></div></div>
+
+<div class="dsec"><h2 id="what-each-one-does">What each one does</h2><div class="tbl sdkx"><table><thead><tr><th scope="col"><span class="vh">Feature</span></th><th scope="col">ESP32 / Arduino</th><th scope="col">.NET</th><th scope="col">Python</th></tr></thead><tbody><tr><td>Readings and commands</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>State and capabilities</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>Confirms commands, refuses expired ones</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>Offline buffer, sent in order</td><td>Yes, sized in bytes</td><td>Yes, 1,000 messages</td><td>Yes, 1,000 messages</td></tr><tr><td>Firmware updates (OTA)</td><td><span class="yes">Yes</span></td><td><span class="x-no">No</span></td><td><span class="x-no">No</span></td></tr></tbody></table></div></div>
+
+<div class="dsec"><h2 id="another-language">Another language?</h2><p>Anything that speaks HTTPS and WebSocket can be a client. Follow the <a routerLink="/docs/protocol">client protocol</a>, then run the shared conformance tests against your client to check it behaves like the SDKs.</p><div class="tip"><span class="tipl">Self-hosting</span>Every SDK takes a server address, so it works the same against your own WBSKT install.</div></div>
