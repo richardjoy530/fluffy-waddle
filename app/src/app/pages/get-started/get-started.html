@@ -33,18 +33,24 @@
     <div class="st"><span class="pad">4</span><div class="body">
       <h3>Upload the sketch</h3>
       <p>Paste this in, add your PIN and Wi‑Fi details, and upload it to your board.</p>
-      <div class="code"><div class="bar"><span>greenhouse.ino</span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div><pre><span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
+      <div class="code"><div class="bar"><span>greenhouse.ino</span><span class="cpy" data-copy><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy</span></div><pre><span class="k">#include</span> <span class="s">&lt;WiFi.h&gt;</span>
+<span class="k">#include</span> <span class="s">&lt;Wbskt.h&gt;</span>
 
-<span class="f">Wbskt</span> wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
+WbsktClient wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
 
 <span class="k">void</span> <span class="f">setup</span>() &#123;
-  wbskt.<span class="f">begin</span>(<span class="s">"home-wifi"</span>, <span class="s">"wifi-password"</span>);
+  WiFi.<span class="f">begin</span>(<span class="s">"home-wifi"</span>, <span class="s">"wifi-password"</span>);
+  wbskt.<span class="f">begin</span>();
 &#125;
 
 <span class="k">void</span> <span class="f">loop</span>() &#123;
-  <span class="k">float</span> temp = <span class="f">readTemperature</span>();
-  wbskt.<span class="f">send</span>(<span class="s">"reading"</span>, <span class="s">"temp"</span>, temp);
-  <span class="f">delay</span>(<span class="nm">60000</span>);
+  wbskt.<span class="f">loop</span>();
+  <span class="k">static unsigned long</span> last = <span class="nm">0</span>;
+  <span class="k">if</span> (<span class="f">millis</span>() - last &lt; <span class="nm">60000</span>) <span class="k">return</span>;
+  last = <span class="f">millis</span>();
+  JsonDocument reading;
+  reading[<span class="s">"celsius"</span>] = <span class="f">readTemperature</span>();
+  wbskt.<span class="f">send</span>(<span class="s">"temperature"</span>, reading);
 &#125;</pre></div>
     </div></div>
     <div class="st"><span class="pad">5</span><div class="body">
