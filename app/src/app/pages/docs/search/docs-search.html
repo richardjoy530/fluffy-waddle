@@ -1,0 +1,67 @@
+@if (state.open()) {
+  <div class="sdim" (click)="close()"></div>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Search docs">
+    <div class="field">
+      <app-docs-icon name="search" [size]="18" />
+      <label for="docs-q">Search docs</label>
+      <input
+        #q
+        id="docs-q"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Search docs, error codes and nodes"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="docs-results"
+        [attr.aria-activedescendant]="flat().length ? 'docs-hit-' + active() : null"
+        [value]="query()"
+        (input)="setQuery(q.value)"
+      />
+      <button type="button" class="esc" (click)="close()">esc</button>
+    </div>
+    <div class="chips" role="group" aria-label="Show">
+      @for (k of kinds; track k) {
+        <button type="button" class="chip" [class.on]="kind() === k" [attr.aria-pressed]="kind() === k" (click)="setKind(k)">
+          {{ kindLabels[k] }}
+        </button>
+      }
+    </div>
+    <div class="rlist" #list id="docs-results" role="listbox" aria-label="Results">
+      @for (g of groups(); track g.kind) {
+        <div class="rg" role="group" [attr.aria-label]="g.label">
+          <div class="rh">{{ g.label }}</div>
+          @for (h of g.hits; track h.path + (h.fragment ?? '') + h.title) {
+            @let i = indexOf(h);
+            @let t = parts(h.title);
+            <div
+              class="res"
+              role="option"
+              [id]="'docs-hit-' + i"
+              [attr.data-i]="i"
+              [attr.aria-selected]="i === active()"
+              [class.on]="i === active()"
+              (mousemove)="active.set(i)"
+              (click)="go(h)"
+            >
+              <span class="x-ic"><app-docs-icon [name]="h.icon" [size]="16" /></span>
+              <span class="rt"
+                ><b>{{ t[0] }}<mark>{{ t[1] }}</mark>{{ t[2] }}</b><small>{{ h.sub }}</small></span
+              >
+              <span class="where">{{ h.where }}</span>
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="rnone">
+          Nothing matches “{{ query() }}”. Try fewer words, or
+          <a href="https://github.com/wbskt/Wbskt/issues">ask on GitHub</a>.
+        </div>
+      }
+    </div>
+    <div class="foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd>to move</span><span><kbd>↵</kbd>to open</span
+      ><span><kbd>esc</kbd>to close</span><span class="fr">Searches guides, nodes and error codes</span>
+    </div>
+  </div>
+}

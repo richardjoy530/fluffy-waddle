@@ -1,15 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { handleCopyClick } from '../../copy';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-docs-messages',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink],
   templateUrl: './messages.html',
-  host: { '(click)': 'onClick($event)' },
 })
-export class DocsMessages {
-  protected onClick(event: MouseEvent): void {
-    handleCopyClick(event);
-  }
-}
+export class DocsMessages {}

@@ -1,0 +1,118 @@
+<h1 class="x-t">Node reference</h1>
+<p class="lead">
+  A workflow is a chain of nodes. Every run starts at a trigger, moves through control nodes and
+  does things with actions. These are all 24, with the ports each one leaves by and what it costs.
+</p>
+<div class="legend">
+  <span class="x-pill p-orange"><i></i>Trigger: starts a run</span>
+  <span class="x-pill p-blue"><i></i>Control: changes the flow</span>
+  <span class="x-pill p-amber"><i></i>Wait: parks the run</span>
+  <span class="x-pill p-green"><i></i>Action: does something</span>
+  <span class="x-pill p-red"><i></i>Stop: ends the run</span>
+</div>
+<div class="tip">
+  <span class="tipl">Credits</span>Starting a run costs <b>1</b> credit, and each node it passes
+  through costs more from your monthly allowance. Triggers are free, bookkeeping costs <b>0.1</b>, a
+  message to a client <b>1</b>, Telegram, Discord, ntfy or a URL <b>5</b>, and an email <b>10</b>.
+  See <a routerLink="/docs/billing" fragment="how-credits-are-counted">Plans and billing</a>.
+</div>
+
+<div class="dsec">
+  <div class="sechead">
+    <h2 id="triggers">Triggers</h2>
+    <span class="x-pill p-grey">5 nodes · free</span>
+  </div>
+  <p>
+    A workflow has exactly one trigger. Its output is the run's input, so later nodes can read
+    <code>trigger.payload</code>.
+  </p>
+  <div class="ngrid">
+    @for (n of triggers; track n.kind) {
+      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
+    }
+  </div>
+</div>
+
+<div class="dsec">
+  <div class="sechead">
+    <h2 id="control">Control</h2>
+    <span class="x-pill p-grey">12 nodes</span>
+  </div>
+  <p>
+    Control nodes decide where the run goes next. Waiting nodes park the run on the server, so a run
+    can wait for days without a board staying awake.
+  </p>
+  <div class="ngrid">
+    @for (n of control; track n.kind) {
+      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
+    }
+  </div>
+</div>
+
+<div class="dsec">
+  <div class="sechead">
+    <h2 id="actions">Actions</h2>
+    <span class="x-pill p-grey">7 nodes</span>
+  </div>
+  <p>Actions that reach outside WBSKT use an integration you set up once per workspace.</p>
+  <div class="ngrid">
+    @for (n of actions; track n.kind) {
+      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
+    }
+  </div>
+</div>
+
+<div class="dsec">
+  <h2 id="ports">Ports</h2>
+  <p>
+    A port is where a run leaves a node. Most nodes have one output, <code>default</code>. Nodes
+    that branch have one port per outcome, and a run that reaches a port with nothing connected ends
+    there as done.
+  </p>
+  <div class="tbl">
+    <table>
+      <thead>
+        <tr><th scope="col">Port</th><th scope="col">Leaves when</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>true</code> / <code>false</code></td><td>The If node's conditions held, or didn't.</td></tr>
+        <tr><td><code>body</code> / <code>done</code> / <code>empty</code></td><td>Once per item; after the last item; when the list had none.</td></tr>
+        <tr><td><code>timeout</code></td><td>A wait ran out before the callback, signal or acknowledgement arrived.</td></tr>
+        <tr><td><code>acked</code> / <code>failed</code></td><td>The client confirmed the command, or refused it (for example because it had expired).</td></tr>
+        <tr><td><code>error</code></td><td>The URL answered with an error after its retries.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #card let-n>
+  @if (n.page) {
+    <a class="node" [id]="anchor(n)" [routerLink]="n.page">
+      <ng-container *ngTemplateOutlet="inner; context: { $implicit: n }" />
+    </a>
+  } @else {
+    <div class="node" [id]="anchor(n)">
+      <ng-container *ngTemplateOutlet="inner; context: { $implicit: n }" />
+    </div>
+  }
+</ng-template>
+
+<ng-template #inner let-n>
+  <span class="x-ic" [class]="n.tone"><app-docs-icon [name]="n.icon" [size]="17" /></span>
+  <span class="nb">
+    <span class="nt"><b>{{ n.name }}</b><span class="cr">{{ n.credits }}</span></span>
+    <p>{{ n.desc }}</p>
+    <span class="nf">
+      <span class="ports">
+        <span class="x-pl">Out</span>
+        @for (p of n.ports; track $index) {
+          <span [class.or]="p.note">{{ p.t }}</span>
+        }
+      </span>
+      <span class="kind">{{ n.kind }}</span>
+      @if (n.page) {
+        <span class="more">Settings, ports and examples<app-docs-icon name="arrowR" [size]="13" /></span>
+      }
+    </span>
+  </span>
+</ng-template>
