@@ -12,6 +12,10 @@
 .mk .links .on{color:#ecebe7}
 .mk .sp{flex:1}
 .mk .login{font-size:14px;color:#c9c6bf}
+.mk .links a,.mk .login{white-space:nowrap}
+@media (max-width: 900px) {
+.mk .links{gap:18px}
+}
 .mk .btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:12px;background:#e85d26;color:#fff;font-size:15px;font-weight:500;white-space:nowrap}
 .mk nav:not(.shotin *):not(.piece *) .btn{height:36px;padding:0 14px;border-radius:10px;font-size:13.5px}
 .mk .btn.quiet{background:rgba(255,255,255,0.06);color:#ecebe7}
