@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { DOCS_INTEGRATIONS } from './pages/docs/data/integrations';
-import { DOCS_NODES } from './pages/docs/data/nodes';
+import { DOCS_NODE_RENAMES, DOCS_NODES } from './pages/docs/data/nodes';
 
 export const routes: Routes = [
   {
@@ -106,6 +106,10 @@ export const routes: Routes = [
         title: `${n.name} node · WBSKT docs`,
         data: { node: n.slug, description: `The ${n.name} node in WBSKT workflows. ${n.desc}` },
         loadComponent: () => import('./pages/docs/node-page/node-page').then((m) => m.DocsNodePage),
+      })),
+      ...Object.entries(DOCS_NODE_RENAMES).map(([from, to]) => ({
+        path: `nodes/${from}`,
+        redirectTo: `/docs/nodes/${to}`,
       })),
       {
         path: 'integrations',

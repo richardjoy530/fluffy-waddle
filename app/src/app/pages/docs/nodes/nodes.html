@@ -1,15 +1,17 @@
 <h1 class="x-t">Node reference</h1>
 <p class="lead">
-  A workflow is a chain of nodes. Every run starts at a trigger, moves through control nodes and
-  does things with actions. Here are all 24, with the ports each one leaves by and what it costs.
-  Open one for its settings, what it adds to the run and an example.
+  A workflow is a chain of nodes, which the console calls steps. Every run starts at a trigger, and
+  the steps after it change the flow, wait, keep a value, do something or stop. Here are all 24, in
+  the same groups and colours as the console's palette. Open one for its settings, what it adds to
+  the run and an example.
 </p>
 <div class="legend">
-  <span class="x-pill p-orange"><i></i>Trigger: starts a run</span>
-  <span class="x-pill p-blue"><i></i>Control: changes the flow</span>
-  <span class="x-pill p-amber"><i></i>Wait: parks the run</span>
-  <span class="x-pill p-green"><i></i>Action: does something</span>
-  <span class="x-pill p-red"><i></i>Stop: ends the run</span>
+  <span class="x-pill p-orange"><i></i>Starts the workflow</span>
+  <span class="x-pill p-blue"><i></i>Flow</span>
+  <span class="x-pill p-amber"><i></i>Waits</span>
+  <span class="x-pill p-violet"><i></i>Data</span>
+  <span class="x-pill p-green"><i></i>Does something</span>
+  <span class="x-pill p-red"><i></i>Stops</span>
 </div>
 <div class="tip">
   <span class="tipl">Credits</span>Starting a run costs <b>1</b> credit, and each node it passes
@@ -36,9 +38,10 @@
 <div class="dsec">
   <h2 id="ports">Ports</h2>
   <p>
-    A port is where a run leaves a node. Most nodes have one output, <code>default</code>. Nodes
-    that branch have one port per outcome, and a run that reaches a port with nothing connected ends
-    there as done.
+    A port is where a run leaves a node. Most nodes have one output, <code>default</code>, drawn as
+    a single dot on the card's edge. Nodes with more than one outcome list them, and a run that
+    reaches a port with nothing connected ends there as done. The canvas shows some ports by a
+    friendlier name, given first below; the workflow definition and the API use the id.
   </p>
   <div class="tbl">
     <table>
@@ -46,9 +49,10 @@
         <tr><th scope="col">Port</th><th scope="col">Leaves when</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>true</code> / <code>false</code></td><td>The If node's conditions held, or didn't.</td></tr>
-        <tr><td><code>body</code> / <code>done</code> / <code>empty</code></td><td>Once per item; after the last item; when the list had none.</td></tr>
-        <tr><td><code>timeout</code></td><td>A wait ran out before the callback, signal or acknowledgement arrived.</td></tr>
+        <tr><td>yes / no <code>true</code> / <code>false</code></td><td>The If node's conditions held, or didn't.</td></tr>
+        <tr><td>each item <code>body</code>, <code>done</code>, <code>empty</code></td><td>Once per item; after the last item; when the list had none.</td></tr>
+        <tr><td>called, received <code>default</code></td><td>The call or signal a Wait for a call or Wait for signal step was waiting for arrived.</td></tr>
+        <tr><td>timed out <code>timeout</code></td><td>A wait ran out before the callback, signal or acknowledgement arrived.</td></tr>
         <tr><td><code>acked</code> / <code>failed</code></td><td>The client confirmed the command, or refused it (for example because it had expired).</td></tr>
         <tr><td><code>error</code></td><td>The URL answered with an error after its retries.</td></tr>
       </tbody>

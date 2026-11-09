@@ -10,7 +10,7 @@ export interface DocsIntegrationField {
 export interface DocsIntegration {
   slug: string;
   name: string;
-  mark: string;
+  icon: string;
   tone: string;
   category: string;
   blurb: string;
@@ -27,7 +27,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'telegram',
     name: 'Telegram',
-    mark: 'T',
+    icon: 'tgsend',
     tone: 'lg-tg',
     category: 'Chat',
     blurb: 'A bot token. WBSKT lists the chats your bot is in so you can pick one.',
@@ -55,7 +55,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'discord',
     name: 'Discord',
-    mark: 'D',
+    icon: 'dcface',
     tone: 'lg-dc',
     category: 'Chat',
     blurb: 'A channel webhook URL. Send plain text or rich embeds.',
@@ -79,7 +79,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'email',
     name: 'Email (SMTP)',
-    mark: '@',
+    icon: 'mail',
     tone: 'lg-em',
     category: 'Email',
     blurb: 'Your mail server, port, sign-in and from address. Works with any SMTP provider.',
@@ -110,7 +110,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'ntfy',
     name: 'ntfy',
-    mark: 'n',
+    icon: 'ntfybell',
     tone: 'lg-nt',
     category: 'Push',
     blurb: 'A topic on ntfy.sh or your own server, with an access token if it\'s protected.',
@@ -136,7 +136,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'http-auth',
     name: 'HTTP auth',
-    mark: 'H',
+    icon: 'key',
     tone: 'lg-ht',
     category: 'HTTP',
     blurb: 'A bearer token, basic sign-in or a header for a URL that needs one.',
@@ -170,7 +170,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'home-assistant',
     name: 'Home Assistant',
-    mark: 'HA',
+    icon: 'house',
     tone: 'lg-ha',
     category: 'HTTP',
     blurb: 'A ready-made HTTP auth: your instance\'s address and a long-lived token.',

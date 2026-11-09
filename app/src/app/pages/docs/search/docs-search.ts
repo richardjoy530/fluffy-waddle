@@ -45,7 +45,7 @@ const GROUP_ICONS: Record<string, string> = {
   start: 'zap',
   clients: 'cpu',
   workflows: 'flow',
-  nodes: 'branch',
+  nodes: 'split',
   integrations: 'plug',
   comms: 'radio',
   account: 'users',

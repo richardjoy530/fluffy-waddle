@@ -162,11 +162,14 @@
 .mk .dx .node .ports .or{padding:0 2px;background:none;font-family:inherit;font-size:12px;color:#76736c}
 .mk .dx .node .ports span{padding:1px 7px;border-radius:6px;background:rgba(255,255,255,0.05);font-family:'JetBrains Mono',monospace;font-size:11px;color:#b5b1a8}
 .mk .dx .node .kind{display:block;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6a6761}
-.mk .dx .c-tr{background:rgba(232,93,38,0.12);color:#f0a07a}
-.mk .dx .c-co{background:rgba(96,165,250,0.12);color:#8fbcf5}
-.mk .dx .c-wa{background:rgba(217,163,95,0.13);color:#e0b57a}
-.mk .dx .c-ac{background:rgba(123,179,95,0.13);color:#a3cd8c}
-.mk .dx .c-st{background:rgba(229,115,106,0.13);color:#ef9a92}
+.mk .dx .c-tr{--tone:#e85d26}
+.mk .dx .c-co{--tone:#60a5fa}
+.mk .dx .c-wa{--tone:#d19a66}
+.mk .dx .c-da{--tone:#a78bfa}
+.mk .dx .c-ac{--tone:#7bb35f}
+.mk .dx .c-st{--tone:#f43f5e}
+.mk .dx .c-en{--tone:#808080}
+.mk .dx :is(.c-tr,.c-co,.c-wa,.c-da,.c-ac,.c-st,.c-en){background:color-mix(in srgb,var(--tone) 14%,transparent);color:var(--tone)}
 .mk .dx .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 .mk .dx .sechead{display:flex;align-items:center;gap:10px}
 .mk .dx .sechead .x-pill{margin-left:auto}
@@ -437,26 +440,34 @@
 }
 
 // A node drawn as it sits on the canvas, on each node's page.
-.mk .dx .npv{display:flex;justify-content:center;margin-top:16px;padding:40px 20px;border-radius:18px;background:#141413;background-image:radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px);background-size:18px 18px}
-.mk .dx .npc{position:relative;display:flex;align-items:center;gap:18px;width:100%;max-width:440px;padding:14px 0 14px 18px;border:1px solid #2a2a28;border-radius:14px;background:#1a1a19;box-shadow:0 12px 32px rgba(0,0,0,0.35)}
-.mk .dx .npi{position:absolute;left:-6px;top:50%;display:flex;transform:translateY(-50%);font-size:0}
-.mk .dx .npi i,.mk .dx .npp i{display:block;flex:none;width:11px;height:11px;border:2px solid #555350;border-radius:999px;background:#1a1a19}
-.mk .dx .nph{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
-.mk .dx .nph .x-ic{display:inline-flex;align-items:center;justify-content:center;flex:none;width:34px;height:34px;border-radius:10px}
-.mk .dx .npt{display:flex;flex-direction:column;gap:2px;min-width:0}
-.mk .dx .npt b{font-size:15px;font-weight:500;color:#ecebe7}
-.mk .dx .npt small{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;color:#76736c;overflow-wrap:anywhere}
-.mk .dx .npo{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none;margin-right:-6px}
-.mk .dx .npp{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:#c9c6bf}
-.mk .dx .npp i{border-color:#8f8b84}
-.mk .dx .npn{max-width:120px;padding-right:18px;font-size:12px;line-height:1.35;color:#76736c;text-align:right}
+.mk .dx .npv{display:flex;justify-content:center;margin-top:16px;padding:40px 20px;border-radius:18px;background:#0e0e0e;background-image:radial-gradient(#262626 1px,transparent 1px);background-size:16px 16px}
+.mk .dx .npv .npc{position:relative;display:flex;flex-direction:column;width:100%;max-width:272px;border:1px solid #2a2a2a;border-top:2px solid var(--tone);border-radius:8px;background:#151515;color:#f4f4f0;box-shadow:0 6px 20px rgba(0,0,0,0.35)}
+.mk .dx .npi,.mk .dx .npx{position:absolute;top:20px;width:10px;height:10px;border:2px solid #4a4a4a;border-radius:999px;background:#111}
+.mk .dx .npi{left:-6px}
+.mk .dx .npx{right:-6px;border-color:var(--tone)}
+.mk .dx .nph{display:flex;align-items:center;gap:9px;padding:10px 12px 8px}
+.mk .dx .npk{display:inline-flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;border-radius:6px;background:color-mix(in srgb,var(--tone) 14%,transparent);color:var(--tone)}
+.mk .dx .npt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.mk .dx .npt small{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#808080}
+.mk .dx .npt b{overflow:hidden;font-size:13px;font-weight:500;color:#f4f4f0;white-space:nowrap;text-overflow:ellipsis}
+.mk .dx .npl{display:flex;flex-direction:column;gap:2px;padding:0 12px 10px 47px}
+.mk .dx .npl span{overflow:hidden;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;line-height:1.5;color:#999;white-space:nowrap;text-overflow:ellipsis}
+.mk .dx .npc2{display:flex;gap:4px;padding:0 12px 10px 47px}
+.mk .dx .npc2 span{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:999px;background:#1f1f1f;font-size:10px;color:#808080}
+.mk .dx .npo{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding:8px 0 10px;border-top:1px solid #222}
+.mk .dx .npp{display:flex;align-items:center;gap:6px;height:12px;font-size:10px;color:#999}
+.mk .dx .npp i{display:block;width:10px;height:10px;margin-right:-6px;border:2px solid var(--tone);border-radius:999px;background:#111}
+.mk .dx .npp.alt{color:#808080}
+.mk .dx .npp.alt i{border-color:#666}
+.mk .dx .npp.err{color:#808080}
+.mk .dx .npp.err i{border-color:#f43f5e}
 .mk .dx .tbl td small.key{display:block;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#6a6761;overflow-wrap:anywhere}
-.mk .dx .lg-tg{background:rgba(42,163,223,0.16);color:#6cc4ef}
-.mk .dx .lg-dc{background:rgba(124,134,240,0.16);color:#a5adf6}
-.mk .dx .lg-em{background:rgba(255,255,255,0.07);color:#d6d3cc}
-.mk .dx .lg-nt{background:rgba(123,179,95,0.14);color:#a3cd8c}
-.mk .dx .lg-ht{background:rgba(217,163,95,0.14);color:#e0b57a}
-.mk .dx .lg-ha{background:rgba(96,165,250,0.14);color:#8fbcf5}
+.mk .dx .lg-tg{--tone:#60a5fa}
+.mk .dx .lg-dc{--tone:#a78bfa}
+.mk .dx .lg-em{--tone:#7bb35f}
+.mk .dx .lg-nt{--tone:#d19a66}
+.mk .dx .lg-ht,.mk .dx .lg-ha{--tone:#e85d26}
+.mk .dx :is(.lg-tg,.lg-dc,.lg-em,.lg-nt,.lg-ht,.lg-ha){background:color-mix(in srgb,var(--tone) 14%,transparent);color:var(--tone)}
 .mk .dx .x-nhead .x-lg.big{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;border-radius:13px;font-size:16px;font-weight:600}
 .mk .dx .tbl td .sec{display:inline-flex;align-items:center;gap:4px;height:20px;margin-top:6px;padding:0 8px;font-size:11px}
 .mk .dx a.x-ig{transition:background 0.15s}

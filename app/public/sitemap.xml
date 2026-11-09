@@ -18,29 +18,29 @@
   <url><loc>https://wbskt.com/docs/sdks/</loc></url>
   <url><loc>https://wbskt.com/docs/troubleshooting/</loc></url>
   <url><loc>https://wbskt.com/privacy/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/await-signal/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/call-a-url/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/client-message/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/client-presence/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/console-toast/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/delay/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/client-online-offline/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/console-notification/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/discord/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/email/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/end/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/fail-run/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/for-each/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/fork/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/for-each-in-parallel/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/if/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/join/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/manual/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/ntfy/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/parallel-for-each/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/run-by-hand/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/run-workflow/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/schedule/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/sub-workflow/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/set-variable/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/split-into-paths/</loc></url>
   <url><loc>https://wbskt.com/docs/nodes/telegram/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/variable/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/wait-for-http/</loc></url>
-  <url><loc>https://wbskt.com/docs/nodes/webhook/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/wait/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/wait-for-a-call/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/wait-for-paths/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/wait-for-signal/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/webhook-received/</loc></url>
   <url><loc>https://wbskt.com/docs/integrations/discord/</loc></url>
   <url><loc>https://wbskt.com/docs/integrations/email/</loc></url>
   <url><loc>https://wbskt.com/docs/integrations/home-assistant/</loc></url>
