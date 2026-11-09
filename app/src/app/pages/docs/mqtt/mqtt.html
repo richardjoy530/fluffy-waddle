@@ -356,7 +356,7 @@ def on_message(client, userdata, msg):
     message = json.loads(msg.payload)
     payload = message.get(<span class="s">"payload"</span>) or &#123;&#125;
     if message[<span class="s">"type"</span>] == <span class="s">"sys.ping"</span>:
-        send(client, <span class="s">"sys.pong"</span>, &#123;<span class="s">"originalTimestamp"</span>: payload[<span class="s">"timestamp"</span>], <span class="s">"id"</span>: payload[<span class="s">"id"</span>]&#125;)
+        send(client, <span class="s">"sys.pong"</span>, &#123;<span class="s">"originalTimestamp"</span>: payload.get(<span class="s">"timestamp"</span>), <span class="s">"id"</span>: payload.get(<span class="s">"id"</span>)&#125;)
         return
     if <span class="s">"commandId"</span> in message:  <span class="c"># confirm on arrival, before acting</span>
         send(client, <span class="s">"sys.ack"</span>, &#123;<span class="s">"commandId"</span>: message[<span class="s">"commandId"</span>]&#125;)
@@ -384,11 +384,12 @@ client.connect(<span class="s">"mqtt.dev.wbskt.com"</span>, 8883, keepalive=45, 
 client.loop_start()
 
 while True:
-    send(client, <span class="s">"temperature"</span>, &#123;<span class="s">"celsius"</span>: 21.5&#125;)
+    if client.is_connected():  <span class="c"># only after CONNACK, so capabilities has gone first</span>
+        send(client, <span class="s">"temperature"</span>, &#123;<span class="s">"celsius"</span>: 21.5&#125;)
     time.sleep(10)</pre>
   </div>
   <ul class="dul">
-    <li><b>PubSubClient's buffer</b> is 256 bytes by default, too small for the token in CONNECT. Raise it with <code>setBufferSize</code>, as above.</li>
+    <li><b>PubSubClient's buffer</b> is 256 bytes by default, too small for the token in CONNECT. Raise it with <code>setBufferSize</code>, as above. The buffer also caps every message both ways, and PubSubClient silently drops a command bigger than it, so size it for your largest command.</li>
     <li>On an ESP32 the <a routerLink="/docs/sdks">WBSKT library</a> does all of this for you, over WebSocket, along with the offline buffer and firmware updates. Use MQTT when your firmware already has an MQTT stack, or when you'd rather not add a library.</li>
   </ul>
 </div>
