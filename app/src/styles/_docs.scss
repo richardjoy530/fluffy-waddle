@@ -263,6 +263,7 @@
 .mk .dx .tree .x-l2{padding-left:44px}
 .mk .dx .tree span.m{margin-left:6px;font-size:13px;color:#76736c}
 .mk .dx .plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.mk .dx .plan.wide{grid-column:1/-1}
 .mk .dx .plan{display:flex;flex-direction:column;gap:2px;padding:18px;border-radius:16px;background:#1a1a19}
 .mk .dx .plan.pop{box-shadow:0 0 0 1px rgba(232,93,38,0.5)}
 .mk .dx .plan .pn{display:flex;align-items:center;gap:6px;font-size:14.5px;font-weight:500;color:#ecebe7}
