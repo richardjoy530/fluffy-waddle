@@ -11,7 +11,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
-import { DOCS_NAV, DOCS_PAGES } from '../docs-nav';
+import { DOCS_NAV, DOCS_PAGES, DocsLink, DocsNavItem, DocsSubgroup, isDocsSubgroup } from '../docs-nav';
 import { DOCS_SECTIONS } from '../docs-sections';
 import { DocsIcon } from '../icon/docs-icon';
 import { DocsSearch } from '../search/docs-search';
@@ -61,9 +61,19 @@ export class DocsLayout {
     inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
   }
 
-  protected isOpen(groupId: string): boolean {
-    const choice = this.toggled()[groupId];
-    return choice ?? this.page()?.group.id === groupId;
+  // A group or sub-group starts open when it holds the current page.
+  protected isOpen(id: string): boolean {
+    const choice = this.toggled()[id];
+    const page = this.page();
+    return choice ?? (page?.group.id === id || page?.sub?.id === id);
+  }
+
+  protected asSub(item: DocsNavItem): DocsSubgroup | null {
+    return isDocsSubgroup(item) ? item : null;
+  }
+
+  protected asLink(item: DocsNavItem): DocsLink | null {
+    return isDocsSubgroup(item) ? null : item;
   }
 
   protected toggle(groupId: string): void {

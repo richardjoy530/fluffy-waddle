@@ -18,4 +18,34 @@
   <url><loc>https://wbskt.com/docs/sdks/</loc></url>
   <url><loc>https://wbskt.com/docs/troubleshooting/</loc></url>
   <url><loc>https://wbskt.com/privacy/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/await-signal/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/call-a-url/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/client-message/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/client-presence/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/console-toast/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/delay/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/discord/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/email/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/end/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/fail-run/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/for-each/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/fork/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/if/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/join/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/manual/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/ntfy/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/parallel-for-each/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/schedule/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/sub-workflow/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/telegram/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/variable/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/wait-for-http/</loc></url>
+  <url><loc>https://wbskt.com/docs/nodes/webhook/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/discord/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/email/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/home-assistant/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/http-auth/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/ntfy/</loc></url>
+  <url><loc>https://wbskt.com/docs/integrations/telegram/</loc></url>
+  <url><loc>https://wbskt.com/docs/protocol/websocket/</loc></url>
 </urlset>

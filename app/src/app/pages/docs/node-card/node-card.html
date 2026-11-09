@@ -1,0 +1,16 @@
+<a class="node" [id]="node().kind.replace(':', '-')" [routerLink]="'/docs/nodes/' + node().slug">
+  <span class="x-ic" [class]="node().tone"><app-docs-icon [name]="node().icon" [size]="17" /></span>
+  <span class="nb">
+    <span class="nt"><b>{{ node().name }}</b><span class="cr">{{ node().credits }}</span></span>
+    <p>{{ node().desc }}</p>
+    <span class="nf">
+      <span class="ports">
+        <span class="x-pl">Out</span>
+        @for (p of node().ports; track $index) {
+          <span [class.or]="p.note">{{ p.t }}</span>
+        }
+      </span>
+      <span class="kind">{{ node().kind }}</span>
+    </span>
+  </span>
+</a>
