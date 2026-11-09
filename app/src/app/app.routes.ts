@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { DOCS_INTEGRATIONS } from './pages/docs/data/integrations';
+import { DOCS_NODES } from './pages/docs/data/nodes';
 
 export const routes: Routes = [
   {
@@ -98,16 +100,30 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/docs/send-to-client/send-to-client').then((m) => m.DocsSendToClient),
       },
+      // Every other node and every integration type has a page filled from its data file.
+      ...DOCS_NODES.filter((n) => n.slug !== 'send-to-client').map((n) => ({
+        path: `nodes/${n.slug}`,
+        title: `${n.name} node · WBSKT docs`,
+        data: { node: n.slug, description: `The ${n.name} node in WBSKT workflows. ${n.desc}` },
+        loadComponent: () => import('./pages/docs/node-page/node-page').then((m) => m.DocsNodePage),
+      })),
       {
         path: 'integrations',
         title: 'Integrations · WBSKT docs',
         data: {
           description:
-            'Connect Telegram, Discord, email, ntfy and authenticated HTTP once per workspace, then use them from any workflow.',
+            'Connect Telegram, Discord, email, ntfy, HTTP APIs and Home Assistant once per workspace, then use them from any workflow.',
         },
         loadComponent: () =>
           import('./pages/docs/integrations/integrations').then((m) => m.DocsIntegrations),
       },
+      ...DOCS_INTEGRATIONS.map((i) => ({
+        path: `integrations/${i.slug}`,
+        title: `${i.name} integration · WBSKT docs`,
+        data: { integration: i.slug, description: `Connect ${i.name} to WBSKT. ${i.blurb}` },
+        loadComponent: () =>
+          import('./pages/docs/integration-page/integration-page').then((m) => m.DocsIntegrationPage),
+      })),
       {
         path: 'communication',
         title: 'How messages travel · WBSKT docs',
@@ -141,9 +157,18 @@ export const routes: Routes = [
         title: 'Client protocol · WBSKT docs',
         data: {
           description:
-            'How any client talks to WBSKT: registering, logging in, messages, reserved types, limits, close codes and reconnects.',
+            'How any client talks to WBSKT over any gateway: registering, logging in, messages, reserved types, limits and reconnects.',
         },
         loadComponent: () => import('./pages/docs/protocol/protocol').then((m) => m.DocsProtocol),
+      },
+      {
+        path: 'protocol/websocket',
+        title: 'WebSocket gateway · WBSKT docs',
+        data: {
+          description:
+            'Connecting a client over WebSocket: the upgrade and its refusals, frames, keepalive and close codes.',
+        },
+        loadComponent: () => import('./pages/docs/websocket/websocket').then((m) => m.DocsWebsocket),
       },
       {
         path: 'errors',

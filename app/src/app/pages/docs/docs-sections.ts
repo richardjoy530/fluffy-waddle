@@ -1,4 +1,8 @@
 // The sections of each docs page, for the "On this page" list and for search.
+import { DOCS_INTEGRATIONS } from './data/integrations';
+import { DOCS_NODE_DOCS, DocsNodeDoc } from './data/node-docs';
+import { DOCS_NODE_GROUPS } from './data/nodes';
+
 export interface DocsSection {
   id: string;
   label: string;
@@ -24,22 +28,37 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'publish-and-test', label: 'Publish and test' },
   ],
   '/docs/nodes': [
-    { id: 'triggers', label: 'Triggers' },
-    { id: 'control', label: 'Control' },
-    { id: 'actions', label: 'Actions' },
+    ...DOCS_NODE_GROUPS.map((g) => ({ id: g.anchor, label: g.label })),
     { id: 'ports', label: 'Ports' },
   ],
   '/docs/nodes/send-to-client': [
     { id: 'how-it-looks', label: 'How it looks' },
     { id: 'settings', label: 'Settings' },
     { id: 'ports', label: 'Ports' },
+    { id: 'adds-to-the-run', label: 'What it adds to the run' },
     { id: 'on-the-board', label: 'On the board' },
-    { id: 'errors-you-might-see', label: 'Errors you might see' },
+    { id: 'problems-you-might-see', label: 'Problems you might see' },
+    { id: 'see-also', label: 'See also' },
   ],
+  ...Object.fromEntries(
+    Object.entries(DOCS_NODE_DOCS).map(([slug, doc]) => [`/docs/nodes/${slug}`, nodeSections(doc)]),
+  ),
+  ...Object.fromEntries(
+    DOCS_INTEGRATIONS.map((i) => [
+      `/docs/integrations/${i.slug}`,
+      [
+        { id: 'set-it-up', label: 'Set it up' },
+        { id: 'fields', label: 'Fields' },
+        { id: 'test-it', label: 'Test it' },
+        { id: 'problems-you-might-see', label: 'Problems you might see' },
+        { id: 'used-by', label: 'Used by' },
+      ],
+    ]),
+  ),
   '/docs/integrations': [
     { id: 'what-you-can-connect', label: 'What you can connect' },
     { id: 'set-one-up', label: 'Set one up' },
-    { id: 'telegram-step-by-step', label: 'Telegram, step by step' },
+    { id: 'how-secrets-are-kept', label: 'How secrets are kept' },
     { id: 'deleting-an-integration', label: 'Deleting an integration' },
     { id: 'errors-you-might-see', label: 'Errors you might see' },
   ],
@@ -62,13 +81,21 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'paying', label: 'Paying' },
   ],
   '/docs/protocol': [
+    { id: 'how-it-fits-together', label: 'How it fits together' },
     { id: 'at-a-glance', label: 'At a glance' },
     { id: 'register', label: 'Register' },
     { id: 'log-in', label: 'Log in' },
     { id: 'messages', label: 'Messages' },
     { id: 'limits-and-pacing', label: 'Limits and pacing' },
-    { id: 'close-codes', label: 'Close codes' },
+    { id: 'when-a-connection-ends', label: 'When a connection ends' },
     { id: 'reconnecting', label: 'Reconnecting' },
+  ],
+  '/docs/protocol/websocket': [
+    { id: 'connect', label: 'Connect' },
+    { id: 'when-the-upgrade-is-refused', label: 'When the upgrade is refused' },
+    { id: 'frames', label: 'Frames' },
+    { id: 'keepalive', label: 'Keepalive' },
+    { id: 'close-codes', label: 'Close codes' },
   ],
   '/docs/sdks': [
     { id: 'hello-wbskt', label: 'Hello, WBSKT' },
@@ -84,3 +111,17 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'an-error-code', label: 'An error code' },
   ],
 };
+
+// A node page shows only the sections its entry fills.
+function nodeSections(doc: DocsNodeDoc): DocsSection[] {
+  return [
+    { id: 'how-it-looks', label: 'How it looks' },
+    { id: 'settings', label: 'Settings' },
+    { id: 'ports', label: 'Ports' },
+    ...(doc.output.length ? [{ id: 'adds-to-the-run', label: 'What it adds to the run' }] : []),
+    ...(doc.example || doc.code ? [{ id: 'example', label: 'Example' }] : []),
+    ...(doc.concurrency ? [{ id: 'runs-that-overlap', label: 'Runs that overlap' }] : []),
+    ...(doc.problems.length ? [{ id: 'problems-you-might-see', label: 'Problems you might see' }] : []),
+    { id: 'see-also', label: 'See also' },
+  ];
+}

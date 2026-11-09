@@ -4,16 +4,35 @@ export interface DocsPort {
   note?: boolean;
 }
 
+export type DocsNodeGroupId = 'trigger' | 'flow' | 'wait' | 'stop' | 'action';
+
+export interface DocsNodeGroup {
+  id: DocsNodeGroupId;
+  anchor: string;
+  label: string;
+  blurb: string;
+}
+
+// The order nodes are listed in, in the sidebar and on the node reference.
+export const DOCS_NODE_GROUPS: DocsNodeGroup[] = [
+  { id: 'trigger', anchor: 'triggers', label: 'Triggers', blurb: 'Start a run. A workflow has exactly one, and its output is the run\'s input.' },
+  { id: 'flow', anchor: 'flow-and-variables', label: 'Flow and variables', blurb: 'Decide where the run goes next: branch, loop, split, merge, call another workflow or keep a value.' },
+  { id: 'wait', anchor: 'waiting', label: 'Waiting', blurb: 'Park the run on the server until a time passes or something calls back, for minutes or days.' },
+  { id: 'stop', anchor: 'ending', label: 'Ending', blurb: 'End a path on purpose, as a success or a failure.' },
+  { id: 'action', anchor: 'actions', label: 'Actions', blurb: 'Do something: command a board, notify someone or call a URL.' },
+];
+
 export interface DocsNode {
   icon: string;
   name: string;
   kind: string;
+  slug: string;
   credits: string;
   desc: string;
   ports: DocsPort[];
   tone: string;
   cat: 'trigger' | 'control' | 'action';
-  page?: string;
+  group: DocsNodeGroupId;
 }
 
 export const DOCS_NODES: DocsNode[] = [
@@ -21,6 +40,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'radio',
     name: 'Client message',
     kind: 'trigger:client',
+    slug: 'client-message',
+    group: 'trigger',
     credits: 'Free',
     desc: 'Starts when a client sends a message of a type you pick, optionally only when its values match, or have matched for a while.',
     ports: [{ t: 'default' }],
@@ -31,6 +52,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'wifi',
     name: 'Client presence',
     kind: 'trigger:clientPresence',
+    slug: 'client-presence',
+    group: 'trigger',
     credits: 'Free',
     desc: 'Starts when a client comes online or goes offline. Holds back while a client is installing a firmware update.',
     ports: [{ t: 'default' }],
@@ -41,8 +64,10 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'clock',
     name: 'Schedule',
     kind: 'trigger:schedule',
+    slug: 'schedule',
+    group: 'trigger',
     credits: 'Free',
-    desc: 'Starts every few minutes, or on a cron expression in your time zone.',
+    desc: 'Starts every few minutes, daily at a time, or on a cron expression. Times are UTC.',
     ports: [{ t: 'default' }],
     tone: 'c-tr',
     cat: 'trigger',
@@ -51,6 +76,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'webhook',
     name: 'Webhook',
     kind: 'trigger:webhook',
+    slug: 'webhook',
+    group: 'trigger',
     credits: 'Free',
     desc: "Starts when something outside WBSKT posts to the workflow's own URL. The body becomes the run's input.",
     ports: [{ t: 'default' }],
@@ -61,6 +88,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'hand',
     name: 'Manual',
     kind: 'trigger:manual',
+    slug: 'manual',
+    group: 'trigger',
     credits: 'Free',
     desc: 'Starts from the Run button in the console or from the API, with inputs you define.',
     ports: [{ t: 'default' }],
@@ -71,8 +100,10 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'branch',
     name: 'If',
     kind: 'control:logic',
+    slug: 'if',
+    group: 'flow',
     credits: '0.1 credits',
-    desc: 'Checks one or more conditions, grouped with all or any, and leaves by true or false.',
+    desc: 'Checks a condition, or several joined with and or or, and leaves by true or false.',
     ports: [{ t: 'true' }, { t: 'false' }],
     tone: 'c-co',
     cat: 'control',
@@ -81,6 +112,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'repeat',
     name: 'For each',
     kind: 'control:foreach',
+    slug: 'for-each',
+    group: 'flow',
     credits: '0.1 credits',
     desc: 'Runs the body once per item of a list, one after another, then leaves by done.',
     ports: [{ t: 'body' }, { t: 'done' }],
@@ -91,6 +124,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'layers',
     name: 'Parallel for each',
     kind: 'control:parallelForEach',
+    slug: 'parallel-for-each',
+    group: 'flow',
     credits: '0.1 credits',
     desc: 'Runs the body for every item at once. An empty list leaves by empty.',
     ports: [{ t: 'body' }, { t: 'empty' }],
@@ -101,6 +136,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'split',
     name: 'Fork',
     kind: 'control:fork',
+    slug: 'fork',
+    group: 'flow',
     credits: '0.1 credits',
     desc: 'Splits the run into named branches that carry on side by side.',
     ports: [{ t: 'one per branch you name', note: true }],
@@ -111,8 +148,10 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'merge',
     name: 'Join',
     kind: 'control:join',
+    slug: 'join',
+    group: 'flow',
     credits: '0.1 credits',
-    desc: 'Waits for branches to arrive: all of them, or a quorum you set.',
+    desc: 'Waits for branches to arrive: all of them, the first one, or a number you set.',
     ports: [{ t: 'default' }],
     tone: 'c-co',
     cat: 'control',
@@ -121,6 +160,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'box',
     name: 'Sub-workflow',
     kind: 'control:subWorkflow',
+    slug: 'sub-workflow',
+    group: 'flow',
     credits: '1 credit',
     desc: 'Starts another workflow as a child run, with its own credits, and passes the result back.',
     ports: [{ t: 'default' }],
@@ -131,6 +172,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'var',
     name: 'Variable',
     kind: 'control:variable',
+    slug: 'variable',
+    group: 'flow',
     credits: '0.1 credits',
     desc: 'Sets, increments or compare-and-sets a variable, local to the run or shared by every run.',
     ports: [{ t: 'default' }],
@@ -141,8 +184,10 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'timer',
     name: 'Delay',
     kind: 'control:delay',
+    slug: 'delay',
+    group: 'wait',
     credits: '0.1 credits',
-    desc: 'Pauses the run for a fixed time or until a moment. Waiting costs nothing.',
+    desc: 'Pauses the run for a fixed time. Waiting costs nothing.',
     ports: [{ t: 'default' }],
     tone: 'c-wa',
     cat: 'control',
@@ -151,6 +196,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'link',
     name: 'Wait for HTTP',
     kind: 'control:waitForHttp',
+    slug: 'wait-for-http',
+    group: 'wait',
     credits: '0.1 credits',
     desc: 'Parks the run on a one-off callback URL until something calls it, or the time runs out.',
     ports: [{ t: 'default' }, { t: 'timeout' }],
@@ -161,9 +208,11 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'flag',
     name: 'Await signal',
     kind: 'control:awaitSignal',
+    slug: 'await-signal',
+    group: 'wait',
     credits: '0.1 credits',
     desc: 'Parks the run until a named signal arrives from the console, the API or another run.',
-    ports: [{ t: 'default' }, { t: 'timeout' }, { t: 'if it has one', note: true }],
+    ports: [{ t: 'default' }, { t: 'with Give up after', note: true }, { t: 'timeout' }],
     tone: 'c-wa',
     cat: 'control',
   },
@@ -171,6 +220,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'x',
     name: 'Fail run',
     kind: 'control:failRun',
+    slug: 'fail-run',
+    group: 'stop',
     credits: '0.1 credits',
     desc: 'Ends the run as failed, with a reason that shows in the runs list.',
     ports: [{ t: 'none, it ends the run', note: true }],
@@ -181,8 +232,10 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'square',
     name: 'End',
     kind: 'control:end',
+    slug: 'end',
+    group: 'stop',
     credits: '0.1 credits',
-    desc: 'Ends the run as done, optionally with an output for a parent run or the caller.',
+    desc: 'Ends this path as done, optionally handing a value back to the run that started it.',
     ports: [{ t: 'none, it ends the run', note: true }],
     tone: 'c-st',
     cat: 'control',
@@ -191,6 +244,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'send',
     name: 'Send to client',
     kind: 'action:clientMessage',
+    slug: 'send-to-client',
+    group: 'action',
     credits: '1 credit',
     desc: 'Sends a command to a client. Can wait for the client to confirm and leave by what happened.',
     ports: [
@@ -202,12 +257,13 @@ export const DOCS_NODES: DocsNode[] = [
     ],
     tone: 'c-ac',
     cat: 'action',
-    page: '/docs/nodes/send-to-client',
   },
   {
     icon: 'bell',
     name: 'Console toast',
     kind: 'action:toast',
+    slug: 'console-toast',
+    group: 'action',
     credits: '0.5 credits',
     desc: 'Pops a notice in the console for everyone watching the workspace.',
     ports: [{ t: 'default' }],
@@ -218,6 +274,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'webhook',
     name: 'Call a URL',
     kind: 'action:webhook',
+    slug: 'call-a-url',
+    group: 'action',
     credits: '5 credits',
     desc: 'Calls any HTTP endpoint, with an HTTP auth integration if it needs one. Errors leave by error.',
     ports: [{ t: 'default' }, { t: 'error' }],
@@ -228,6 +286,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'mail',
     name: 'Email',
     kind: 'action:email',
+    slug: 'email',
+    group: 'action',
     credits: '10 credits',
     desc: 'Sends an email through an SMTP integration, with values from the run in the subject and body.',
     ports: [{ t: 'default' }],
@@ -238,6 +298,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'send',
     name: 'Telegram',
     kind: 'action:telegram',
+    slug: 'telegram',
+    group: 'action',
     credits: '5 credits',
     desc: 'Sends a message to a Telegram chat through your bot.',
     ports: [{ t: 'default' }],
@@ -248,6 +310,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'msg',
     name: 'Discord',
     kind: 'action:discord',
+    slug: 'discord',
+    group: 'action',
     credits: '5 credits',
     desc: 'Posts to a Discord channel, as plain text or an embed.',
     ports: [{ t: 'default' }],
@@ -258,6 +322,8 @@ export const DOCS_NODES: DocsNode[] = [
     icon: 'bell',
     name: 'ntfy',
     kind: 'action:ntfy',
+    slug: 'ntfy',
+    group: 'action',
     credits: '5 credits',
     desc: 'Pushes a notification to your phone through an ntfy topic, with priority and tags.',
     ports: [{ t: 'default' }],

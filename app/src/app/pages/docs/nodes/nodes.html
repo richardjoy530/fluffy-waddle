@@ -1,7 +1,8 @@
 <h1 class="x-t">Node reference</h1>
 <p class="lead">
   A workflow is a chain of nodes. Every run starts at a trigger, moves through control nodes and
-  does things with actions. These are all 24, with the ports each one leaves by and what it costs.
+  does things with actions. Here are all 24, with the ports each one leaves by and what it costs.
+  Open one for its settings, what it adds to the run and an example.
 </p>
 <div class="legend">
   <span class="x-pill p-orange"><i></i>Trigger: starts a run</span>
@@ -17,50 +18,20 @@
   See <a routerLink="/docs/billing" fragment="how-credits-are-counted">Plans and billing</a>.
 </div>
 
-<div class="dsec">
-  <div class="sechead">
-    <h2 id="triggers">Triggers</h2>
-    <span class="x-pill p-grey">5 nodes · free</span>
+@for (g of groups; track g.id) {
+  <div class="dsec">
+    <div class="sechead">
+      <h2 [id]="g.anchor">{{ g.label }}</h2>
+      <span class="x-pill p-grey">{{ g.nodes.length }} {{ g.nodes.length === 1 ? 'node' : 'nodes' }}</span>
+    </div>
+    <p>{{ g.blurb }}</p>
+    <div class="ngrid">
+      @for (n of g.nodes; track n.kind) {
+        <app-docs-node-card [node]="n" />
+      }
+    </div>
   </div>
-  <p>
-    A workflow has exactly one trigger. Its output is the run's input, so later nodes can read
-    <code>trigger.payload</code>.
-  </p>
-  <div class="ngrid">
-    @for (n of triggers; track n.kind) {
-      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
-    }
-  </div>
-</div>
-
-<div class="dsec">
-  <div class="sechead">
-    <h2 id="control">Control</h2>
-    <span class="x-pill p-grey">12 nodes</span>
-  </div>
-  <p>
-    Control nodes decide where the run goes next. Waiting nodes park the run on the server, so a run
-    can wait for days without a board staying awake.
-  </p>
-  <div class="ngrid">
-    @for (n of control; track n.kind) {
-      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
-    }
-  </div>
-</div>
-
-<div class="dsec">
-  <div class="sechead">
-    <h2 id="actions">Actions</h2>
-    <span class="x-pill p-grey">7 nodes</span>
-  </div>
-  <p>Actions that reach outside WBSKT use an integration you set up once per workspace.</p>
-  <div class="ngrid">
-    @for (n of actions; track n.kind) {
-      <ng-container *ngTemplateOutlet="card; context: { $implicit: n }" />
-    }
-  </div>
-</div>
+}
 
 <div class="dsec">
   <h2 id="ports">Ports</h2>
@@ -84,35 +55,3 @@
     </table>
   </div>
 </div>
-
-<ng-template #card let-n>
-  @if (n.page) {
-    <a class="node" [id]="anchor(n)" [routerLink]="n.page">
-      <ng-container *ngTemplateOutlet="inner; context: { $implicit: n }" />
-    </a>
-  } @else {
-    <div class="node" [id]="anchor(n)">
-      <ng-container *ngTemplateOutlet="inner; context: { $implicit: n }" />
-    </div>
-  }
-</ng-template>
-
-<ng-template #inner let-n>
-  <span class="x-ic" [class]="n.tone"><app-docs-icon [name]="n.icon" [size]="17" /></span>
-  <span class="nb">
-    <span class="nt"><b>{{ n.name }}</b><span class="cr">{{ n.credits }}</span></span>
-    <p>{{ n.desc }}</p>
-    <span class="nf">
-      <span class="ports">
-        <span class="x-pl">Out</span>
-        @for (p of n.ports; track $index) {
-          <span [class.or]="p.note">{{ p.t }}</span>
-        }
-      </span>
-      <span class="kind">{{ n.kind }}</span>
-      @if (n.page) {
-        <span class="more">Settings, ports and examples<app-docs-icon name="arrowR" [size]="13" /></span>
-      }
-    </span>
-  </span>
-</ng-template>

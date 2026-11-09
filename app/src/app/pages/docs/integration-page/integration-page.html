@@ -1,0 +1,87 @@
+<div class="x-nhead">
+  <span class="x-lg big" [class]="it.tone" aria-hidden="true">{{ it.mark }}</span>
+  <h1 class="x-t">{{ it.name }}</h1>
+</div>
+<p class="lead" [innerHTML]="it.lead"></p>
+<div class="facts">
+  <div class="fact"><small>Category</small><b>{{ it.category }}</b></div>
+  <div class="fact"><small>Used by</small><b>{{ nodes.length === 1 ? nodes[0].name + ' node' : nodes.length + ' nodes' }}</b></div>
+  <div class="fact"><small>Secret fields</small><b>{{ secrets }}</b></div>
+  <div class="fact"><small>Test</small><b>Yes</b></div>
+</div>
+
+<div class="dsec">
+  <h2 id="set-it-up">Set it up</h2>
+  <ol class="steps">
+    @for (step of it.steps; track $index) {
+      <li [innerHTML]="step"></li>
+    }
+  </ol>
+</div>
+
+<div class="dsec">
+  <h2 id="fields">Fields</h2>
+  <div class="tbl x-st">
+    <table>
+      <thead>
+        <tr><th scope="col">Field</th><th scope="col">Required</th><th scope="col">What it is</th></tr>
+      </thead>
+      <tbody>
+        @for (f of it.fields; track f.key) {
+          <tr>
+            <td>
+              <b>{{ f.name }}</b><small class="key">{{ f.key }}</small>
+              @if (f.secret) {
+                <span class="x-pill p-amber sec"><app-docs-icon name="lock" [size]="11" />secret</span>
+              }
+            </td>
+            <td [attr.data-m]="f.req ? 'Required' : 'Optional'">{{ f.req ? 'Yes' : 'No' }}</td>
+            <td [innerHTML]="f.text"></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Secret fields are encrypted as soon as you save them and never shown again: the console shows
+    their last four characters so you can tell which one is saved. Replace one to rotate it; workflows
+    pick up the new one on their next step.
+  </p>
+</div>
+
+<div class="dsec">
+  <h2 id="test-it">Test it</h2>
+  <p [innerHTML]="it.test"></p>
+  @if (it.tip; as t) {
+    <div class="tip" [class.warn]="t.warn"><span class="tipl">{{ t.label }}</span><span [innerHTML]="t.text"></span></div>
+  }
+</div>
+
+<div class="dsec">
+  <h2 id="problems-you-might-see">Problems you might see</h2>
+  <div class="tbl">
+    <table>
+      <thead>
+        <tr><th scope="col">Code</th><th scope="col">Means</th></tr>
+      </thead>
+      <tbody>
+        @for (p of it.problems; track p.code) {
+          <tr><td><code>{{ p.code }}</code></td><td [innerHTML]="p.text"></td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Codes starting <code>INTEGRATION_</code> come from saving or testing. Every other integration code
+    is on the <a routerLink="/docs/errors" fragment="integrations">error codes</a> page.
+  </p>
+</div>
+
+<div class="dsec">
+  <h2 id="used-by">Used by</h2>
+  <div class="ngrid">
+    @for (n of nodes; track n.slug) {
+      <app-docs-node-card [node]="n" />
+    }
+  </div>
+</div>

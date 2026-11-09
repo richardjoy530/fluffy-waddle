@@ -1,0 +1,20 @@
+<div class="npv" role="img" [attr.aria-label]="label()">
+  <div class="npc" [class.nin]="!hasInput()">
+    @if (hasInput()) {
+      <span class="npi"><i></i>in</span>
+    }
+    <span class="nph">
+      <span class="x-ic" [class]="node().tone"><app-docs-icon [name]="node().icon" [size]="16" /></span>
+      <span class="npt"><b>{{ node().name }}</b><small>{{ node().kind }}</small></span>
+    </span>
+    <span class="npo">
+      @for (p of node().ports; track p.t) {
+        @if (p.note) {
+          <span class="npn">{{ p.t }}</span>
+        } @else {
+          <span class="npp">{{ p.t }}<i></i></span>
+        }
+      }
+    </span>
+  </div>
+</div>

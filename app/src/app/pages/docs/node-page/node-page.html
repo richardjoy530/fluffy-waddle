@@ -1,0 +1,160 @@
+<div class="x-nhead">
+  <span class="x-ic" [class]="node.tone"><app-docs-icon [name]="node.icon" [size]="22" /></span>
+  <h1 class="x-t">{{ node.name }}</h1>
+</div>
+<p class="lead" [innerHTML]="doc.lead"></p>
+<div class="facts">
+  <div class="fact"><small>Kind</small><b><code>{{ node.kind }}</code></b></div>
+  <div class="fact"><small>Group</small><b>{{ group.label }}</b></div>
+  <div class="fact"><small>Credits</small><b>{{ node.credits }}</b></div>
+  <div class="fact">
+    <small>Ports out</small><b>{{ doc.portsFact ?? (pins || 'None') }}</b>
+  </div>
+</div>
+
+<div class="dsec">
+  <h2 id="how-it-looks">How it looks</h2>
+  <app-docs-node-preview [node]="node" />
+</div>
+
+<div class="dsec">
+  <h2 id="settings">Settings</h2>
+  @if (doc.settings.length) {
+    <div class="tbl x-st">
+      <table>
+        <thead>
+          <tr><th scope="col">Setting</th><th scope="col">Required</th><th scope="col">What it does</th></tr>
+        </thead>
+        <tbody>
+          @for (s of doc.settings; track s.key) {
+            <tr>
+              <td><b>{{ s.name }}</b><small class="key">{{ s.key }}</small></td>
+              <td [attr.data-m]="s.req ? 'Required' : 'Optional'">{{ s.req ? 'Yes' : 'No' }}</td>
+              <td [innerHTML]="s.text"></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p>None. Drop it in and connect it.</p>
+  }
+</div>
+
+<div class="dsec">
+  <h2 id="ports">Ports</h2>
+  @if (doc.ports.length) {
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th scope="col">Port</th><th scope="col">The run leaves by it when</th></tr>
+        </thead>
+        <tbody>
+          @for (p of doc.ports; track p.id) {
+            <tr><td><code>{{ p.id }}</code></td><td [innerHTML]="p.when"></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p>None. The path ends here, so nothing can be connected after it.</p>
+  }
+</div>
+
+@if (doc.output.length) {
+  <div class="dsec">
+    <h2 id="adds-to-the-run">What it adds to the run</h2>
+    <p>Later nodes can read these, in a condition or as <code>{{ '{{' }}name{{ '}}' }}</code> in a text field.</p>
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th scope="col">Value</th><th scope="col">Holds</th></tr>
+        </thead>
+        <tbody>
+          @for (o of doc.output; track o.key) {
+            <tr><td><code>{{ o.key }}</code></td><td [innerHTML]="o.text"></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+@if (doc.example || doc.code) {
+  <div class="dsec">
+    <h2 id="example">Example</h2>
+    @if (doc.example; as ex) {
+      <p><b>{{ ex.title }}</b></p>
+      <ol class="steps">
+        @for (step of ex.steps; track $index) {
+          <li [innerHTML]="step"></li>
+        }
+      </ol>
+    }
+    @if (doc.code; as c) {
+      <div class="code">
+        <div class="bar">
+          <span class="tab on">{{ c.file }}</span
+          ><button type="button" class="cpy" data-copy><app-docs-icon name="copy" [size]="13" /> Copy</button>
+        </div>
+        <pre>{{ c.text }}</pre>
+      </div>
+    }
+  </div>
+}
+
+@if (doc.tip; as t) {
+  <div class="tip" [class.warn]="t.warn"><span class="tipl">{{ t.label }}</span><span [innerHTML]="t.text"></span></div>
+}
+
+@if (doc.concurrency) {
+  <div class="dsec">
+    <h2 id="runs-that-overlap">Runs that overlap</h2>
+    <p>What happens when the trigger fires again while a run with the same correlation key is still going.</p>
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th scope="col">Setting</th><th scope="col">What happens</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>Queue</b> <span class="x-pill p-grey">default</span></td><td>The new event waits. When the run finishes, the oldest waiting event starts the next one. Events wait up to 24 hours.</td></tr>
+          <tr><td><b>Allow parallel</b></td><td>Another run starts alongside.</td></tr>
+          <tr><td><b>Drop if running</b></td><td>The new event is dropped.</td></tr>
+          <tr><td><b>Cancel existing</b></td><td>The running one is cancelled and a new one starts.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+@if (doc.problems.length) {
+  <div class="dsec">
+    <h2 id="problems-you-might-see">Problems you might see</h2>
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th scope="col">Code</th><th scope="col">Means</th></tr>
+        </thead>
+        <tbody>
+          @for (p of doc.problems; track p.code) {
+            <tr><td><code>{{ p.code }}</code></td><td [innerHTML]="p.text"></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Problems found when you publish stop the publish and point at the node. Problems while a run is
+      going fail the node, and its <b>On failure</b> setting decides what happens next. See the
+      <a routerLink="/docs/errors">error codes</a> for the API's own.
+    </p>
+  </div>
+}
+
+<div class="dsec">
+  <h2 id="see-also">See also</h2>
+  <div class="ngrid">
+    @for (n of related; track n.slug) {
+      <app-docs-node-card [node]="n" />
+    }
+  </div>
+</div>

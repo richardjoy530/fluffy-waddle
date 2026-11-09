@@ -1,0 +1,96 @@
+<h1 class="x-t">WebSocket gateway</h1>
+<p class="lead">
+  How the <a routerLink="/docs/protocol">client protocol</a> travels over a WebSocket: the upgrade
+  and how it's refused, frames, keepalive and close codes. Registration, login and the messages
+  themselves are the same for every gateway, so they're on the protocol page.
+</p>
+<div class="meta">
+  <span>Address <b>wss://ws.dev.wbskt.com/ws</b></span><span>Subprotocol <b>wbskt.v1</b></span>
+</div>
+
+<div class="dsec">
+  <h2 id="connect">1. Connect</h2>
+  <p>Open the WebSocket with the access token from login, and offer the <code>wbskt.v1</code> subprotocol.</p>
+  <div class="code">
+    <div class="bar">
+      <span class="tab on">upgrade request</span
+      ><button type="button" class="cpy" data-copy><app-docs-icon name="copy" [size]="13" /> Copy</button>
+    </div>
+    <pre>GET /ws HTTP/1.1
+Host: ws.dev.wbskt.com
+Upgrade: websocket
+Authorization: Bearer &lt;accessToken&gt;
+Sec-WebSocket-Protocol: wbskt.v1</pre>
+  </div>
+  <ul class="dul">
+    <li>A client that can't set headers on the upgrade, like a browser, puts the token in <code>?access_token=</code> instead.</li>
+    <li>A connection that offers no subprotocol is treated as v1. One that offers only other versions is refused.</li>
+    <li>Send <code>capabilities</code> as soon as it opens, before anything else.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="when-the-upgrade-is-refused">2. When the upgrade is refused</h2>
+  <p>The gateway answers before upgrading, with a Problem Details body whose <code>code</code> says why.</p>
+  <div class="tbl">
+    <table>
+      <thead>
+        <tr><th scope="col">Answer</th><th scope="col">Means</th><th scope="col">Do</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="num">401</span></td><td>The token is expired, missing or not ours.</td><td>Drop it and log in again.</td></tr>
+        <tr><td><span class="num">401</span> <code>CLIENT_TOKEN_INVALID</code></td><td>The token is missing something a client token needs.</td><td>Drop it and log in again.</td></tr>
+        <tr><td><span class="num">403</span></td><td>It's a token, but not a client's.</td><td>Use the token from client login. A bug, not something to retry.</td></tr>
+        <tr><td><span class="num">403</span> <code>CLIENT_REVOKED</code></td><td>The client was revoked, deleted or had its secret rotated since the token was issued.</td><td>Keep the token and retry on the schedule. Once it expires, login says what happened.</td></tr>
+        <tr><td><span class="num">400</span> <code>SOCKET_PROTOCOL_UNSUPPORTED</code></td><td>Only subprotocol versions this gateway doesn't speak were offered.</td><td>Offer <code>wbskt.v1</code>.</td></tr>
+        <tr><td><span class="num">400</span> <code>SOCKET_UPGRADE_REQUIRED</code></td><td>The request wasn't a WebSocket upgrade.</td><td>A bug, not something to retry.</td></tr>
+        <tr><td><span class="num">503</span>, or no answer</td><td>The gateway is restarting or unreachable.</td><td>Keep the token and retry on the schedule.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="dsec">
+  <h2 id="frames">3. Frames</h2>
+  <p>
+    Every message, both ways, is one <b>text</b> message holding one JSON object. It may arrive as
+    several frames; the 64 KB limit is for the whole message. Binary frames are ignored.
+  </p>
+</div>
+
+<div class="dsec">
+  <h2 id="keepalive">4. Keepalive</h2>
+  <p>
+    Answer the protocol's <code>sys.ping</code> with <code>sys.pong</code> like any other message.
+    Separately, the gateway sends a WebSocket Ping frame every 30 seconds and drops a connection that
+    hasn't answered within another 30, so a board that lost power doesn't stay "online" for minutes.
+    WebSocket libraries answer those Pings on their own.
+  </p>
+</div>
+
+<div class="dsec">
+  <h2 id="close-codes">5. Close codes</h2>
+  <p>How this gateway says why it ended a connection. Branch on the code, not on the description.</p>
+  <div class="tbl">
+    <table>
+      <thead>
+        <tr><th scope="col">Code</th><th scope="col">Reason</th><th scope="col">Do</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="num">1000</span></td><td>Normal</td><td>Reconnect on the schedule.</td></tr>
+        <tr><td><span class="num">1001</span></td><td>Restarting</td><td>Reconnect after a random 0–30 s.</td></tr>
+        <tr><td><span class="num">1009</span></td><td>Too big</td><td>A message was over 64 KB. Fix the sender.</td></tr>
+        <tr><td><span class="num">1011</span></td><td>Server error</td><td>Reconnect on the schedule.</td></tr>
+        <tr><td><span class="num">4001</span></td><td>Superseded</td><td>The same client connected again. Repeated, it means shared credentials.</td></tr>
+        <tr><td><span class="num">4002</span></td><td>Revoked</td><td>Drop the token; the next login says what happened.</td></tr>
+        <tr><td><span class="num">4003</span></td><td>Throttled</td><td>Wait a random 30–60 s and send less.</td></tr>
+        <tr><td><span class="num">4000</span> <span class="x-pill p-grey">from client</span></td><td>Updating</td><td>Sent by a client closing to install firmware. Shown as updating, not offline, for 5 minutes.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tip">
+    <span class="tipl">Older gateways</span>Before codes 4001–4003, all three were sent as
+    <b>1008</b>. Treat 1008 as "reconnect on the schedule". A library that doesn't pass the close code
+    up treats every close alike, which is safe but slower to recover from a revocation.
+  </div>
+</div>

@@ -45,6 +45,7 @@ const GROUP_ICONS: Record<string, string> = {
   start: 'zap',
   clients: 'cpu',
   workflows: 'flow',
+  nodes: 'branch',
   integrations: 'plug',
   comms: 'radio',
   account: 'users',
@@ -56,13 +57,17 @@ const GROUP_ICONS: Record<string, string> = {
 function buildIndex(): DocsHit[] {
   const hits: DocsHit[] = [];
   for (const p of DOCS_PAGES) {
+    // Node pages are listed once, as nodes, below.
+    if (p.path.startsWith('/docs/nodes/')) {
+      continue;
+    }
     const icon = GROUP_ICONS[p.group.id] ?? 'list';
     hits.push({
       kind: 'guide',
       icon,
       title: p.label,
-      sub: p.group.title,
-      where: p.group.title,
+      sub: p.sub?.label ?? p.group.title,
+      where: p.sub ? `${p.group.title} › ${p.sub.label}` : p.group.title,
       path: p.path,
       haystack: '',
     });
@@ -86,8 +91,7 @@ function buildIndex(): DocsHit[] {
       title: n.name,
       sub: n.desc,
       where: n.kind,
-      path: n.page ?? '/docs/nodes',
-      fragment: n.page ? undefined : n.kind.replace(':', '-'),
+      path: `/docs/nodes/${n.slug}`,
       haystack: n.kind,
     });
   }
@@ -140,6 +144,13 @@ export class DocsSearch {
     let hits = this.index.filter((h) => kind === 'all' || h.kind === kind);
     if (words.length) {
       hits = hits.filter((h) => words.every((w) => h.haystack.includes(w)));
+      // A match in the title beats one in the description.
+      const q = words.join(' ');
+      const rank = (h: DocsHit) => {
+        const t = h.title.toLowerCase();
+        return t.startsWith(q) ? 0 : t.includes(q) ? 1 : words.every((w) => t.includes(w)) ? 2 : 3;
+      };
+      hits = hits.map((h, i) => ({ h, i, r: rank(h) })).sort((x, y) => x.r - y.r || x.i - y.i).map((x) => x.h);
     } else {
       // Nothing typed yet: list the pages, or everything of the kind picked.
       hits = hits.filter((h) => h.kind !== 'guide' || !h.fragment);
