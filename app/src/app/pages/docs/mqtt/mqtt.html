@@ -266,7 +266,7 @@ void onMessage(char* topic, byte* data, unsigned int length) &#123;
     send(<span class="s">"sys.ack"</span>, reply);
   &#125;
   if (type == <span class="s">"relay.set"</span>) &#123;
-    digitalWrite(RELAY_PIN, message[<span class="s">"payload"</span>][<span class="s">"on"</span>] ? HIGH : LOW);
+    digitalWrite(RELAY_PIN, message[<span class="s">"payload"</span>][<span class="s">"on"</span>].as&lt;bool&gt;() ? HIGH : LOW);
   &#125;
 &#125;
 
