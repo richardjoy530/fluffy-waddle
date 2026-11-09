@@ -462,11 +462,12 @@
 .mk .dx .npp.err{color:#808080}
 .mk .dx .npp.err i{border-color:#f43f5e}
 .mk .dx .tbl td small.key{display:block;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#6a6761;overflow-wrap:anywhere}
-.mk .dx .lg-tg{--tone:#60a5fa}
-.mk .dx .lg-dc{--tone:#a78bfa}
+.mk .dx .lg-tg{--tone:#26a5e4}
+.mk .dx .lg-dc{--tone:#5865f2}
 .mk .dx .lg-em{--tone:#7bb35f}
-.mk .dx .lg-nt{--tone:#d19a66}
-.mk .dx .lg-ht,.mk .dx .lg-ha{--tone:#e85d26}
+.mk .dx .lg-nt{--tone:#3a9a86}
+.mk .dx .lg-ht{--tone:#e85d26}
+.mk .dx .lg-ha{--tone:#18bcf2}
 .mk .dx :is(.lg-tg,.lg-dc,.lg-em,.lg-nt,.lg-ht,.lg-ha){background:color-mix(in srgb,var(--tone) 14%,transparent);color:var(--tone)}
 .mk .dx .x-nhead .x-lg.big{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;border-radius:13px;font-size:16px;font-weight:600}
 .mk .dx .tbl td .sec{display:inline-flex;align-items:center;gap:4px;height:20px;margin-top:6px;padding:0 8px;font-size:11px}
