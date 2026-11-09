@@ -6,7 +6,7 @@ export const LINKS = {
   signup: `${CONSOLE}/signup`,
   login: `${CONSOLE}/login`,
   github: 'https://github.com/wbskt/Wbskt',
-  sdks: 'https://github.com/wbskt/Wbskt/issues/174',
-  arduinoSdk: 'https://github.com/wbskt/Wbskt/issues/145',
-  pythonSdk: 'https://github.com/wbskt/Wbskt/issues/144',
+  sdks: '/docs/sdks',
+  arduinoSdk: 'https://github.com/wbskt/Wbskt.Arduino',
+  pythonSdk: 'https://github.com/wbskt/Wbskt.Python',
 };
