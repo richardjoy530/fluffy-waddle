@@ -175,6 +175,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/docs/websocket/websocket').then((m) => m.DocsWebsocket),
       },
       {
+        path: 'protocol/mqtt',
+        title: 'MQTT gateway · WBSKT docs',
+        data: {
+          description:
+            'Connecting a board over MQTT with any MQTT library: login, CONNECT, topics, messages, reason codes and complete ESP32 and Python examples.',
+        },
+        loadComponent: () => import('./pages/docs/mqtt/mqtt').then((m) => m.DocsMqtt),
+      },
+      {
         path: 'errors',
         title: 'Error codes · WBSKT docs',
         data: {
