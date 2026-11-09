@@ -7,7 +7,7 @@
 /* nav */
 .mk nav:not(.shotin *):not(.piece *){display:flex;align-items:center;gap:36px;height:72px}
 .mk .logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:600;letter-spacing:-0.01em;color:#ecebe7}
-.mk .logo i{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:#e85d26;color:#fff;font-style:normal;font-size:13px;font-weight:600}
+.mk .logo i{display:block;width:24px;height:24px;border-radius:5px;background:#e85d26;color:#fff}
 .mk .links{display:flex;gap:28px;font-size:14px;color:#8f8b84}
 .mk .links .on{color:#ecebe7}
 .mk .sp{flex:1}

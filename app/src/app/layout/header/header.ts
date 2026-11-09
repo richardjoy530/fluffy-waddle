@@ -3,10 +3,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CLOSE_ICON, MENU_ICON } from '../icons';
 import { LINKS } from '../../links';
+import { Mark } from '../mark/mark';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, Mark],
   templateUrl: './header.html',
 })
 export class Header {

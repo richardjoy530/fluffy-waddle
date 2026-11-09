@@ -39,7 +39,7 @@ $data: #a78bfa;
 .mk .lw-board .led{animation:lw-blink 1.2s steps(2) infinite}
 .mk .lw-live .wire{flex:1;height:2px;background:repeating-linear-gradient(90deg,$trigger 0 8px,transparent 8px 16px);background-size:32px 2px;animation:lw-wire 0.8s linear infinite}
 .mk .lw-live .cloud{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#808080}
-.mk .lw-live .cloud i{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#2a1a10;color:$trigger;font-style:normal;font-weight:600}
+.mk .lw-live .cloud i{display:block;width:44px;height:44px;border-radius:10px;background:#2a1a10;color:$trigger}
 .mk .lw-live .rv-feed{position:relative;height:176px;overflow:hidden;border-radius:12px;background:#111111;border:1px solid #222222}
 .mk .lw-live .rv-feed::after{content:"";position:absolute;left:0;right:0;top:0;height:44px;background:rgba(232,93,38,0.1);animation:lw-flash 2.4s ease-out infinite;pointer-events:none}
 .mk .lw-live .rv-rows{animation:lw-feed 12s steps(5) infinite}
