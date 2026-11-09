@@ -97,6 +97,18 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'keepalive', label: 'Keepalive' },
     { id: 'close-codes', label: 'Close codes' },
   ],
+  '/docs/protocol/mqtt': [
+    { id: 'what-you-need', label: 'What you need' },
+    { id: 'get-a-token', label: 'Get a token' },
+    { id: 'connect', label: 'Connect' },
+    { id: 'when-connect-is-refused', label: 'When the connection is refused' },
+    { id: 'topics', label: 'Topics' },
+    { id: 'a-session', label: 'A session, message by message' },
+    { id: 'examples', label: 'Complete examples' },
+    { id: 'keepalive', label: 'Keepalive' },
+    { id: 'reason-codes', label: 'Reason codes' },
+    { id: 'checklist', label: 'Checklist' },
+  ],
   '/docs/sdks': [
     { id: 'hello-wbskt', label: 'Hello, WBSKT' },
     { id: 'what-each-one-does', label: 'What each one does' },

@@ -99,6 +99,7 @@ export const DOCS_NAV: DocsGroup[] = [
         links: [
           { label: 'Overview', path: '/docs/protocol' },
           { label: 'WebSocket gateway', path: '/docs/protocol/websocket' },
+          { label: 'MQTT gateway', path: '/docs/protocol/mqtt' },
         ],
       },
       { label: 'Error codes', path: '/docs/errors' },
