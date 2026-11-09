@@ -105,7 +105,7 @@ WbsktClient wbskt(<span class="s">"greenhouse-sensor"</span>, <span class="s">"y
   JsonDocument reading;
   reading[<span class="s">"celsius"</span>] = <span class="f">readTemperature</span>();
   wbskt.<span class="f">send</span>(<span class="s">"temperature"</span>, reading);
-&#125;</pre><pre class="p2"><span class="k">using</span> Wbskt.Client.Sdk;
+&#125;</pre><pre class="p2"><span class="k">using</span> Wbskt;
 
 <span class="k">await using var</span> wbskt = <span class="k">new</span> <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, <span class="s">"your-policy-pin"</span>);
 <span class="k">await</span> wbskt.<span class="f">StartAsync</span>();
