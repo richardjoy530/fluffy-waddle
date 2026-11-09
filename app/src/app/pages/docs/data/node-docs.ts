@@ -86,7 +86,7 @@ export const DOCS_NODE_DOCS: Record<string, DocsNodeDoc> = {
     related: ['if', 'send-to-client', 'telegram'],
   },
 
-  'client-presence': {
+  'client-online-offline': {
     lead: 'Starts a run when a client goes offline or comes back, and stays that way for a while. The wait keeps a board that reboots or roams between access points from paging you.',
     settings: [
       { name: 'This client', key: 'clientRef', req: true, text: 'The client to watch.' },
@@ -140,10 +140,10 @@ export const DOCS_NODE_DOCS: Record<string, DocsNodeDoc> = {
       ],
     },
     problems: [{ code: 'INVALID_CRON', text: 'The cron expression can\'t be read. The console checks it as you type.' }],
-    related: ['send-to-client', 'delay', 'variable'],
+    related: ['send-to-client', 'wait', 'set-variable'],
   },
 
-  webhook: {
+  'webhook-received': {
     lead: 'Starts a run when something outside WBSKT posts to the workflow\'s own URL: a form, another service, a script or a button on your phone. The request body becomes the run\'s input.',
     settings: [
       { name: 'Path', key: 'path', req: true, text: 'The last part of the URL, like <code>doorbell</code>. The console shows the full URL to copy.' },
@@ -171,11 +171,11 @@ export const DOCS_NODE_DOCS: Record<string, DocsNodeDoc> = {
     },
     concurrency: true,
     problems: [{ code: 'IDEMPOTENCY_KEY_INVALID', text: 'The <code>Idempotency-Key</code> header isn\'t 1–255 printable characters. Answered with 400.' }],
-    related: ['wait-for-http', 'call-a-url', 'if'],
+    related: ['wait-for-a-call', 'call-a-url', 'if'],
   },
 
-  manual: {
-    lead: 'Starts a run when someone presses <b>Run now</b> in the console, or calls the API. It can ask for inputs first, and it\'s also how one workflow starts another as a sub-workflow.',
+  'run-by-hand': {
+    lead: 'Starts a run when someone presses <b>Run now</b> in the console, or calls the API. It can ask for inputs first, and it\'s also how one workflow starts another with <b>Run workflow</b>.',
     settings: [
       { name: 'What "Run now" does', key: 'description', text: 'A line shown next to the Run now button, like "Power-cycles the soil sensor".' },
       { name: 'Ask for input', key: 'inputs', text: 'Fields the console asks for before starting, each with a name, a label and a default. A value left out takes its default. Names are letters, digits or underscores, and can\'t be <code>parentRunRefId</code>, <code>correlationKey</code> or <code>depth</code>.' },
@@ -205,7 +205,7 @@ Authorization: Bearer <token>
       { code: 'MANUAL_INPUT_NAME_DUPLICATE', text: 'Two inputs have the same name, ignoring case.' },
       { code: 'MANUAL_INPUT_NAME_RESERVED', text: 'An input uses a name WBSKT writes itself.' },
     ],
-    related: ['sub-workflow', 'end', 'await-signal'],
+    related: ['run-workflow', 'end', 'wait-for-signal'],
   },
 
   if: {
@@ -233,7 +233,7 @@ Authorization: Bearer <token>
       { code: 'LOGIC_CONDITION_NOT_BOOL', text: 'The condition came out as something other than true or false, like a number or text.' },
       { code: 'EXPRESSION_EVALUATION_ERROR', text: 'A value it reads couldn\'t be worked out.' },
     ],
-    related: ['client-message', 'variable', 'fork'],
+    related: ['client-message', 'set-variable', 'split-into-paths'],
   },
 
   'for-each': {
@@ -251,82 +251,82 @@ Authorization: Bearer <token>
     ],
     tip: {
       label: 'One at a time or all at once',
-      text: 'For each waits for each pass before the next. To handle every item at the same time, use Parallel for each.',
+      text: 'For each waits for each pass before the next. To handle every item at the same time, use For each, in parallel.',
     },
     problems: [{ code: 'FOREACH_COLLECTION_NOT_ARRAY', text: 'The value at List isn\'t a list.' }],
-    related: ['parallel-for-each', 'call-a-url', 'variable'],
+    related: ['for-each-in-parallel', 'call-a-url', 'set-variable'],
   },
 
-  'parallel-for-each': {
-    lead: 'Starts one branch per item of a list, all at once, up to 1,000. The branches must meet again at a Join, which decides when the run carries on.',
+  'for-each-in-parallel': {
+    lead: 'Starts one path per item of a list, all at once, up to 1,000. The paths must meet again at a Wait for paths, which decides when the run carries on.',
     settings: [
       { name: 'List', key: 'collection', req: true, text: 'Where the list is in the run.' },
     ],
     ports: [
-      { id: 'body', when: 'Once per item, each in its own branch. Lead them all to one Join.' },
-      { id: 'empty', when: 'The list had no items, so no branch started.' },
+      { id: 'body', when: 'Once per item, each on its own path. Lead them all to one Wait for paths. The canvas calls it <b>each item</b>.' },
+      { id: 'empty', when: 'The list had no items, so no path started.' },
     ],
-    output: [{ key: 'item', text: 'The item, in each branch.' }],
+    output: [{ key: 'item', text: 'The item, on each path.' }],
     tip: {
-      label: 'Every branch starts at once',
+      label: 'Every path starts at once',
       text: 'There\'s no limit on how many run at the same time yet, so a list of 500 calls to a URL makes 500 calls together.',
       warn: true,
     },
     problems: [
-      { code: 'PARALLEL_FOREACH_WITHOUT_JOIN', text: 'The branches don\'t reach a Join. Shown when you publish.' },
+      { code: 'PARALLEL_FOREACH_WITHOUT_JOIN', text: 'The paths don\'t reach a Wait for paths. Shown when you publish.' },
       { code: 'PFE_COLLECTION_NOT_ARRAY', text: 'The value at List isn\'t a list.' },
       { code: 'PFE_FAN_OUT_TOO_LARGE', text: 'The list has more than 1,000 items. Nothing starts.' },
     ],
-    related: ['join', 'for-each', 'fork'],
+    related: ['wait-for-paths', 'for-each', 'split-into-paths'],
   },
 
-  fork: {
+  'split-into-paths': {
     portsFact: 'One per path',
-    lead: 'Splits the run into branches you name, which carry on side by side: say, one to switch the fan on and one to tell you about it.',
+    lead: 'Splits the run into paths you name, which carry on side by side: say, one to switch the fan on and one to tell you about it.',
     settings: [
-      { name: 'Paths', key: 'branches', req: true, text: 'A name for each branch. Each name becomes an output port.' },
+      { name: 'Paths', key: 'branches', req: true, text: 'A name for each path. Each name becomes an output port.' },
     ],
-    ports: [{ id: 'one per path', when: 'Every path, at once. Each branch starts with a copy of the run so far.' }],
+    ports: [{ id: 'one per path', when: 'Every path, at once. Each path starts with a copy of the run so far.' }],
     output: [],
     tip: {
-      label: 'With or without a Join',
-      text: 'Lead every branch to the same Join to wait for them, or none of them to let each finish on its own. Some to a Join and some not isn\'t allowed.',
+      label: 'With or without Wait for paths',
+      text: 'Lead every path to the same Wait for paths to wait for them, or none of them to let each finish on its own. Some to it and some not isn\'t allowed.',
     },
     problems: [
-      { code: 'FORK_BRANCH_WITHOUT_JOIN', text: 'Some branches reach a Join and others don\'t.' },
-      { code: 'FORK_BRANCHES_JOIN_MISMATCH', text: 'The branches reach different Joins.' },
+      { code: 'FORK_BRANCH_WITHOUT_JOIN', text: 'Some paths reach a Wait for paths and others don\'t.' },
+      { code: 'FORK_BRANCHES_JOIN_MISMATCH', text: 'The paths reach different Wait for paths steps.' },
     ],
-    related: ['join', 'parallel-for-each', 'if'],
+    related: ['wait-for-paths', 'for-each-in-parallel', 'if'],
   },
 
-  join: {
-    lead: 'Waits for the branches of a Fork or Parallel for each, then lets one run carry on. Choose whether it waits for all of them, the first, or a number.',
+  'wait-for-paths': {
+    lead: 'Waits for the paths of a Split into paths or For each, in parallel, then lets one run carry on. Choose whether it waits for all of them, the first, or a number.',
     settings: [
-      { name: 'Continue when', key: 'mode', req: true, text: '<b>All</b> branches have arrived, <b>Any</b> one has, or a <b>Quorum</b>.' },
-      { name: 'How many', key: 'quorumCount', text: 'For Quorum: how many branches must arrive.' },
+      { name: 'Continue when', key: 'mode', req: true, text: '<b>All</b> paths have arrived, <b>Any</b> one has, or a <b>Quorum</b>.' },
+      { name: 'How many', key: 'quorumCount', text: 'For Quorum: how many paths must arrive.' },
     ],
-    ports: [{ id: 'default', when: 'Enough branches arrived. Exactly one carries on; the others end here.' }],
+    ports: [{ id: 'default', when: 'Enough paths arrived. Exactly one carries on; the others end here.' }],
     output: [
-      { key: 'joinContributed', text: 'How many branches arrived.' },
+      { key: 'joinContributed', text: 'How many paths arrived.' },
       { key: 'joinSucceeded', text: 'How many of them succeeded.' },
-      { key: 'joinFailed', text: 'How many failed. A failed branch still counts as arriving.' },
+      { key: 'joinFailed', text: 'How many failed. A failed path still counts as arriving.' },
     ],
     tip: {
-      label: 'A branch that never arrives',
-      text: 'A branch that ends before the Join, at an End node or a port with nothing connected, sits it out. With <b>All</b> that fails the run; with Any or Quorum the run fails only once the rest can no longer make up the number.',
+      label: 'A path that never arrives',
+      text: 'A path that ends before Wait for paths, at an End or a port with nothing connected, sits it out. With <b>All</b> that fails the run; with Any or Quorum the run fails only once the rest can no longer make up the number.',
       warn: true,
     },
     problems: [
       { code: 'JOIN_WITHOUT_COHORT', text: 'Nothing upstream splits the run, so there is nothing to join.' },
-      { code: 'JOIN_BRANCH_ENDED', text: 'A branch ended without reaching the Join and the Join can no longer continue.' },
+      { code: 'JOIN_BRANCH_ENDED', text: 'A path ended without reaching Wait for paths, and it can no longer continue.' },
     ],
-    related: ['fork', 'parallel-for-each', 'fail-run'],
+    related: ['split-into-paths', 'for-each-in-parallel', 'fail-run'],
   },
 
-  'sub-workflow': {
+  'run-workflow': {
     lead: 'Starts another workflow as a child run and waits for it to finish. Use it to keep a job you do often, like "notify the family", in one place.',
     settings: [
-      { name: 'Workflow', key: 'workflowRefId', req: true, text: 'The workflow to run. It needs a Manual trigger, which is how the child starts. A workflow can\'t call itself.' },
+      { name: 'Workflow', key: 'workflowRefId', req: true, text: 'The workflow to run. It needs a Run by hand trigger, which is how the child starts. A workflow can\'t call itself.' },
       { name: 'Pass in', key: 'input', text: 'Values for the child\'s inputs, worked out from this run. The child reads them like Run now inputs.' },
       { name: 'Correlation key', key: 'correlationKey', text: 'Advanced. Groups child runs for the child\'s concurrency setting.' },
     ],
@@ -340,14 +340,14 @@ Authorization: Bearer <token>
     },
     problems: [
       { code: 'SUBWORKFLOW_SELF_REFERENCE', text: 'The workflow calls itself.' },
-      { code: 'SUBWORKFLOW_DEPTH_EXCEEDED', text: 'Sub-workflows are nested more than 8 deep.' },
+      { code: 'SUBWORKFLOW_DEPTH_EXCEEDED', text: 'Run workflow steps are nested more than 8 deep.' },
       { code: 'SUBWORKFLOW_INPUT_KEY_RESERVED', text: 'An input is named <code>parentRunRefId</code>, <code>correlationKey</code> or <code>depth</code>.' },
       { code: 'SUBWORKFLOW_WORKSPACE_BUSY', text: 'The workspace is at its limit of active runs.' },
     ],
-    related: ['manual', 'end', 'await-signal'],
+    related: ['run-by-hand', 'end', 'wait-for-signal'],
   },
 
-  variable: {
+  'set-variable': {
     lead: 'Keeps a value. A local variable lives for this run only. A shared variable is one value for the whole workflow, kept between runs, so it can count things or remember the last state.',
     settings: [
       { name: 'Keep it for', key: 'scope', req: true, text: '<b>This run</b> (Local) or <b>Every run</b> (Shared). Shared variables are declared on the workflow with a type and a default.' },
@@ -369,7 +369,7 @@ Authorization: Bearer <token>
       title: 'Count the doorbell rings today',
       steps: [
         'Declare a shared counter <code>rings</code>, default 0.',
-        'In the doorbell workflow, Variable: Every run, <code>rings</code>, Increment.',
+        'In the doorbell workflow, Set variable: Every run, <code>rings</code>, Increment.',
         'A Schedule at midnight sets <code>rings</code> back to 0.',
       ],
     },
@@ -381,7 +381,7 @@ Authorization: Bearer <token>
     related: ['if', 'schedule', 'for-each'],
   },
 
-  delay: {
+  wait: {
     lead: 'Pauses the run for as long as you set, from seconds to days. The run is parked on the server while it waits, so it costs nothing and survives restarts.',
     settings: [{ name: 'Wait for', key: 'duration', req: true, text: 'How long to wait.' }],
     ports: [{ id: 'default', when: 'The time is up.' }],
@@ -394,15 +394,15 @@ Authorization: Bearer <token>
       title: 'Pump for two minutes',
       steps: [
         'Send to client <code>pump.on</code>.',
-        'Delay <b>2 minutes</b>.',
+        'Wait <b>2 minutes</b>.',
         'Send to client <code>pump.off</code>.',
       ],
     },
     problems: [],
-    related: ['wait-for-http', 'await-signal', 'send-to-client'],
+    related: ['wait-for-a-call', 'wait-for-signal', 'send-to-client'],
   },
 
-  'wait-for-http': {
+  'wait-for-a-call': {
     lead: 'Parks the run on a wake URL until something calls it, or the time runs out. Hand the URL to a service that calls back when it\'s done, like a payment or an approval.',
     settings: [
       { name: 'Give up after', key: 'ttl', req: true, text: 'How long to wait before leaving by <code>timeout</code>.' },
@@ -425,10 +425,10 @@ Authorization: Bearer <token>
       warn: true,
     },
     problems: [{ code: 'WAITFORHTTP_WEAK_TOKEN', text: 'The token is missing or shorter than 24 characters. Shown when you publish.' }],
-    related: ['await-signal', 'webhook', 'delay'],
+    related: ['wait-for-signal', 'webhook-received', 'wait'],
   },
 
-  'await-signal': {
+  'wait-for-signal': {
     portsFact: '1 or 2',
     lead: 'Parks the run until a named signal arrives for it, from the console, the API or another run. Use it for "wait until someone says go".',
     settings: [
@@ -452,24 +452,24 @@ Authorization: Bearer <token>
       { code: 'SIGNAL_CORRELATION_MISSING', text: 'Correlation filled in to nothing, so there\'s no run to wait on.' },
       { code: 'AWAIT_SIGNAL_CORRELATION_INVALID', text: 'Correlation could never fill in to a value. Shown when you publish.' },
     ],
-    related: ['wait-for-http', 'sub-workflow', 'manual'],
+    related: ['wait-for-a-call', 'run-workflow', 'run-by-hand'],
   },
 
   'fail-run': {
-    lead: 'Ends the whole run as failed, with a reason. Every other branch stops and child runs are cancelled. Use it when something is wrong enough that the rest shouldn\'t happen.',
+    lead: 'Ends the whole run as failed, with a reason. Every other path stops and child runs are cancelled. Use it when something is wrong enough that the rest shouldn\'t happen.',
     settings: [
       { name: 'Reason', key: 'reason', text: 'Shown in the run history and in failure alerts, like "No reading from the soil sensor for an hour".' },
     ],
     ports: [],
     output: [],
     problems: [{ code: 'FAIL_RUN', text: 'The code the run fails with, so you can tell it from an accident.' }],
-    related: ['end', 'if', 'join'],
+    related: ['end', 'if', 'wait-for-paths'],
   },
 
   end: {
-    lead: 'Ends this path as done. Other branches carry on. In a workflow started as a sub-workflow, it can hand a value back to the run that started it.',
+    lead: 'Ends this path as done. Other paths carry on. In a workflow started by Run workflow, it can hand a value back to the run that started it.',
     settings: [
-      { name: 'Output', key: 'output', text: 'Optional. A value worked out from the run, read by the parent as <code>childResult.output</code>. Only in workflows with a Manual trigger.' },
+      { name: 'Output', key: 'output', text: 'Optional. A value worked out from the run, read by the parent as <code>childResult.output</code>. Only in workflows with a Run by hand trigger.' },
     ],
     ports: [],
     output: [],
@@ -478,13 +478,13 @@ Authorization: Bearer <token>
       text: 'A port with nothing connected also ends the path as done. Add End when you want to hand back an output, or to make the end obvious.',
     },
     problems: [
-      { code: 'END_OUTPUT_WITHOUT_MANUAL_TRIGGER', text: 'Output is set in a workflow that can\'t be started as a sub-workflow.' },
+      { code: 'END_OUTPUT_WITHOUT_MANUAL_TRIGGER', text: 'Output is set in a workflow that has no Run by hand trigger, so no Run workflow step can start it.' },
       { code: 'END_OUTPUT_EVALUATION_ERROR', text: 'The output couldn\'t be worked out.' },
     ],
-    related: ['sub-workflow', 'fail-run', 'manual'],
+    related: ['run-workflow', 'fail-run', 'run-by-hand'],
   },
 
-  'console-toast': {
+  'console-notification': {
     lead: 'Pops a notice in the console for everyone watching the workspace. Handy while you build, or on a screen on the wall.',
     settings: [
       { name: 'Title', key: 'title', text: 'The notice\'s heading. Values from the run can go in, like <code>{{trigger.payload.celsius}}</code>.' },
@@ -492,7 +492,7 @@ Authorization: Bearer <token>
     ],
     ports: [{ id: 'default', when: 'The notice was sent.' }],
     output: [],
-    tip: { label: 'Nobody watching?', text: 'A toast is only seen by people with the console open at the time. For anything you mustn\'t miss, use Telegram, ntfy or email.' },
+    tip: { label: 'Nobody watching?', text: 'A console notification is only seen by people with the console open at the time. For anything you mustn\'t miss, use Telegram, ntfy or email.' },
     problems: [{ code: 'TOAST_PUBLISH_ERROR', text: 'The notice couldn\'t be sent. Retryable.' }],
     related: ['telegram', 'ntfy', 'email'],
   },
@@ -528,7 +528,7 @@ Authorization: Bearer <token>
       { code: 'WEBHOOK_ORIGIN_MISMATCH', text: 'The URL points somewhere other than the integration\'s own address.' },
       { code: 'WEBHOOK_RESPONSE_TOO_LARGE', text: 'The answer was over 256 KB.' },
     ],
-    related: ['for-each', 'if', 'webhook'],
+    related: ['for-each', 'if', 'webhook-received'],
   },
 
   email: {
@@ -548,7 +548,7 @@ Authorization: Bearer <token>
       { code: 'EMAIL_AUTH_FAILED', text: 'The server refused the sign-in.' },
       { code: 'EMAIL_NETWORK_ERROR', text: 'The server couldn\'t be reached. Retryable.' },
     ],
-    related: ['telegram', 'ntfy', 'client-presence'],
+    related: ['telegram', 'ntfy', 'client-online-offline'],
   },
 
   telegram: {
@@ -589,7 +589,7 @@ Authorization: Bearer <token>
       { code: 'DISCORD_EMBED_INVALID', text: 'An embed has nothing visible, or a field is too long.' },
       { code: 'DISCORD_HTTP_ERROR', text: 'Discord answered with an error. A 429 is retried.' },
     ],
-    related: ['telegram', 'ntfy', 'console-toast'],
+    related: ['telegram', 'ntfy', 'console-notification'],
   },
 
   ntfy: {
@@ -608,6 +608,6 @@ Authorization: Bearer <token>
       { code: 'NTFY_PRIORITY_INVALID', text: 'Priority isn\'t 1 to 5.' },
       { code: 'NTFY_AUTH_FAILED', text: 'The server refused the access token.' },
     ],
-    related: ['telegram', 'discord', 'client-presence'],
+    related: ['telegram', 'discord', 'client-online-offline'],
   },
 };

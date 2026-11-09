@@ -1,6 +1,6 @@
-<div class="x-nhead"><span class="x-ic c-ac"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.64l-19 6.5a.5.5 0 0 0-.03.94l7.93 3.18a2 2 0 0 1 1.11 1.11z"></path><path d="m21.85 2.15-10.94 10.94"></path></svg></span><h1 class="x-t">Send to client</h1>
+<div class="x-nhead"><span class="x-ic c-ac"><app-docs-icon name="radio" [size]="22" /></span><h1 class="x-t">Send to client</h1>
 </div><p class="lead">Sends a command to one client, like switching a relay on. If the client is offline the command waits for it. Turn on <b>Wait for confirmation</b> and the step leaves by what became of the command.</p>
-<div class="facts"><div class="fact"><small>Kind</small><b><code>action:clientMessage</code></b></div><div class="fact"><small>Group</small><b>Actions</b></div><div class="fact"><small>Credits</small><b>1 credit</b></div><div class="fact"><small>Ports out</small><b>1 or 3</b></div></div>
+<div class="facts"><div class="fact"><small>Kind</small><b><code>action:clientMessage</code></b></div><div class="fact"><small>Group</small><b>Does something</b></div><div class="fact"><small>Credits</small><b>1 credit</b></div><div class="fact"><small>Ports out</small><b>1 or 3</b></div></div>
 
 <div class="dsec"><h2 id="how-it-looks">How it looks</h2><app-docs-node-preview [node]="node" /><p>With Wait for confirmation on, the step has three ways out instead of <code>default</code>, and each can lead somewhere different.</p></div>
 

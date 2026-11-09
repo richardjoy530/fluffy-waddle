@@ -4,7 +4,7 @@
 <div class="dsec"><h2 id="what-you-can-connect">What you can connect</h2><p>Each one has its own page with the fields it asks for, how to get them, and what the test checks.</p><div class="x-igrid">
   @for (i of integrations; track i.slug) {
     <a class="x-ig" [routerLink]="'/docs/integrations/' + i.slug">
-      <span class="x-top"><span class="x-lg" [class]="i.tone" aria-hidden="true">{{ i.mark }}</span><b>{{ i.name }}</b><span class="cat">{{ i.category }}</span></span>
+      <span class="x-top"><span class="x-lg" [class]="i.tone" aria-hidden="true"><app-docs-icon [name]="i.icon" [size]="16" /></span><b>{{ i.name }}</b><span class="cat">{{ i.category }}</span></span>
       <p>{{ i.blurb }}</p>
       <span class="used">Used by the {{ nodeName(i.nodes[0]) }} node<app-docs-icon name="arrowR" [size]="13" /></span>
     </a>

@@ -1,20 +1,33 @@
 <div class="npv" role="img" [attr.aria-label]="label()">
-  <div class="npc" [class.nin]="!hasInput()">
+  <div class="npc" [class]="node().tone">
     @if (hasInput()) {
-      <span class="npi"><i></i>in</span>
+      <span class="npi"></span>
+    }
+    @if (!ports().length && hasOut()) {
+      <span class="npx"></span>
     }
     <span class="nph">
-      <span class="x-ic" [class]="node().tone"><app-docs-icon [name]="node().icon" [size]="16" /></span>
-      <span class="npt"><b>{{ node().name }}</b><small>{{ node().kind }}</small></span>
+      <span class="npk"><app-docs-icon [name]="node().icon" [size]="14" /></span>
+      <span class="npt"><small>{{ node().name }}</small><b>{{ node().sample.name }}</b></span>
     </span>
-    <span class="npo">
-      @for (p of node().ports; track p.t) {
-        @if (p.note) {
-          <span class="npn">{{ p.t }}</span>
-        } @else {
-          <span class="npp">{{ p.t }}<i></i></span>
-        }
+    <span class="npl">
+      @for (l of node().sample.lines; track $index) {
+        <span>{{ l }}</span>
       }
     </span>
+    @if (node().sample.chips?.length) {
+      <span class="npc2">
+        @for (c of node().sample.chips; track c) {
+          <span>{{ c }}</span>
+        }
+      </span>
+    }
+    @if (ports().length) {
+      <span class="npo">
+        @for (p of ports(); track p.label) {
+          <span class="npp" [class.err]="p.error" [class.alt]="p.alt">{{ p.label }}<i></i></span>
+        }
+      </span>
+    }
   </div>
 </div>
