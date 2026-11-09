@@ -27,7 +27,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'telegram',
     name: 'Telegram',
-    icon: 'tgsend',
+    icon: 'telegram',
     tone: 'lg-tg',
     category: 'Chat',
     blurb: 'A bot token. WBSKT lists the chats your bot is in so you can pick one.',
@@ -55,7 +55,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'discord',
     name: 'Discord',
-    icon: 'dcface',
+    icon: 'discord',
     tone: 'lg-dc',
     category: 'Chat',
     blurb: 'A channel webhook URL. Send plain text or rich embeds.',
@@ -110,7 +110,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'ntfy',
     name: 'ntfy',
-    icon: 'ntfybell',
+    icon: 'ntfy',
     tone: 'lg-nt',
     category: 'Push',
     blurb: 'A topic on ntfy.sh or your own server, with an access token if it\'s protected.',
@@ -170,7 +170,7 @@ export const DOCS_INTEGRATIONS: DocsIntegration[] = [
   {
     slug: 'home-assistant',
     name: 'Home Assistant',
-    icon: 'house',
+    icon: 'homeassistant',
     tone: 'lg-ha',
     category: 'HTTP',
     blurb: 'A ready-made HTTP auth: your instance\'s address and a long-lived token.',
