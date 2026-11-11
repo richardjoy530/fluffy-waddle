@@ -17,7 +17,7 @@ export const routes: Routes = [
     title: 'Features · WBSKT',
     data: {
       description:
-        'Live two-way messages, uptime, policies, a visual workflow builder, integrations, an audit log and team members. Every feature is free.',
+        'Live two-way messages, uptime, policies, a visual workflow builder, integrations, an audit log and team members. Every feature on every plan, Free included.',
     },
     loadComponent: () => import('./pages/features/features').then((m) => m.Features),
   },
