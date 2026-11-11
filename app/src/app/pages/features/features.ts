@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { handleCopyClick } from '../copy';
-import { FreePlan } from '../../layout/free-plan/free-plan';
+import { Plans } from '../../layout/plans/plans';
 
 @Component({
   selector: 'app-features',
-  imports: [RouterLink, FreePlan],
+  imports: [RouterLink, Plans],
   templateUrl: './features.html',
   host: { '(click)': 'onClick($event)' },
 })

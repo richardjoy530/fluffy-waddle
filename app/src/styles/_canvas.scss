@@ -73,12 +73,6 @@
 .mk .idea{display:flex;align-items:flex-start;gap:16px;padding:22px 24px;border-radius:18px;background:#1a1a19}
 .mk .idea .ic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,0.05);color:#c9c6bf}
 .mk .idea p{margin:4px 0 0;font-size:14px;line-height:1.6;color:#8f8b84}
-.mk .beta{display:flex;align-items:center;gap:48px;padding:56px;border-radius:28px;background:#1a1a19}
-.mk .beta .tx{flex:1}
-.mk .beta p{margin:14px 0 0;max-width:520px;font-size:16.5px;line-height:1.65;color:#9d9991}
-.mk .beta .ctas{margin-top:0;flex-direction:column;align-items:stretch;gap:10px}
-.mk .beta .ctas .btn{justify-content:center}
-.mk .beta .note{text-align:center;margin-top:4px}
 .mk footer:not(.shotin *):not(.piece *){margin-top:144px;border-top:1px solid rgba(255,255,255,0.06)}
 .mk footer:not(.shotin *):not(.piece *) .wrap{display:flex;align-items:center;gap:24px;height:96px}
 .mk footer:not(.shotin *):not(.piece *) .fl2{display:flex;gap:28px;font-size:14px;color:#8f8b84}
@@ -421,7 +415,6 @@
 .mk .code .lt label{padding:5px 8px;font-size:11.5px}
 .mk .ideas{grid-template-columns:1fr;margin-top:32px}
 .mk .idea{padding:18px}
-.mk .beta{flex-direction:column;align-items:stretch;gap:28px;padding:32px 24px;border-radius:24px}
 .mk footer:not(.shotin *):not(.piece *){margin-top:96px}
 .mk footer:not(.shotin *):not(.piece *) .wrap{flex-direction:column;align-items:flex-start;justify-content:center;gap:14px;height:auto;padding-top:28px;padding-bottom:28px}
 .mk .ghead{padding-top:48px}
