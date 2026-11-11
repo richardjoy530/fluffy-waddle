@@ -16,6 +16,7 @@ import { Mark } from '../mark/mark';
           <a [href]="links.github">GitHub</a>
           <a routerLink="/docs">Docs</a>
           <a routerLink="/privacy">Privacy</a>
+          <a routerLink="/terms">Terms</a>
         </span>
       </div>
     </footer>
