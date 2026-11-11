@@ -35,9 +35,18 @@ export const routes: Routes = [
     title: 'Privacy · WBSKT',
     data: {
       description:
-        'What WBSKT keeps, how long it keeps it, and who else sees it. No ads, no tracking, no selling your data.',
+        'What WBSKT collects, why, how long it keeps it, who else handles it and your rights over it. No ads, no tracking, no selling your data.',
     },
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
+  },
+  {
+    path: 'terms',
+    title: 'Terms · WBSKT',
+    data: {
+      description:
+        'The agreement between you and WBSKT: who can use it, plans and payment, refunds, fair use, your data and our liability.',
+    },
+    loadComponent: () => import('./pages/terms/terms').then((m) => m.Terms),
   },
   {
     path: 'docs',
