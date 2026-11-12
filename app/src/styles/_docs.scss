@@ -412,7 +412,6 @@
 .mk .dx .sbtn kbd{display:none}
 }
 
-
 // A node drawn as it sits on the canvas, on each node's page.
 .mk .dx .npv{display:flex;justify-content:center;margin-top:16px;padding:40px 20px;border-radius:18px;background:#0e0e0e;background-image:radial-gradient(#262626 1px,transparent 1px);background-size:16px 16px}
 .mk .dx .npv .npc{position:relative;display:flex;flex-direction:column;width:100%;max-width:272px;border:1px solid #2a2a2a;border-top:2px solid var(--tone);border-radius:8px;background:#151515;color:#f4f4f0;box-shadow:0 6px 20px rgba(0,0,0,0.35)}
