@@ -22,58 +22,49 @@
           <app-docs-icon name="search" [size]="15" />Search docs<kbd>⌘K</kbd>
         </button>
         @for (group of nav; track group.id) {
-          <div class="x-grp" [class.open]="isOpen(group.id)">
-            <button
-              type="button"
-              class="gh"
-              [attr.aria-expanded]="isOpen(group.id)"
-              [attr.aria-controls]="'grp-' + group.id"
-              (click)="toggle(group.id)"
-            >
-              {{ group.title }}<app-docs-icon [name]="isOpen(group.id) ? 'chevD' : 'chevR'" [size]="14" />
-            </button>
-            @if (isOpen(group.id)) {
-              <div class="gl" [id]="'grp-' + group.id">
-                @for (item of group.items; track $index) {
-                  @if (asSub(item); as sub) {
-                    <div class="x-sub" [class.open]="isOpen(sub.id)">
-                      <button
-                        type="button"
-                        class="x-sh"
-                        [class.cur]="page()?.sub?.id === sub.id"
-                        [attr.aria-expanded]="isOpen(sub.id)"
-                        [attr.aria-controls]="'grp-' + sub.id"
-                        (click)="toggle(sub.id)"
-                      >
-                        <app-docs-icon [name]="isOpen(sub.id) ? 'chevD' : 'chevR'" [size]="13" />{{ sub.label
-                        }}<span class="x-sc">{{ sub.links.length }}</span>
-                      </button>
-                      @if (isOpen(sub.id)) {
-                        <div class="x-sl" [id]="'grp-' + sub.id">
-                          @for (link of sub.links; track link.path) {
-                            <a
-                              [routerLink]="link.path"
-                              routerLinkActive="on"
-                              [routerLinkActiveOptions]="{ exact: true }"
-                              ariaCurrentWhenActive="page"
-                              >{{ link.label }}</a
-                            >
-                          }
-                        </div>
-                      }
-                    </div>
-                  } @else if (asLink(item); as link) {
-                    <a
-                      [routerLink]="link.path"
-                      routerLinkActive="on"
-                      [routerLinkActiveOptions]="{ exact: true }"
-                      ariaCurrentWhenActive="page"
-                      >{{ link.label }}</a
+          <div class="x-grp">
+            <div class="gh" [id]="'gh-' + group.id">{{ group.title }}</div>
+            <div class="gl" role="group" [attr.aria-labelledby]="'gh-' + group.id">
+              @for (item of group.items; track $index) {
+                @if (asSub(item); as sub) {
+                  <div class="x-sub">
+                    <button
+                      type="button"
+                      class="x-sh"
+                      [class.cur]="page()?.sub?.id === sub.id"
+                      [class.open]="isOpen(sub.id)"
+                      [attr.aria-expanded]="isOpen(sub.id)"
+                      [attr.aria-controls]="'grp-' + sub.id"
+                      (click)="toggle(sub.id)"
                     >
-                  }
+                      <span>{{ sub.label }}</span
+                      ><app-docs-icon [name]="isOpen(sub.id) ? 'chevD' : 'chevR'" [size]="14" />
+                    </button>
+                    @if (isOpen(sub.id)) {
+                      <div class="x-sl" [id]="'grp-' + sub.id">
+                        @for (link of sub.links; track link.path) {
+                          <a
+                            [routerLink]="link.path"
+                            routerLinkActive="on"
+                            [routerLinkActiveOptions]="{ exact: true }"
+                            ariaCurrentWhenActive="page"
+                            >{{ link.label }}</a
+                          >
+                        }
+                      </div>
+                    }
+                  </div>
+                } @else if (asLink(item); as link) {
+                  <a
+                    [routerLink]="link.path"
+                    routerLinkActive="on"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    ariaCurrentWhenActive="page"
+                    >{{ link.label }}</a
+                  >
                 }
-              </div>
-            }
+              }
+            </div>
           </div>
         }
         <div class="x-help">

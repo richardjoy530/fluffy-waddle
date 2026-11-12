@@ -34,7 +34,7 @@ export class DocsLayout {
   protected readonly path = signal(this.cleanPath(this.router.url));
   protected readonly menuOpen = signal(false);
   protected readonly activeSection = signal('');
-  // Groups the reader folded or unfolded; the current page's group starts open.
+  // Sub-groups the reader folded or unfolded; the current page's sub-group starts open.
   private readonly toggled = signal<Record<string, boolean>>({});
 
   protected readonly page = computed(() => DOCS_PAGES.find((p) => p.path === this.path()));
@@ -61,11 +61,9 @@ export class DocsLayout {
     inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
   }
 
-  // A group or sub-group starts open when it holds the current page.
+  // A sub-group starts open when it holds the current page.
   protected isOpen(id: string): boolean {
-    const choice = this.toggled()[id];
-    const page = this.page();
-    return choice ?? (page?.group.id === id || page?.sub?.id === id);
+    return this.toggled()[id] ?? this.page()?.sub?.id === id;
   }
 
   protected asSub(item: DocsNavItem): DocsSubgroup | null {
@@ -76,8 +74,8 @@ export class DocsLayout {
     return isDocsSubgroup(item) ? null : item;
   }
 
-  protected toggle(groupId: string): void {
-    this.toggled.update((t) => ({ ...t, [groupId]: !this.isOpen(groupId) }));
+  protected toggle(subId: string): void {
+    this.toggled.update((t) => ({ ...t, [subId]: !this.isOpen(subId) }));
   }
 
   protected onClick(event: MouseEvent): void {
