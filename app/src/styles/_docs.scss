@@ -6,14 +6,6 @@
 .mk .dx .dnav{min-width:0}
 .mk .dx .sbtn{display:flex;align-items:center;gap:10px;width:100%;height:40px;padding:0 12px;border:none;border-radius:11px;background:#1a1a19;color:#8f8b84;font-family:inherit;font-size:13.5px;text-align:left;cursor:pointer}
 .mk .dx .sbtn kbd{margin-left:auto;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,0.06);font-family:'JetBrains Mono',monospace;font-size:11px;color:#9d9991}
-.mk .dx .x-grp{margin-top:22px}
-.mk .dx .x-grp .gh{display:flex;align-items:center;gap:8px;width:100%;padding:6px 0;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:500;letter-spacing:0.02em;color:#8f8b84;text-align:left;cursor:pointer}
-.mk .dx .x-grp .gh svg{margin-left:auto;color:#6a6761}
-.mk .dx .x-grp.open .gh{color:#ecebe7}
-.mk .dx .gl{display:flex;flex-direction:column;gap:1px;margin-top:4px}
-.mk .dx .gl a{display:block;padding:6px 12px;margin-left:-12px;border-radius:9px;font-size:14px;line-height:1.45;color:#9d9991}
-.mk .dx .gl a.on{background:#1a1a19;color:#ecebe7}
-.mk .dx .gl a.on::before{content:'';display:inline-block;width:5px;height:5px;margin:0 8px 2px -2px;border-radius:2px;background:#e85d26}
 .mk .dx .dmain{min-width:0;max-width:780px}
 .mk .dx .crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:#76736c}
 .mk .dx .crumb span:last-child{color:#f0a07a}
@@ -281,8 +273,6 @@
 .mk .dx .dnav,.mk .dx .toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
 .mk .dx .dnav{padding-bottom:24px}
 .mk .dx .sbtn:hover{color:#c9c6bf}
-.mk .dx .x-grp .gh:hover{color:#ecebe7}
-.mk .dx .gl a:hover{color:#ecebe7}
 .mk .dx .toc a:hover{color:#ecebe7}
 .mk .dx .crumb a:hover{color:#c9c6bf}
 .mk .dx .dpn a:hover small{color:#9d9991}
@@ -368,9 +358,6 @@
 .mk .dx .dnav{display:none;position:static;max-height:none;overflow:visible}
 .mk .dx .dnav.open{display:block;margin:-12px 0 28px;padding:6px 18px 18px;border-radius:18px;background:#1a1a19}
 .mk .dx .dnav .sbtn,.mk .dx .dnav .x-help{display:none}
-.mk .dx .dnav .x-grp:first-of-type{margin-top:8px}
-.mk .dx .dnav .gl a{margin-left:0}
-.mk .dx .dnav .gl a.on{background:#242422}
 }
 
 @media (max-width: 760px) {
@@ -425,19 +412,6 @@
 .mk .dx .sbtn kbd{display:none}
 }
 
-// Sub-groups in the sidebar: Triggers under Nodes, Client protocol under Reference.
-.mk .dx .gl .x-sub{margin:2px 0}
-.mk .dx .gl .x-sh{display:flex;align-items:center;gap:7px;width:calc(100% + 12px);margin-left:-12px;padding:6px 12px;border:none;border-radius:9px;background:none;font-family:inherit;font-size:14px;line-height:1.45;color:#9d9991;text-align:left;cursor:pointer}
-.mk .dx .gl .x-sh svg{flex:none;color:#6a6761}
-.mk .dx .gl .x-sh .x-sc{margin-left:auto;min-width:20px;padding:0 6px;border-radius:999px;background:#1a1a19;font-size:11.5px;line-height:18px;text-align:center;color:#6a6761}
-.mk .dx .gl .x-sh.cur,.mk .dx .gl .x-sub.open .x-sh{color:#ecebe7}
-.mk .dx .gl .x-sh:hover{color:#ecebe7}
-.mk .dx .gl .x-sl{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 6px;padding-left:10px;border-left:1px solid #2a2a28}
-.mk .dx .gl .x-sl a{margin-left:0;padding:5px 10px;font-size:13.5px}
-@media (max-width: 900px) {
-.mk .dx .dnav .gl .x-sh{width:100%;margin-left:0}
-.mk .dx .dnav .gl .x-sh .x-sc{background:#242422}
-}
 
 // A node drawn as it sits on the canvas, on each node's page.
 .mk .dx .npv{display:flex;justify-content:center;margin-top:16px;padding:40px 20px;border-radius:18px;background:#0e0e0e;background-image:radial-gradient(#262626 1px,transparent 1px);background-size:16px 16px}
@@ -506,4 +480,28 @@
 .mk .dx .tbl.x-st td:nth-child(2){width:auto;padding-bottom:4px;font-size:0;text-align:right}
 .mk .dx .tbl.x-st td:nth-child(2)::after{content:attr(data-m);font-size:12px;color:#76736c}
 .mk .dx .tbl.x-st td:nth-child(3){grid-column:1 / -1;padding-top:0}
+}
+
+// The sidebar, three levels. A group is a label that is always open, in the site's eyebrow style;
+// its pages and folding sub-groups share one row style and one left edge, with the chevron on the
+// right; a sub-group's pages sit on a rail that marks the current one the way "On this page" does.
+.mk .dx .x-grp{margin-top:28px}
+.mk .dx .x-grp .gh{padding:0 12px 8px;font-size:11.5px;font-weight:500;line-height:1.4;letter-spacing:0.06em;text-transform:uppercase;color:#76736c}
+.mk .dx .gl{display:flex;flex-direction:column;gap:2px}
+.mk .dx .gl a,.mk .dx .gl .x-sh{display:flex;align-items:center;gap:8px;width:100%;padding:6px 12px;border:none;border-radius:9px;background:none;font-family:inherit;font-size:14px;line-height:1.45;color:#9d9991;text-align:left;cursor:pointer}
+.mk .dx .gl .x-sh span{flex:1;min-width:0}
+.mk .dx .gl .x-sh svg{flex:none;color:#6a6761}
+.mk .dx .gl .x-sh.open{color:#c9c6bf}
+.mk .dx .gl .x-sh.cur{color:#ecebe7}
+.mk .dx .gl .x-sl{display:flex;flex-direction:column;margin:2px 0 6px 12px}
+.mk .dx .gl .x-sl a{padding:5px 12px;border-left:1px solid rgba(255,255,255,0.08);border-radius:0 9px 9px 0;font-size:13.5px}
+.mk .dx .gl a.on{background:#1a1a19;color:#ecebe7}
+.mk .dx .gl .x-sl a.on{border-left-color:#e85d26}
+.mk .dx .gl a:hover,.mk .dx .gl .x-sh:hover{color:#ecebe7}
+.mk .dx .gl a:not(.on):hover,.mk .dx .gl .x-sh:hover{background:rgba(255,255,255,0.03)}
+.mk .dx .gl a:focus-visible,.mk .dx .gl .x-sh:focus-visible{outline:2px solid rgba(232,93,38,0.6);outline-offset:-2px}
+@media (max-width: 900px) {
+.mk .dx .dnav .x-grp:first-of-type{margin-top:12px}
+.mk .dx .dnav .gl a.on{background:#242422}
+.mk .dx .dnav .gl a:not(.on):hover,.mk .dx .dnav .gl .x-sh:hover{background:rgba(255,255,255,0.04)}
 }
