@@ -39,7 +39,13 @@ wbskt.OnMessageReceived += (type, payload, commandId) =&gt;
 &#125;;
 
 <span class="k">await</span> wbskt.<span class="f">StartAsync</span>();
-<span class="k">await</span> wbskt.<span class="f">SendAsync</span>(<span class="s">"temperature"</span>, <span class="k">new</span> &#123; celsius = <span class="f">ReadTemperature</span>() &#125;);</pre><pre class="p3"><span class="k">from</span> wbskt <span class="k">import</span> WbsktClient
+
+<span class="k">while</span> (<span class="k">true</span>)
+&#123;
+    <span class="k">await</span> wbskt.<span class="f">SendAsync</span>(<span class="s">"temperature"</span>, <span class="k">new</span> &#123; celsius = <span class="f">ReadTemperature</span>() &#125;);
+    <span class="k">await</span> Task.<span class="f">Delay</span>(TimeSpan.<span class="f">FromSeconds</span>(<span class="nm">10</span>));
+&#125;</pre><pre class="p3"><span class="k">import</span> time
+<span class="k">from</span> wbskt <span class="k">import</span> WbsktClient
 
 client = <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"</span>, policy_pin=<span class="s">"483920"</span>)
 
@@ -49,7 +55,10 @@ client = <span class="f">WbsktClient</span>(<span class="s">"greenhouse-sensor"<
 
 client.on_message = handle
 client.<span class="f">start</span>()
-client.<span class="f">send</span>(<span class="s">"temperature"</span>, &#123;<span class="s">"celsius"</span>: <span class="f">read_temperature</span>()&#125;)</pre></div></div>
+
+<span class="k">while</span> <span class="k">True</span>:
+    client.<span class="f">send</span>(<span class="s">"temperature"</span>, &#123;<span class="s">"celsius"</span>: <span class="f">read_temperature</span>()&#125;)
+    time.<span class="f">sleep</span>(<span class="nm">10</span>)</pre></div></div>
 
 <div class="dsec"><h2 id="what-each-one-does">What each one does</h2><div class="tbl sdkx"><table><thead><tr><th scope="col"><span class="vh">Feature</span></th><th scope="col">ESP32 / Arduino</th><th scope="col">.NET</th><th scope="col">Python</th></tr></thead><tbody><tr><td>Readings and commands</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>State and capabilities</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>Confirms commands, refuses expired ones</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr><tr><td>Offline buffer, sent in order</td><td>Yes, sized in bytes</td><td>Yes, 1,000 messages</td><td>Yes, 1,000 messages</td></tr><tr><td>Firmware updates (OTA)</td><td><span class="yes">Yes</span></td><td><span class="x-no">No</span></td><td><span class="x-no">No</span></td></tr></tbody></table></div></div>
 
