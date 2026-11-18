@@ -25,8 +25,10 @@ export const appConfig: ApplicationConfig = {
       routes,
       withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
       // A tab opened before a deploy asks for page chunks that no longer exist; load the page fresh instead.
+      // Never for the page already open, so a page that fails on its own load can't reload forever.
       withNavigationErrorHandler((error: NavigationError) => {
-        if (isPlatformBrowser(inject(PLATFORM_ID))) {
+        const path = (url: string) => url.split(/[?#]/)[0].replace(/\/$/, '');
+        if (isPlatformBrowser(inject(PLATFORM_ID)) && path(error.url) !== path(location.pathname)) {
           location.assign(error.url);
         }
       }),
