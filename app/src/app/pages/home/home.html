@@ -3,9 +3,9 @@
   <svg class="lw-traces" viewBox="0 0 1440 780" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="M0 140 H420 L460 180 H760 L800 140 H1440"/><path class="base" d="M0 610 H300 L340 570 H640 L680 610 H1100 L1140 650 H1440"/><path class="base" d="M1180 0 V200 L1140 240 V520 L1180 560 V780"/><path class="base" d="M860 780 V700 L900 660 H1440"/><path class="base" d="M0 380 H160 L200 420 H520"/><path class="base" d="M1440 330 H1300 L1260 290 H1000 L960 250 V0"/><path class="pulse t0" pathLength="1000" d="M0 140 H420 L460 180 H760 L800 140 H1440"/><path class="pulse t1" pathLength="1000" d="M0 610 H300 L340 570 H640 L680 610 H1100 L1140 650 H1440"/><path class="pulse t2" pathLength="1000" d="M1180 0 V200 L1140 240 V520 L1180 560 V780"/><path class="pulse t3" pathLength="1000" d="M860 780 V700 L900 660 H1440"/><path class="pulse t4" pathLength="1000" d="M0 380 H160 L200 420 H520"/><path class="pulse t5" pathLength="1000" d="M1440 330 H1300 L1260 290 H1000 L960 250 V0"/><circle class="via" cx="420" cy="140" r="4"/><circle class="via" cx="800" cy="140" r="4"/><circle class="via" cx="340" cy="570" r="4"/><circle class="via" cx="1140" cy="650" r="4"/><circle class="via" cx="1180" cy="200" r="4"/><circle class="via" cx="1140" cy="520" r="4"/><circle class="via" cx="900" cy="660" r="4"/><circle class="via" cx="200" cy="420" r="4"/><circle class="via" cx="1260" cy="290" r="4"/><circle class="via" cx="960" cy="250" r="4"/></svg>
   <div class="wrap"><div class="lw-hgrid">
     <div>
-      <p class="lw-ey">Live · durable · for makers</p>
-      <h1>Your projects, looked after.<br><span>Even while you sleep.</span></h1>
-      <p class="lead">Connect a board and build rules that wait, check again and act, then message you. They keep going through Wi‑Fi drops and restarts, so you can stop checking.</p>
+      <p class="lw-ey">IoT cloud for ESP32, Arduino and Pi</p>
+      <h1>Connect your boards.<br><span>Automate the rest.</span></h1>
+      <p class="lead">Connect your ESP32, Arduino or Raspberry Pi, see readings live and switch things from anywhere. Your automations wait, check, act and message you on Telegram, Discord or email, even through Wi‑Fi drops.</p>
       <div class="ctas"><a class="btn" [href]="links.signup">Start free</a><a class="btn quiet" href="#rule">See how it works</a></div>
       <p class="note"><b></b>Free for good. Every feature, no card needed.</p>
     </div>
@@ -32,7 +32,7 @@
 <section id="rule"><div class="wrap">
   <div class="lw-shd">
     <div>
-      <p class="lw-ey">A rule, playing out</p>
+      <p class="lw-ey">An automation, playing out</p>
       <h2>One cold night, five steps.</h2>
       <p class="lead">The greenhouse drops below 2 °C at 2:42 am. Here's what WBSKT does while you sleep.</p>
     </div>
@@ -55,7 +55,7 @@
 </div></section>
 
 <section><div class="wrap">
-  <p class="lw-ey">Durable</p>
+  <p class="lw-ey">Reliable automations</p>
   <h2>It doesn't lose its place.</h2>
   <p class="lead">Each step is saved as it runs. A failed step tries again, a restart picks up where it stopped, and every run is kept.</p>
   <div class="lw-dgrid">
@@ -76,13 +76,13 @@
   <div class="shead"><h2>How it works</h2><p>Three small steps. Most people are done in about ten minutes.</p></div>
   <div class="steps3">
     <div class="s3"><span class="n">01</span><div class="ln"><i></i></div><h3>Connect your board</h3><p>Add a few lines to your sketch. Your board joins Wi‑Fi and starts sending readings.</p></div>
-    <div class="s3"><span class="n">02</span><div class="ln"><i></i></div><h3>Set a rule</h3><p>Choose what to watch and what should happen, like "when it drops below 2 °C".</p></div>
+    <div class="s3"><span class="n">02</span><div class="ln"><i></i></div><h3>Build an automation</h3><p>Pick what to watch and what should happen, like "below 2 °C, turn the heater on". No code, just choices in a visual builder.</p></div>
     <div class="s3"><span class="n">03</span><div class="ln"><i></i></div><h3>Get on with your day</h3><p>WBSKT sends you a message, switches something on, or both. You only hear from it when it matters.</p></div>
   </div>
 </div></section>
 
 <section><div class="wrap"><div class="split">
-  <div><h2>A few lines of code</h2><p class="lead" style="font-size:16.5px;margin-top:14px">Add your key and your Wi‑Fi, then send whatever your sensor measures.</p>
+  <div><h2>Libraries for Arduino, ESP32, Python and .NET</h2><p class="lead" style="font-size:16.5px;margin-top:14px">Add your key and your Wi‑Fi, then send whatever your sensor measures. Already use MQTT? Any MQTT library works too, with no broker to run.</p>
     <div class="langs"><span>Arduino &amp; ESP32<em>beta</em></span><span>Raspberry Pi<em>beta</em></span><span>.NET<em>beta</em></span></div>
     <p class="soon"><b>In beta.</b> All three libraries are out as 0.9 betas, and the protocol may still change before 1.0. <a [href]="links.sdks">Compare the libraries</a></p></div>
   <div class="code tabbed"><input type="radio" class="r1" name="lang" id="lang-ino" aria-label="Arduino" checked><input type="radio" class="r2" name="lang" id="lang-cs" aria-label="C#"><input type="radio" class="r3" name="lang" id="lang-py" aria-label="Python">
@@ -126,7 +126,7 @@ client.<span class="f">start</span>()
 </div></div></section>
 
 <section><div class="wrap">
-  <div class="shead" id="ideas"><h2>Ideas to start with</h2><p>Small projects that are nice to have running in the background.</p></div>
+  <div class="shead" id="ideas"><h2>Project ideas for ESP32 and Arduino</h2><p>Small projects that are nice to have running in the background.</p></div>
   <div class="ideas">
     <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><div><h3>Frost alert</h3><p>When the greenhouse stays below 2 °C for 10 minutes, turn the heater on, check again in 15 minutes and message me.</p></div></div>
     <div class="idea"><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8"/><path d="M7 17h10"/></svg></span><div><h3>Garage left open</h3><p>When the door is still open after 10 pm, close it. If it doesn't report closed within a minute, message me.</p></div></div>
@@ -136,7 +136,7 @@ client.<span class="f">start</span>()
 </div></section>
 
 <section><div class="wrap">
-  <div class="shead" id="compare"><h2>How WBSKT compares</h2><p>The platforms makers usually weigh up, side by side. We're ahead on rules and behind on a few things we're still building.</p></div>
+  <div class="shead" id="compare"><h2>WBSKT vs Arduino Cloud, Blynk and Adafruit IO</h2><p>The platforms makers usually weigh up, side by side. We're ahead on rules and behind on a few things we're still building.</p></div>
   <div class="cmp"><table>
     <thead><tr><th scope="col"><span class="vh">Feature</span></th><th scope="col" class="us">WBSKT</th><th scope="col">Arduino Cloud</th><th scope="col">Blynk</th><th scope="col">Adafruit IO</th></tr></thead>
     <tbody>

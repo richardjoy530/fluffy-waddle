@@ -5,28 +5,28 @@ import { DOCS_NODE_RENAMES, DOCS_NODES } from './pages/docs/data/nodes';
 export const routes: Routes = [
   {
     path: '',
-    title: 'WBSKT · Your projects, looked after',
+    title: 'WBSKT · Free IoT cloud for ESP32, Arduino and Raspberry Pi',
     data: {
       description:
-        'Connect a board and build rules that wait, check and act, then message you. They keep going through Wi-Fi drops and restarts. Free for good.',
+        'Connect an ESP32, Arduino or Raspberry Pi, watch live readings, control it from anywhere and build automations that alert you on Telegram, Discord or email. Free.',
     },
     loadComponent: () => import('./pages/home/home').then((m) => m.Home),
   },
   {
     path: 'features',
-    title: 'Features · WBSKT',
+    title: 'IoT features: live data, remote control, automations · WBSKT',
     data: {
       description:
-        'Live two-way messages, uptime, policies, a visual workflow builder, integrations, an audit log and team members. Every feature on every plan, Free included.',
+        'Live two-way messaging over WebSocket or MQTT, offline alerts, a no-code automation builder, Telegram and Discord alerts, and teams. Every feature, even on Free.',
     },
     loadComponent: () => import('./pages/features/features').then((m) => m.Features),
   },
   {
     path: 'get-started',
-    title: 'Get started · WBSKT',
+    title: 'Connect an ESP32 or Arduino in 10 minutes · WBSKT',
     data: {
       description:
-        'Get your first board online with WBSKT: copy a policy PIN, add a few lines to your sketch and set your first rule.',
+        'Get an ESP32 or Arduino online in about ten minutes: install the WBSKT library, upload a short sketch and build an automation that alerts your phone.',
     },
     loadComponent: () => import('./pages/get-started/get-started').then((m) => m.GetStarted),
   },
