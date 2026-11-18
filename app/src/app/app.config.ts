@@ -1,10 +1,18 @@
 import {
   ApplicationConfig,
+  PLATFORM_ID,
+  inject,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import {
+  NavigationError,
+  provideRouter,
+  withInMemoryScrolling,
+  withNavigationErrorHandler,
+} from '@angular/router';
 
 import { routes } from './app.routes';
 
@@ -16,6 +24,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }),
+      // A tab opened before a deploy asks for page chunks that no longer exist; load the page fresh instead.
+      withNavigationErrorHandler((error: NavigationError) => {
+        if (isPlatformBrowser(inject(PLATFORM_ID))) {
+          location.assign(error.url);
+        }
+      }),
     ),
   ],
 };
