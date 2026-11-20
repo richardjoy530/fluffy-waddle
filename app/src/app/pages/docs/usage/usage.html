@@ -19,7 +19,7 @@
 <div class="dsec">
   <h2 id="warnings">Warnings on the way</h2>
   <ul class="dul">
-    <li><b>Credits.</b> At 80% and at 100% of the month's credits, every workspace in the account gets a warning in the console. Past 100%, new runs draw on credit packs, and are refused when there's nothing left. Business carries on and is invoiced.</li>
+    <li><b>Credits.</b> At 80% and at 100% of the month's credits, the account's billing admins get an email, and the audit log records it. Past 100%, new runs draw on credit packs, and are refused when there's nothing left. Business carries on and is invoiced.</li>
     <li><b>Messages.</b> At 80%, a warning. At the limit on Free, each client is slowed to one message a minute until the 1st. Paid plans are slowed only further on: at twice the allowance on Maker and Pro, one and a half times on Team, and never on Business.</li>
     <li><b>Clients.</b> A board that would go past the limit is refused when it registers or is approved, with <code>PLAN_CLIENT_LIMIT_REACHED</code>, and the policy's activity says so.</li>
   </ul>
@@ -31,7 +31,7 @@
   <p>Credits are shared, so a busy test workspace can spend the month that production needs. Give it a <b>monthly credit cap</b>: once the workspace has spent that many credits this month, its new runs are refused and its running ones stop at the next charge.</p>
   <ul class="dul">
     <li>A cap is a ceiling, not a reservation. Caps in an account can add up to more than it has.</li>
-    <li>The workspace gets a warning at 80% and at 100% of its cap.</li>
+    <li>The billing admins get an email at 80% and at 100% of its cap.</li>
     <li>Raising or removing the cap lets new runs start again at once.</li>
     <li>A cap of 0 stops the workspace's workflows entirely.</li>
   </ul>
@@ -61,8 +61,8 @@
     <div class="tbl"><table>
       <thead><tr><th scope="col">Call</th><th scope="col">Permission</th><th scope="col">Does</th></tr></thead>
       <tbody>
-        <tr><td><code>GET /api/v1/workspaces/&#123;ws&#125;/usage</code></td><td><code>billing.read</code></td><td>This calendar month (UTC): <code>&#123; plan, periodStart, periodEnd, account, workspace, days &#125;</code>. <code>account</code> is pooled: <code>credits &#123; used, limit, topUp, topUpExpiresAt, topUpExpiring, remaining &#125;</code>, <code>messages &#123; used, limit, throttled &#125;</code>, <code>clients</code> and <code>activeRuns</code> <code>&#123; used, limit &#125;</code>. <code>workspace</code> is this workspace's share, with its <code>monthlyCreditCap</code>. <code>days</code> is its credits per UTC day over <code>from</code>/<code>to</code> (the last 31 days by default, at most 366).</td></tr>
-        <tr><td><code>PUT /api/v1/workspaces/&#123;ws&#125;/credit-cap</code></td><td><code>billing.manage</code></td><td>Sets <code>&#123; monthlyCreditCap &#125;</code>, or <code>null</code> to remove it. Answers <code>&#123; monthlyCreditCap, creditsSpentThisMonth, capReached &#125;</code>.</td></tr>
+        <tr><td><code>GET /api/v1/workspaces/&#123;workspaceRef&#125;/usage</code></td><td><code>billing.read</code></td><td>This calendar month (UTC): <code>&#123; plan, periodStart, periodEnd, account, workspace, days &#125;</code>. <code>account</code> is pooled: <code>credits &#123; used, limit, topUp, topUpExpiresAt, topUpExpiring, remaining &#125;</code>, <code>messages &#123; used, limit, throttled &#125;</code>, <code>clients</code> and <code>activeRuns</code> <code>&#123; used, limit &#125;</code>. <code>workspace</code> is this workspace's share, with its <code>monthlyCreditCap</code>. <code>days</code> is its credits per UTC day over <code>from</code>/<code>to</code> (the last 31 days by default, at most 366).</td></tr>
+        <tr><td><code>PUT /api/v1/workspaces/&#123;workspaceRef&#125;/credit-cap</code></td><td><code>billing.manage</code></td><td>Sets <code>&#123; monthlyCreditCap &#125;</code>, or <code>null</code> to remove it. Answers <code>&#123; monthlyCreditCap, creditsSpentThisMonth, capReached &#125;</code>.</td></tr>
       </tbody>
     </table></div>
     <h3>Errors</h3>

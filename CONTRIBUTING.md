@@ -61,6 +61,8 @@ wbskt/Wbskt and wbskt/Wbskt.Console. Those repos ask every PR that changes behav
 - Write from the code, not from memory, and say "For now" where the console doesn't do yet what the
   platform does.
 - `node scripts/docs-coverage.mjs ../Wbskt` checks that every node kind has a page and every API error
-  code is documented, and that `/docs/scenarios` lists every page's "What happens when…" question.
-  CI runs it on each PR, and weekly against wbskt/Wbskt `master`, filing an issue for anything new. A code that isn't for product docs (staff or host-to-host only) goes in
-  `scripts/docs-coverage-ignore.json` with the reason.
+  code is documented, and that `/docs/scenarios` lists every page's "What happens when…" question. CI
+  runs it on each PR against wbskt/Wbskt `master`, so a site PR can fail on a code the backend added
+  since; document it in the same PR. A weekly run files an issue for anything new. It also fails on a
+  code in `data/errors.ts` the backend no longer has. A code that isn't for product docs (staff or
+  host-to-host only) goes in `scripts/docs-coverage-ignore.json` with the reason.

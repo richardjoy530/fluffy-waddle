@@ -136,6 +136,7 @@
         <tr><td>Call a URL</td><td><code>WEBHOOK_URL_RELATIVE</code>, <code>WEBHOOK_TIMEOUT_INVALID</code>, <code>WEBHOOK_HEADER_INVALID</code>, <code>WEBHOOK_HEADER_FORBIDDEN</code>, <code>WEBHOOK_HEADERS_TOO_MANY</code></td></tr>
         <tr><td>Other steps</td><td><code>INTEGRATION_REF_MISSING</code>, <code>TELEGRAM_CHAT_MISSING</code>, <code>TELEGRAM_MESSAGE_INVALID</code>, <code>TELEGRAM_PARSE_MODE_INVALID</code>, <code>TELEGRAM_THREAD_INVALID</code>, <code>DISCORD_MESSAGE_INVALID</code>, <code>DISCORD_EMBED_INVALID</code>, <code>DISCORD_THREAD_INVALID</code>, <code>DISCORD_AVATAR_URL_INVALID</code>, <code>NTFY_MESSAGE_MISSING</code>, <code>NTFY_PRIORITY_INVALID</code>, <code>CLIENT_MESSAGE_INVALID</code>, <code>CLIENT_MESSAGE_ACK_TIMEOUT</code></td></tr>
         <tr><td>Triggers</td><td><code>TRIGGER_CLIENT_REQUIRED</code>, <code>TRIGGER_MESSAGE_TYPE_REQUIRED</code>, <code>WEBHOOK_PATH_MISSING</code>, <code>INVALID_CLIENT_REF</code>, <code>INVALID_CRON</code>, <code>INVALID_PRESENCE_DURATION</code>, <code>INVALID_HOLD_DURATION</code>, <code>HOLD_REQUIRES_FILTER</code>, <code>MANUAL_INPUT_NAME_INVALID</code>, <code>MANUAL_INPUT_NAME_DUPLICATE</code>, <code>MANUAL_INPUT_NAME_RESERVED</code></td></tr>
+        <tr><td>Settings a step needs</td><td><code>CLIENT_REF_REQUIRED</code>, <code>CLIENT_REF_INVALID</code> (not a client id), <code>COMMAND_REQUIRED</code>, <code>EMAIL_SUBJECT_MISSING</code>, <code>TOAST_TITLE_MISSING</code>, <code>TOAST_MESSAGE_MISSING</code>, <code>WEBHOOK_URL_MISSING</code>, <code>WEBHOOK_URL_INVALID</code> (not http or https), <code>WEBHOOK_METHOD_INVALID</code>, <code>VARIABLE_NAME_MISSING</code>, <code>FOREACH_COLLECTION_MISSING</code>, <code>FORK_BRANCHES_MISSING</code>, <code>FORK_BRANCH_INVALID</code> (a path with no name), <code>FORK_BRANCH_DUPLICATE</code>, <code>SIGNAL_NAME_MISSING</code>, <code>SUBWORKFLOW_TARGET_MISSING</code>, <code>DELAY_DURATION_INVALID</code> (0 to 365 days), <code>AWAIT_SIGNAL_TTL_INVALID</code> and <code>WAITFORHTTP_TTL_INVALID</code> (a wait of zero)</td></tr>
         <tr><td>Clients</td><td><code>CLIENT_NOT_FOUND</code></td></tr>
         <tr><td>Warnings</td><td><code>NO_TRIGGERS</code>, <code>ORPHAN_NODE</code>, <code>SUSPICIOUS_CORRELATION_KEY</code>, <code>SHARED_VARIABLE_UNDECLARED</code>, <code>ERROR_PATH_ENDS</code>, <code>CLIENT_NOT_REGISTERED</code>, <code>SUBWORKFLOW_TARGET_NOT_MANUAL</code></td></tr>
       </tbody>
@@ -150,9 +151,18 @@
         <tr><td><code>BRANCH_STATE_TOO_LARGE</code></td><td>A path's data would pass 256 KB.</td></tr>
         <tr><td><code>SUBWORKFLOW_DEPTH_EXCEEDED</code></td><td>Run workflow steps nested more than 8 deep.</td></tr>
         <tr><td><code>OUT_OF_CREDITS_RUN_BUDGET</code>, <code>PLAN_CREDIT_LIMIT_REACHED</code>, <code>WORKSPACE_CREDIT_CAP_REACHED</code></td><td>A credit limit, as above. Runs stopped before these codes existed carry <code>OUT_OF_CREDITS</code>.</td></tr>
-        <tr><td><code>REAPER_TIMEOUT</code></td><td>A run whose paths all ended cancelled, closed by the 30-minute sweep.</td></tr>
+        <tr><td><code>WEBHOOK_NETWORK_ERROR</code></td><td>Call a URL couldn't reach the address. Tried again.</td></tr>
+        <tr><td><code>WEBHOOK_INVALID_URL</code></td><td>The URL, once its placeholders are filled in, isn't a full address.</td></tr>
+        <tr><td><code>WEBHOOK_HEADER_CONFLICT</code></td><td>The step sets the header the integration's credential goes in.</td></tr>
+        <tr><td><code>INTEGRATION_INVALID</code>, <code>INTEGRATION_WRONG_TYPE</code>, <code>INTEGRATION_UNREADABLE</code></td><td>The step's integration is no longer valid, is the wrong kind for the step, or its secret can't be opened. Fix or replace the integration.</td></tr>
+        <tr><td><code>VARIABLE_STEP_NOT_NUMERIC</code></td><td>Increment or Decrement by a value that isn't a number.</td></tr>
+        <tr><td><code>SUBWORKFLOW_NOT_STARTED</code></td><td>Run workflow couldn't start the other workflow: for example it is off, it has no Run by hand trigger, or a limit refused the run.</td></tr>
+        <tr><td><code>SUBWORKFLOW_INPUT_EVALUATION_ERROR</code></td><td>One of Run workflow's inputs couldn't be worked out.</td></tr>
+        <tr><td><code>TRANSIENT_ERROR</code></td><td>A temporary failure with no code of its own. Tried again.</td></tr>
+        <tr><td><code>REAPER_TIMEOUT</code></td><td>A run with nothing left to do was ended after 30 minutes.</td></tr>
       </tbody>
     </table></div>
+    <p>A few codes guard against a definition that checking should already have refused, such as one written straight to the database: <code>FOREACH_CONFIG_INVALID</code>, <code>PFE_CONFIG_INVALID</code>, <code>FORK_CONFIG_INVALID</code>, <code>JOIN_CONFIG_INVALID</code>, <code>LOGIC_CONFIG_INVALID</code>, <code>VARIABLE_CONFIG_INVALID</code>, <code>JOIN_NO_TOKEN</code>, <code>PFE_NO_JOIN</code>, <code>NODE_KIND_NOT_SUPPORTED</code>, <code>VARIABLE_OPERATION_NOT_SUPPORTED</code> and <code>RETRY_EXHAUSTED</code>. Seeing one means a bug on our side: tell us the run.</p>
     <p>Each step's own failure codes are on its <a routerLink="/docs/nodes">node page</a>, and every code is in the <a routerLink="/docs/errors">error reference</a>.</p>
   </div>
 </div>

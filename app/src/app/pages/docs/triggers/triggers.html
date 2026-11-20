@@ -1,5 +1,5 @@
 <h1 class="x-t">Triggers in depth</h1>
-<p class="lead">A trigger decides when a workflow starts. The five kinds each have their own <a routerLink="/docs/nodes" fragment="triggers">node page</a>; this page covers what they share: what happens when a trigger fires while a run is going, filters, secrets, and how to find out why a run didn't start.</p>
+<p class="lead">A trigger decides when a workflow starts. The five kinds each have their own <a routerLink="/docs/nodes" fragment="starts-the-workflow">node page</a>; this page covers what they share: what happens when a trigger fires while a run is going, filters, secrets, and how to find out why a run didn't start.</p>
 
 <div class="dsec">
   <h2 id="kinds">The five triggers</h2>
@@ -84,7 +84,7 @@
     <dt>A board goes offline for 30 seconds with a 60-second offline trigger</dt>
     <dd>Nothing starts: it has to stay offline for the whole 60 seconds. A board installing firmware counts as updating, not offline, for up to 5 minutes.</dd>
     <dt>The account is out of credits</dt>
-    <dd>New runs are refused and show as Refused. Events aren't queued for later; they are dropped. The console shows a banner once a minute per workflow while it happens.</dd>
+    <dd>New runs are refused and show as Refused. Events aren't queued for later; they are dropped. The refusal is recorded in the audit log, at most once a minute per workflow.</dd>
   </dl>
 </div>
 
@@ -105,7 +105,7 @@
     </table></div>
     <p>Concurrency policies on the wire: <code>Queue</code>, <code>AllowParallel</code>, <code>CancelExisting</code>, <code>DropIfRunning</code>.</p>
     <h3>Endpoint</h3>
-    <p><code>GET /api/v1/workspaces/&#123;ws&#125;/workflows/&#123;ref&#125;/triggers/&#123;nodeId&#125;/recent</code> (<code>workflows.read</code>) answers <code>recent</code>, the last 20 outcomes, and <code>hold</code> (<code>holding</code>, <code>fired</code> or <code>clear</code>, with <code>sinceAt</code> and <code>dueAt</code>) for a hold trigger.</p>
+    <p><code>GET /api/v1/workspaces/&#123;workspaceRef&#125;/workflows/&#123;workflowRef&#125;/triggers/&#123;nodeId&#125;/recent</code> (<code>workflows.read</code>) answers <code>recent</code>, the last 20 outcomes, and <code>hold</code> (<code>holding</code>, <code>fired</code> or <code>clear</code>, with <code>sinceAt</code> and <code>dueAt</code>) for a hold trigger.</p>
     <h3>Validation</h3>
     <p><code>TRIGGER_CLIENT_REQUIRED</code>, <code>TRIGGER_MESSAGE_TYPE_REQUIRED</code>, <code>WEBHOOK_PATH_MISSING</code>, <code>INVALID_CLIENT_REF</code>, <code>INVALID_CRON</code>, <code>INVALID_PRESENCE_DURATION</code>, <code>INVALID_HOLD_DURATION</code>, <code>HOLD_REQUIRES_FILTER</code>, <code>MANUAL_INPUT_NAME_INVALID</code>, <code>MANUAL_INPUT_NAME_DUPLICATE</code>, <code>MANUAL_INPUT_NAME_RESERVED</code>, and the warning <code>SUSPICIOUS_CORRELATION_KEY</code>.</p>
     <h3>Guarantees</h3>

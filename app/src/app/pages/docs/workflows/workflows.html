@@ -92,15 +92,15 @@
       <tbody>
         <tr><td><code>POST /</code></td><td><code>workflows.create</code></td><td>Publishes: <code>&#123; refId, name, description, nodes, edges, sharedVariableSchema, creditBudget, failFast, enable &#125;</code>. <code>enable</code> is required. Answers <code>&#123; refId, version, state, liveVersion &#125;</code>.</td></tr>
         <tr><td><code>POST validate</code></td><td><code>workflows.create</code></td><td>Checks without publishing. An invalid definition is a 200 with <code>isValid: false</code> and every issue's <code>code</code>, <code>nodeId</code> and <code>field</code>.</td></tr>
-        <tr><td><code>GET drafts</code>, <code>GET /&#123;ref&#125;/draft</code></td><td><code>workflows.read</code></td><td>Server drafts, with <code>revision</code>, <code>baseVersion</code>, <code>outdated</code> and the draft's validation.</td></tr>
-        <tr><td><code>PUT /&#123;ref&#125;/draft</code></td><td><code>workflows.create</code></td><td>Saves a draft with <code>expectedRevision</code> (null to start one).</td></tr>
-        <tr><td><code>POST /&#123;ref&#125;/draft/publish</code></td><td><code>workflows.create</code></td><td><code>&#123; revision, enable, force &#125;</code>. Publishes the draft and deletes it in one step.</td></tr>
-        <tr><td><code>DELETE /&#123;ref&#125;/draft?revision=</code></td><td><code>workflows.create</code></td><td>Discards it, only at that revision.</td></tr>
-        <tr><td><code>GET /&#123;ref&#125;/versions</code>, <code>/versions/&#123;n&#125;</code></td><td><code>workflows.read</code></td><td>Every version with <code>isLive</code> and run count; one version's definition, readable after deletion.</td></tr>
-        <tr><td><code>POST /&#123;ref&#125;/enable</code></td><td><code>workflows.execute</code></td><td><code>&#123; version &#125;</code>. Makes it live: turns the workflow on, or switches the live version.</td></tr>
-        <tr><td><code>POST /&#123;ref&#125;/disable</code></td><td><code>workflows.execute</code></td><td><code>&#123; cancelRunningRuns &#125;</code>, default false.</td></tr>
-        <tr><td><code>POST /&#123;ref&#125;/deprecate</code>, <code>/reinstate</code></td><td><code>workflows.delete</code></td><td>Retire and bring back (as Disabled).</td></tr>
-        <tr><td><code>DELETE /&#123;ref&#125;</code></td><td><code>workflows.delete</code></td><td>Deletes for good.</td></tr>
+        <tr><td><code>GET drafts</code>, <code>GET /&#123;workflowRef&#125;/draft</code></td><td><code>workflows.read</code></td><td>Server drafts, with <code>revision</code>, <code>baseVersion</code>, <code>outdated</code> and the draft's validation.</td></tr>
+        <tr><td><code>PUT /&#123;workflowRef&#125;/draft</code></td><td><code>workflows.create</code></td><td>Saves a draft with <code>expectedRevision</code> (null to start one).</td></tr>
+        <tr><td><code>POST /&#123;workflowRef&#125;/draft/publish</code></td><td><code>workflows.create</code></td><td><code>&#123; revision, enable, force &#125;</code>. Publishes the draft and deletes it in one step.</td></tr>
+        <tr><td><code>DELETE /&#123;workflowRef&#125;/draft?revision=</code></td><td><code>workflows.create</code></td><td>Discards it, only at that revision.</td></tr>
+        <tr><td><code>GET /&#123;workflowRef&#125;/versions</code>, <code>/versions/&#123;n&#125;</code></td><td><code>workflows.read</code></td><td>Every version with <code>isLive</code> and run count; one version's definition, readable after deletion.</td></tr>
+        <tr><td><code>POST /&#123;workflowRef&#125;/enable</code></td><td><code>workflows.execute</code></td><td><code>&#123; version &#125;</code>. Makes it live: turns the workflow on, or switches the live version.</td></tr>
+        <tr><td><code>POST /&#123;workflowRef&#125;/disable</code></td><td><code>workflows.execute</code></td><td><code>&#123; cancelRunningRuns &#125;</code>, default false.</td></tr>
+        <tr><td><code>POST /&#123;workflowRef&#125;/deprecate</code>, <code>/reinstate</code></td><td><code>workflows.delete</code></td><td>Retire and bring back (as Disabled).</td></tr>
+        <tr><td><code>DELETE /&#123;workflowRef&#125;</code></td><td><code>workflows.delete</code></td><td>Deletes for good.</td></tr>
       </tbody>
     </table></div>
     <h3>Errors</h3>

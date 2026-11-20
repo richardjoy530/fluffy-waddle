@@ -31,6 +31,7 @@
       <tr><td>Commands waiting for one client</td><td>100</td><td>New commands are refused until it catches up.</td></tr>
       <tr><td>How long a command waits</td><td>24 hours</td><td>It expires and is marked failed.</td></tr>
       <tr><td>State variables per client</td><td>200</td><td>New ones are ignored.</td></tr>
+      <tr><td>State report</td><td>8,192 characters, 50 variables</td><td>A larger report is ignored whole; variables past 50 are skipped.</td></tr>
       <tr><td>Message types remembered per client</td><td>100</td><td>New types aren't listed.</td></tr>
       <tr><td>Capabilities message</td><td>32 KB</td><td>It's ignored.</td></tr>
       <tr><td>Policy name</td><td>100 characters</td><td>Refused.</td></tr>
@@ -78,7 +79,7 @@
 
 <div class="dsec">
   <h2 id="sign-in">Sign-in and the API</h2>
-  <p>Sign-in, sign-up and password calls are limited per address to 10 a minute, so a password can't be guessed by trying many. Refreshing a session is limited to 120 a minute. Past a limit the answer is <code>429 RATE_LIMITED</code> with <code>Retry-After</code>.</p>
+  <p>Sign-in, sign-up and password calls are limited per address to 10 a minute, so a password can't be guessed by trying many. Refreshing a session is limited to 120 a minute. Every other call made while signed in shares a budget of 600 a minute per person, with bursts of up to 120. Past a limit the answer is <code>429 RATE_LIMITED</code> with <code>Retry-After</code>.</p>
 </div>
 
 <div class="dsec">

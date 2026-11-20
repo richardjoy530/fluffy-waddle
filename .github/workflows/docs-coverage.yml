@@ -1,8 +1,8 @@
 name: Docs coverage
 
-# Checks the product docs against wbskt/Wbskt master: every node kind has a page and every API error
-# code is documented. A pull request that leaves a gap fails; the weekly run files an issue for gaps
-# the backend opened since.
+# Checks the product docs against wbskt/Wbskt master: every node kind has a page, every error code a
+# user can meet is documented, and the scenarios index matches the pages. A pull request that leaves
+# a gap fails; the weekly run files an issue for gaps the backend opened since.
 
 on:
   pull_request:
@@ -12,10 +12,10 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   coverage:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the site
@@ -34,17 +34,47 @@ jobs:
           node-version: 20
 
       - name: Check the docs
-        id: check
         run: node scripts/docs-coverage.mjs wbskt-backend
 
-      - name: File an issue for the gaps
-        if: failure() && steps.check.outcome == 'failure' && github.event_name != 'pull_request'
+  weekly:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout the site
+        uses: actions/checkout@v4
+
+      - name: Checkout the backend
+        uses: actions/checkout@v4
+        with:
+          repository: wbskt/Wbskt
+          ref: master
+          path: wbskt-backend
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check the docs and file an issue for the gaps
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set +e
+          node scripts/docs-coverage.mjs wbskt-backend --markdown > report.md 2>&1
+          status=$?
+          set -e
+          cat report.md
+          # 0: nothing to do. 2: the script could not read the backend, which is no gap to file.
+          if [ "$status" -ne 1 ]; then
+            exit "$status"
+          fi
           title="Product docs are behind the backend"
-          node scripts/docs-coverage.mjs wbskt-backend --markdown > report.md || true
+          marker="<!-- docs-coverage $(sha256sum report.md | cut -c1-16) -->"
           {
+            echo "$marker"
             echo "The weekly docs coverage run found what the docs don't cover yet, against wbskt/Wbskt master."
             echo
             cat report.md
@@ -52,8 +82,10 @@ jobs:
             echo "Document each one, or add it to \`scripts/docs-coverage-ignore.json\` with the reason. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           } > body.md
           existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file body.md
-          else
+          if [ -z "$existing" ]; then
             gh issue create --title "$title" --body-file body.md
+          elif ! gh issue view "$existing" --json body,comments --jq '[.body] + [.comments[].body] | last' | grep -qF "$marker"; then
+            # Only when the gaps changed since the issue or its last comment.
+            gh issue comment "$existing" --body-file body.md
           fi
+          exit 1

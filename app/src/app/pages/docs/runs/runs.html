@@ -67,7 +67,7 @@
     <dt>I cancel a run that already finished</dt>
     <dd>Refused with <code>RUN_NOT_CANCELLABLE</code>.</dd>
     <dt>Too many runs are going at once</dt>
-    <dd>Your plan sets how many runs can be going at once across all your workspaces: 20 on Free, 100 on Maker, 200 on Pro and above. Past that, new runs are refused and the console shows a banner, at most once a minute per workflow. Runs started by another run, replays from a queue and replacements are let through, so work already accepted isn't stranded.</dd>
+    <dd>Your plan sets how many runs can be going at once across all your workspaces: 20 on Free, 100 on Maker, 200 on Pro and above. Past that, new runs are refused, and the refusal is recorded in the audit log, at most once a minute per workflow. Runs started by another run, replays from a queue and replacements are let through, so work already accepted isn't stranded.</dd>
     <dt>I start a test run while one is going</dt>
     <dd>Refused with <code>TEST_RUN_ACTIVE</code>, which names the one going.</dd>
   </dl>
@@ -82,11 +82,11 @@
     <div class="tbl"><table>
       <thead><tr><th scope="col">Call</th><th scope="col">Does</th></tr></thead>
       <tbody>
-        <tr><td><code>GET runs</code>, <code>GET workflows/&#123;ref&#125;/runs</code></td><td>Lists runs, newest first. Filters: <code>status</code> (including <code>Waiting</code>) and <code>isTest</code>. Each row has <code>number</code>, <code>trigger</code>, <code>creditsUsed</code>, <code>failedAt</code>, <code>endedAt</code>, <code>currentStep</code> and, while waiting, <code>waiting</code>.</td></tr>
-        <tr><td><code>GET workflows/&#123;ref&#125;/stats</code></td><td>Outcome counts, durations (p50, p95, max), success rate, error codes, slowest steps, and a row per day.</td></tr>
+        <tr><td><code>GET runs</code>, <code>GET workflows/&#123;workflowRef&#125;/runs</code></td><td>Lists runs, newest first. Filters: <code>status</code> (including <code>Waiting</code>) and <code>isTest</code>. Each row has <code>number</code>, <code>trigger</code>, <code>creditsUsed</code>, <code>failedAt</code>, <code>endedAt</code>, <code>currentStep</code> and, while waiting, <code>waiting</code>.</td></tr>
+        <tr><td><code>GET workflows/&#123;workflowRef&#125;/stats</code></td><td>Outcome counts, durations (p50, p95, max), success rate, error codes, slowest steps, and a row per day.</td></tr>
         <tr><td><code>GET runs/&#123;runRef&#125;</code>, <code>/history</code>, <code>/definition</code></td><td>The run with its paths; its history, oldest first; the definition it ran.</td></tr>
-        <tr><td><code>POST workflows/&#123;ref&#125;/runs</code></td><td>Starts a run through a Run by hand trigger: <code>&#123; triggerNodeId, payload, idempotencyKey &#125;</code>.</td></tr>
-        <tr><td><code>POST workflows/&#123;ref&#125;/test-runs</code></td><td><code>&#123; source: "draft" | "live", payload, triggerNodeId &#125;</code>. Answers <code>&#123; runRefId &#125;</code>.</td></tr>
+        <tr><td><code>POST workflows/&#123;workflowRef&#125;/runs</code></td><td>Starts a run through a Run by hand trigger: <code>&#123; triggerNodeId, payload, idempotencyKey &#125;</code>.</td></tr>
+        <tr><td><code>POST workflows/&#123;workflowRef&#125;/test-runs</code></td><td><code>&#123; source: "draft" | "live", payload, triggerNodeId &#125;</code>. Answers <code>&#123; runRefId &#125;</code>.</td></tr>
         <tr><td><code>POST runs/&#123;runRef&#125;/cancel</code></td><td>Answers 202; the run reads Cancelling, then Cancelled.</td></tr>
         <tr><td><code>POST runs/&#123;runRef&#125;/signals/&#123;signalName&#125;</code></td><td>Sends a signal to a waiting run.</td></tr>
       </tbody>
