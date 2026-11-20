@@ -81,6 +81,42 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/docs/messages/messages').then((m) => m.DocsMessages),
       },
       {
+        path: 'policies',
+        title: 'Policies · WBSKT docs',
+        data: {
+          description:
+            'How clients join through a policy: the PIN, automatic or manual approval, client limits, turning a policy off, and what happens at each limit.',
+        },
+        loadComponent: () => import('./pages/docs/policies/policies').then((m) => m.DocsPolicies),
+      },
+      {
+        path: 'clients',
+        title: 'Client lifecycle · WBSKT docs',
+        data: {
+          description:
+            'The statuses of a client, online and offline, renaming and tags, rotating its secret, revoking and deleting it, and the edge cases in between.',
+        },
+        loadComponent: () => import('./pages/docs/clients/clients').then((m) => m.DocsClients),
+      },
+      {
+        path: 'commands',
+        title: 'Commands · WBSKT docs',
+        data: {
+          description:
+            'Sending commands to clients: delivery and acknowledgements, queueing for offline clients, expiry, templates and firmware updates.',
+        },
+        loadComponent: () => import('./pages/docs/commands/commands').then((m) => m.DocsCommands),
+      },
+      {
+        path: 'state',
+        title: 'Capabilities, state and readings · WBSKT docs',
+        data: {
+          description:
+            'What a client declares, the state it reports, how readings are kept and charted on each plan, and how to export them.',
+        },
+        loadComponent: () => import('./pages/docs/state/state').then((m) => m.DocsState),
+      },
+      {
         path: 'first-rule',
         title: 'Your first rule · WBSKT docs',
         data: {

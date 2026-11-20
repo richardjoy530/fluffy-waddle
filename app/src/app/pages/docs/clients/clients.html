@@ -1,0 +1,123 @@
+<h1 class="x-t">Clients</h1>
+<p class="lead">A client is anything that connects to WBSKT: a board, a script, an app. This page covers its whole life, from the first time it starts to the day you remove it, and what the console shows along the way.</p>
+
+<div class="dsec">
+  <h2 id="statuses">Statuses</h2>
+  <p>Every client has one status. It decides whether the client can sign in.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Status</th><th scope="col">Means</th><th scope="col">Can connect</th></tr></thead>
+    <tbody>
+      <tr><td><span class="x-pill p-amber"><i></i>Pending</span></td><td>It joined through a policy that needs approval and is waiting for you.</td><td>No, it keeps retrying until approved</td></tr>
+      <tr><td><span class="x-pill p-green"><i></i>Registered</span></td><td>Approved. Counts towards the policy's and the plan's client limits.</td><td>Yes</td></tr>
+      <tr><td><span class="x-pill p-red"><i></i>Rejected</span></td><td>You turned it down while it was pending.</td><td>No</td></tr>
+      <tr><td><span class="x-pill p-grey"><i></i>Revoked</span></td><td>You took away its access after approving it.</td><td>No, and its connection is closed at once</td></tr>
+    </tbody>
+  </table></div>
+  <p>You can move a client between any of these from its page, or from its policy's client list. Approving a revoked or rejected client brings it back with the same identity and history; it counts towards the limits again, so approval can be refused when a limit is full.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="online-and-offline">Online, offline and updating</h2>
+  <p>A registered client also shows whether it is connected right now.</p>
+  <ul class="dul">
+    <li><b>Online</b>: it holds a connection. The header shows how long it has been up.</li>
+    <li><b>Offline</b>: no connection. The client shows when it was <b>last seen</b>.</li>
+    <li><b>Updating</b>: it closed its connection to install new firmware. For up to 5 minutes it shows as updating, not offline, and <a routerLink="/docs/nodes/client-online-offline">online and offline triggers</a> wait. If it doesn't come back in that time it shows as offline.</li>
+  </ul>
+  <p>A board that loses power can't say goodbye. Its connection is noticed as gone when the keepalive stops being answered (see <a routerLink="/docs/protocol/websocket" fragment="keepalive">keepalive</a>). If a whole WBSKT gateway stops answering, its clients are shown offline within about two minutes, so offline triggers still fire.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="the-client-page">The client page</h2>
+  <p>Open a client from <b>Clients</b> to see:</p>
+  <ul class="dul">
+    <li><b>The header</b>: name, status, uptime or last seen, its policy, the platform and library it reported, and its latest latency. Choose <b>Ping</b> to measure the round trip now. WBSKT also measures it on its own every 5 minutes.</li>
+    <li><b>Send command</b>: a form built from the commands the client declared, or a raw JSON editor, and your <a routerLink="/docs/commands" fragment="templates">templates</a>. See <a routerLink="/docs/commands">Commands</a>.</li>
+    <li><b>Activity</b>: every message in and out, live, with older ones loading as you scroll up.</li>
+    <li><b>State</b>: its state variables, with a small chart for numbers. See <a routerLink="/docs/state">Capabilities, state and readings</a>.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="names-and-tags">Names and tags</h2>
+  <p>A client starts with the name it registered with. Rename it any time; the name is up to 100 characters, and workflows refer to the client by its ID, so a rename never breaks one.</p>
+  <p>Tags group clients across policies, like <b>kitchen</b> or <b>battery</b>. A client can have up to 10. They are stored in lower case, and the client list filters by tag.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="secret">The client's secret</h2>
+  <p>When a client first registers, WBSKT gives it an ID and a secret, which the library stores on the device and uses to sign in from then on. <b>Rotate secret</b> makes a new one and shows it once. The old secret stops working at once, and the client's connection is closed. Put the new secret on the device next to the same ID; the libraries don't register again on their own, so you won't get a duplicate client.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="removing-a-client">Removing a client</h2>
+  <p><b>Revoke</b> keeps the client in the list and closes its connection, so you can bring it back later by approving it. <b>Delete</b> removes it with its capabilities and state, closes its connection and stops its secret working. Commands waiting for it fail, saying it was deleted. Its past messages stay in the activity log.</p>
+  <p>A deleted client can only come back by registering again with a PIN, as a new client. Its library has to forget its stored ID and secret first; each SDK's page says how.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>Two boards use the same ID and secret</dt>
+    <dd>Each connection ends the one before it, so they knock each other off. After 5 of these in 10 minutes the console warns you that the credentials look shared, at most once every 10 minutes. Give each board its own registration.</dd>
+    <dt>I revoke a client that is connected</dt>
+    <dd>Its connection closes within a moment and it can't sign in again. The library logs the refusal and keeps retrying on its reconnect schedule, so approving it later brings it straight back.</dd>
+    <dt>A client is deleted, then starts again with its old credentials</dt>
+    <dd>Sign-in is refused with <code>CLIENT_UNAUTHORIZED</code>. The libraries stop and report it rather than registering again. Clear the stored credentials to enrol it as a new client.</dd>
+    <dt>A client's clock is wrong</dt>
+    <dd>Messages carry the time the client made them. A state report stamped in the future is treated as made when it arrived, so a fast clock can't hold back newer values.</dd>
+    <dt>A client was offline and sends a backlog</dt>
+    <dd>Messages more than 30 seconds old when they arrive are marked <b>late</b>. Workflows can tell late readings from live ones, and charts place them at the time they were taken.</dd>
+    <dt>The account is frozen by WBSKT support</dt>
+    <dd>Every pending and registered client is revoked and disconnected, and no new client can enrol (<code>ACCOUNT_FROZEN</code>). Lifting the freeze doesn't approve them again; you do that.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/clients</code>. Reading needs <code>clients.read</code>. Renaming, tagging and changing status need <code>clients.update</code>; deleting and rotating the secret need <code>clients.manage</code>; ping needs <code>clients.ping</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /</code></td><td>Lists clients. Filters: <code>status</code> (repeatable), <code>name</code>, <code>tag</code>, <code>policyRefId</code>. Paged, with <code>totalCount</code>.</td></tr>
+        <tr><td><code>GET counts</code></td><td><code>&#123; total, pending, registered, revoked, rejected, connected &#125;</code>, for the workspace or one policy.</td></tr>
+        <tr><td><code>GET tags</code></td><td>Every tag in use with its client count.</td></tr>
+        <tr><td><code>GET /&#123;clientRef&#125;</code></td><td>Detail: presence, uptime, latency, SDK, capabilities, <code>system</code>, <code>firmwareVersion</code>, <code>updatingUntil</code>, <code>lastSeenAt</code>.</td></tr>
+        <tr><td><code>PATCH /&#123;clientRef&#125;</code></td><td><code>&#123; name?, status? &#125;</code>. The status changes first, so a refused status leaves the name unchanged.</td></tr>
+        <tr><td><code>PATCH status</code></td><td>Up to 100 clients to one status. Answers <code>updated</code> and <code>failed</code> per client; approvals are taken in the order given.</td></tr>
+        <tr><td><code>PUT /&#123;clientRef&#125;/tags</code></td><td>Replaces the tags.</td></tr>
+        <tr><td><code>POST /&#123;clientRef&#125;/rotate-secret</code></td><td>Returns <code>&#123; clientRefId, secret &#125;</code> once.</td></tr>
+        <tr><td><code>POST /&#123;clientRef&#125;/ping</code></td><td>Measures latency now. A ping is never queued.</td></tr>
+        <tr><td><code>DELETE /&#123;clientRef&#125;</code></td><td>Deletes the client.</td></tr>
+      </tbody>
+    </table></div>
+    <p>The status values on the wire are <code>0</code> Pending, <code>1</code> Registered, <code>2</code> Revoked, <code>3</code> Rejected.</p>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>CLIENT_NAME_INVALID</code></td><td><span class="num">400</span></td><td>A name blank or over 100 characters once trimmed.</td></tr>
+        <tr><td><code>CLIENT_STATUS_INVALID</code></td><td><span class="num">400</span></td><td>A status other than the four above.</td></tr>
+        <tr><td><code>CLIENT_UPDATE_EMPTY</code></td><td><span class="num">400</span></td><td>A change naming neither field.</td></tr>
+        <tr><td><code>CLIENT_TAG_INVALID</code></td><td><span class="num">400</span></td><td>A tag that isn't 1 to 32 letters, digits, spaces, <code>-</code>, <code>_</code> or <code>.</code>, starting and ending with a letter or digit.</td></tr>
+        <tr><td><code>CLIENT_TAGS_TOO_MANY</code></td><td><span class="num">400</span></td><td>More than 10 tags.</td></tr>
+        <tr><td><code>POLICY_LIMIT_REACHED</code></td><td><span class="num">400</span></td><td>Approving into a full policy.</td></tr>
+        <tr><td><code>CLIENT_NOT_FOUND</code></td><td><span class="num">404</span></td><td>No such client in this workspace. Another workspace's client reads the same.</td></tr>
+        <tr><td><code>CLIENT_OFFLINE</code></td><td><span class="num">409</span></td><td>Pinging a client with no connection.</td></tr>
+        <tr><td><code>PLAN_CLIENT_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Approving past the plan's client limit.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Presence, exactly</h3>
+    <ul class="dul">
+      <li>Presence is a lease. Each gateway sends a heartbeat; a gateway silent for 120 seconds has its clients marked offline by a sweep that runs every 60 seconds, each with a disconnect event, so offline triggers fire.</li>
+      <li>One client has one connection. A second connection supersedes the first, which is closed with the superseded close code.</li>
+      <li>A client that closes with the updating close code (<code>4000</code> on WebSocket) gets <code>updatingUntil</code> 5 minutes ahead. Its next connect clears it.</li>
+      <li>Latency is a <code>sys.ping</code> and <code>sys.pong</code> round trip timed on the server's clock, sampled every 5 minutes per client and on demand.</li>
+      <li><code>lastSeenAt</code> is the last connect or disconnect, or the moment the sweep found its gateway gone.</li>
+      <li>Revoking, deleting or rotating a secret refuses every token issued before it, so a client can't keep a session it lost the right to.</li>
+    </ul>
+  </div>
+</div>
