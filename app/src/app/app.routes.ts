@@ -127,6 +127,51 @@ export const routes: Routes = [
           import('./pages/docs/first-rule/first-rule').then((m) => m.DocsFirstRule),
       },
       {
+        path: 'workflows',
+        title: 'Drafts, publishing and versions · WBSKT docs',
+        data: {
+          description:
+            'How a workflow is drafted, checked and published, what its versions and states mean, and the settings every workflow has.',
+        },
+        loadComponent: () => import('./pages/docs/workflows/workflows').then((m) => m.DocsWorkflows),
+      },
+      {
+        path: 'runs',
+        title: 'Runs · WBSKT docs',
+        data: {
+          description:
+            'What a workflow run goes through: its statuses, paths and waits, cancelling, test runs, and how long its history is kept.',
+        },
+        loadComponent: () => import('./pages/docs/runs/runs').then((m) => m.DocsRuns),
+      },
+      {
+        path: 'triggers',
+        title: 'Triggers in depth · WBSKT docs',
+        data: {
+          description:
+            'What every trigger shares: overlapping runs, filters and holds, webhook secrets, missed schedules, and why a run did not start.',
+        },
+        loadComponent: () => import('./pages/docs/triggers/triggers').then((m) => m.DocsTriggers),
+      },
+      {
+        path: 'variables',
+        title: 'Variables and placeholders · WBSKT docs',
+        data: {
+          description:
+            'What a run can read, how placeholders fill in a message, local and shared variables, and how conditions compare values.',
+        },
+        loadComponent: () => import('./pages/docs/variables/variables').then((m) => m.DocsVariables),
+      },
+      {
+        path: 'failures',
+        title: 'Retries and failures · WBSKT docs',
+        data: {
+          description:
+            'How a step tries again, what a run does when a step still fails, how split paths fail together, and running out of credits.',
+        },
+        loadComponent: () => import('./pages/docs/failures/failures').then((m) => m.DocsFailures),
+      },
+      {
         path: 'nodes',
         title: 'Node reference · WBSKT docs',
         data: {

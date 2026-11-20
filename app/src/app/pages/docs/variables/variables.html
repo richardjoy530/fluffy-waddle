@@ -1,0 +1,133 @@
+<h1 class="x-t">Variables and placeholders</h1>
+<p class="lead">Every step in a run can read what came before it: the trigger's data, what earlier steps answered, and variables. This page covers where those values live, how to put them into a message with <code ngNonBindable>&#123;&#123; &#125;&#125;</code>, and how shared variables carry a value from one run to the next.</p>
+
+<div class="dsec">
+  <h2 id="run-data">What a run knows</h2>
+  <p>Each path of a run carries its own data. It starts with the trigger's data, and each step adds what it produced. Later steps on the same path read it by name.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Name</th><th scope="col">Holds</th></tr></thead>
+    <tbody>
+      <tr><td><code>trigger</code></td><td>What started the run. A client message's values are under <code>trigger.payload</code>; a webhook's or a run by hand's are under <code>trigger.body</code>.</td></tr>
+      <tr><td><code>triggeredAt</code></td><td>When the trigger fired, in UTC.</td></tr>
+      <tr><td><code>status</code>, <code>body</code>, <code>json</code></td><td>What the last <a routerLink="/docs/nodes/call-a-url">Call a URL</a> answered: the HTTP status, the text, and the body read as JSON.</td></tr>
+      <tr><td><code>item</code>, <code>index</code></td><td>Inside a <a routerLink="/docs/nodes/for-each">For each</a>: the current item and its position.</td></tr>
+      <tr><td><code>command</code></td><td>What a Send to client step got back.</td></tr>
+      <tr><td><code>childResult</code></td><td>What a <a routerLink="/docs/nodes/run-workflow">Run workflow</a> step's run ended with: its run, status and output.</td></tr>
+      <tr><td><code>signalPayload</code>, <code>wakePayload</code></td><td>What a <a routerLink="/docs/nodes/wait-for-signal">Wait for signal</a> or <a routerLink="/docs/nodes/wait-for-a-call">Wait for a call</a> received.</td></tr>
+      <tr><td><code>lastError</code></td><td>After a step failed and the run carried on: its <code>errorCode</code> and <code>message</code>. See <a routerLink="/docs/failures" fragment="when-it-fails">Retries and failures</a>.</td></tr>
+      <tr><td><code>joinSucceeded</code>, <code>joinFailed</code></td><td>After <a routerLink="/docs/nodes/wait-for-paths">Wait for paths</a>: how many of the paths succeeded and failed.</td></tr>
+      <tr><td>Your local variables</td><td>Each by its own name.</td></tr>
+    </tbody>
+  </table></div>
+  <p>A step that splits the run into paths gives each path a copy of the data so far. From there the paths are separate: a value one path sets is not seen by the others.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="placeholders">Placeholders</h2>
+  <p>Text fields in a step, such as a message, an email subject, a URL or a command's payload, take placeholders: a name in double braces, filled in when the step runs. <code ngNonBindable>Greenhouse at &#123;&#123;trigger.payload.celsius&#125;&#125; °C</code> sends <b>Greenhouse at 31.5 °C</b>.</p>
+  <ul class="dul">
+    <li>A dotted path reaches into the data: <code ngNonBindable>&#123;&#123;json.forecast.today&#125;&#125;</code>. <code ngNonBindable>&#123;&#123;$shared.NAME&#125;&#125;</code> reads a shared variable.</li>
+    <li>In a JSON field, a value that is only a placeholder keeps its type. <code ngNonBindable>&#123; "on": "&#123;&#123;heaterOn&#125;&#125;" &#125;</code> sends <code>true</code>, not the text <code>"true"</code>.</li>
+    <li>A placeholder with nothing behind it is filled in as empty text, and the step still runs. The run's history notes which field and which placeholder were missing.</li>
+    <li>A line break in a value becomes a space in a one-line field (an address, a subject, a URL, a header), so a value can't add a line of its own.</li>
+    <li>Which client a step talks to and the command type are used as written. They don't take placeholders.</li>
+  </ul>
+  <div class="tip"><span class="tipl">Tip</span>Open a finished run and look at a step's output to see the exact names a later step can read.</div>
+</div>
+
+<div class="dsec">
+  <h2 id="local-and-shared">Local and shared variables</h2>
+  <p>The <a routerLink="/docs/nodes/set-variable">Set variable</a> step keeps a value under a name. Choose how long it lasts:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Keep it for</th><th scope="col">Lives</th><th scope="col">Can</th></tr></thead>
+    <tbody>
+      <tr><td><b>This run</b> (local)</td><td>In this path's data, until the run ends.</td><td>Set.</td></tr>
+      <tr><td><b>Every run</b> (shared)</td><td>On the workflow, one value for all its runs and versions.</td><td>Set, Increment, Decrement, Compare and set.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Shared variables are how one run leaves something for the next: a count of rings today, the last state you alerted on, whether a door is open. They are declared on the workflow with a type and a default, and you can change one by hand from the console.</p>
+  <ul class="dul">
+    <li><b>Set</b> writes the value. If two runs set it at the same moment, the last one wins.</li>
+    <li><b>Increment</b> and <b>Decrement</b> add or take away safely, even with many runs at once. They work on counters only.</li>
+    <li><b>Compare and set</b> writes only if the variable holds the value you expect now, and tells the next step whether it did (<code>casSucceeded</code>). Use it so only one run acts: "if <b>alerted</b> is false, set it to true, and only then send the alert".</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="conditions">Conditions</h2>
+  <p>An If step, a filter on a trigger, and other conditions compare values: equal, not equal, greater or less than, joined with and, or, and not. They can also call a few functions: the time now, text to lower or upper case, contains, starts with, ends with, is empty and is null.</p>
+  <p>Types are strict. The number <code>30</code> and the text <code>"30"</code> are not equal, and greater or less than works only between two numbers or two pieces of text. A board that sends its readings as text needs to send them as numbers to compare them with numbers. A value that isn't there counts as empty: use <b>is empty</b> to check for it first.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>A placeholder names a value the run doesn't have</dt>
+    <dd>In a text field, the step runs with that part empty, and the run's history has a warning naming the field. In a condition, the missing value counts as empty: it equals nothing but another empty value, and greater or less than fails the step.</dd>
+    <dt>Two runs increment the same counter at once</dt>
+    <dd>Both count. Increment and Decrement are made one at a time on the server.</dd>
+    <dt>A shared variable is set while a run is using it</dt>
+    <dd>The run reads the value as it is when each step runs, not as it was when the run started.</dd>
+    <dt>I publish a new version</dt>
+    <dd>Shared variables keep their values. They belong to the workflow, not to a version.</dd>
+    <dt>A path's data grows past 256 KB</dt>
+    <dd>The step that made it too big fails with <code>BRANCH_STATE_TOO_LARGE</code>. Keep only the parts of a large answer that later steps need.</dd>
+    <dt>A condition compares text with a number</dt>
+    <dd>Equal is simply false and not equal is true. Greater or less than fails the step with <code>EXPRESSION_EVALUATION_ERROR</code>, rather than guessing what you meant.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Expressions</h3>
+    <p>Behind the console, a value or condition is a JSON object with a <code>kind</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">kind</th><th scope="col">Fields</th><th scope="col">Gives</th></tr></thead>
+      <tbody>
+        <tr><td><code>literal</code></td><td><code>value</code></td><td>The value.</td></tr>
+        <tr><td><code>branchStateRef</code></td><td><code>path</code></td><td>A dotted path into the path's data, falling back to the trigger's data.</td></tr>
+        <tr><td><code>sharedVariableRef</code></td><td><code>name</code></td><td>A shared variable.</td></tr>
+        <tr><td><code>template</code></td><td><code>template</code></td><td>Text with placeholders; a missing value is empty.</td></tr>
+        <tr><td><code>jsonPath</code></td><td><code>baseExpression</code>, <code>path</code></td><td>A JSONPath query into another expression's result.</td></tr>
+        <tr><td><code>member</code></td><td><code>object</code>, <code>member</code></td><td>A member of another expression's result.</td></tr>
+        <tr><td><code>binary</code></td><td><code>left</code>, <code>operator</code>, <code>right</code></td><td><code>Equal</code>, <code>NotEqual</code>, <code>GreaterThan</code>, <code>GreaterThanOrEqual</code>, <code>LessThan</code>, <code>LessThanOrEqual</code>, <code>And</code>, <code>Or</code>. <code>And</code> and <code>Or</code> stop early.</td></tr>
+        <tr><td><code>unary</code></td><td><code>operator</code>, <code>operand</code></td><td><code>Not</code>, <code>Negate</code>.</td></tr>
+        <tr><td><code>function</code></td><td><code>function</code>, <code>arguments</code></td><td><code>Now</code>, <code>UtcNow</code>, <code>ToString</code>, <code>ToLower</code>, <code>ToUpper</code>, <code>Contains</code>, <code>StartsWith</code>, <code>EndsWith</code>, <code>IsNull</code>, <code>IsEmpty</code>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A condition saved as a bare string is read as a path (or as <code>true</code>/<code>false</code>) and is rewritten as an object on the next publish.</p>
+    <h3>Fields that take placeholders</h3>
+    <p>Email <code>to</code>, <code>subject</code>, <code>body</code>; Telegram <code>chatId</code>, <code>message</code>; ntfy <code>message</code>, <code>title</code>, <code>tags</code>; Discord <code>message</code>, <code>username</code>, <code>avatarUrl</code>, <code>threadId</code> and each embed's text and links; console notification <code>title</code>, <code>message</code>; Call a URL <code>url</code>, header values and <code>body</code>; Send to client <code>payload</code>; Wait for signal <code>correlation</code>. In a JSON field every string value is filled in; property names are not.</p>
+    <h3>Shared variables endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;ws&#125;/workflows/&#123;workflowRef&#125;/variables</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Permission</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /</code></td><td><code>workflows.read</code></td><td>Lists them by name, up to 200, with <code>totalCount</code>: <code>varName</code>, <code>varType</code>, <code>valueJson</code>, <code>updatedAt</code>.</td></tr>
+        <tr><td><code>GET &#123;variableName&#125;</code></td><td><code>workflows.read</code></td><td>Reads one.</td></tr>
+        <tr><td><code>PUT &#123;variableName&#125;</code></td><td><code>workflows.execute</code></td><td>Writes one. It is running state, not part of the design, so it needs execute rather than an authoring permission.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>TEMPLATE_INVALID</code></td><td>On save: a placeholder is unclosed or empty. The message names the field.</td></tr>
+        <tr><td><code>EXPRESSION_EVALUATION_ERROR</code></td><td>At run time: an expression can't be worked out, such as types that don't compare, or a broken placeholder saved before the check existed.</td></tr>
+        <tr><td><code>VARIABLE_NAME_RESERVED</code></td><td>A variable name starts with <code>__</code>, which is kept for the engine's own markers.</td></tr>
+        <tr><td><code>VARIABLE_NOT_A_COUNTER</code></td><td>Increment or Decrement on a variable that isn't a counter.</td></tr>
+        <tr><td><code>VARIABLE_EXPECTED_MISSING</code></td><td>Compare and set with no expected value.</td></tr>
+        <tr><td><code>BRANCH_STATE_TOO_LARGE</code></td><td>A path's data would pass 256 KB.</td></tr>
+        <tr><td><code>SHARED_VARIABLE_UNDECLARED</code></td><td>A warning on save: <code>$shared.NAME</code> reads a variable no step sets.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li>Keys starting with <code>__</code> in a path's data are the engine's own: where it is parked, its join, its retry count, its loop position.</li>
+      <li>There is no conversion between text, numbers and true or false anywhere in an expression. Equal across kinds is false, not an error; ordering across kinds is an error. Objects and lists compare equal by content, in any property order.</li>
+      <li>A shared variable's <code>resetPolicy</code> is accepted in a definition but not acted on yet. Reset a counter with a Schedule and a Set.</li>
+    </ul>
+  </div>
+</div>
