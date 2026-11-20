@@ -19,7 +19,7 @@
 <div class="dsec">
   <h2 id="the-pin">The PIN</h2>
   <p>The PIN is 12 letters and digits, like <code>K7PX9MHT4RQ2</code>. It leaves out characters that look alike (0 and O, 1, I and L, U), so it is easy to copy by hand, and case doesn't matter. The policy page hides it until you choose <b>Show PIN</b>, and <b>Copy PIN</b> puts it on your clipboard.</p>
-  <p>Anyone who has the PIN can add a client to the policy. Treat it like a password. If it leaks, choose <b>Rotate</b>: the policy gets a new PIN, the old one stops working at once, and the clients that already joined are not affected, because after the first start a client signs in with its own secret, not the PIN.</p>
+  <p>Anyone who has the PIN can add a client to the policy. Treat it like a password. If it leaks, choose <b>Rotate PIN</b>: the policy gets a new PIN, the old one stops working at once, and the clients that already joined are not affected, because after the first start a client signs in with its own secret, not the PIN.</p>
 </div>
 
 <div class="dsec">
@@ -39,6 +39,7 @@
   <h2 id="turn-off-or-delete">Turning a policy off, or deleting it</h2>
   <p><b>Disable</b> stops the policy taking new clients and leaves everything else as it is. <b>Enable</b> turns it back on with the same PIN.</p>
   <p>A policy can be deleted only when no client is enrolled through it, whatever their status: delete its clients first. Its history stays in the activity log, and any message templates saved to it stay in the workspace, no longer tied to a policy.</p>
+  <div class="tip"><span class="tipl">For now</span>Deleting a policy is in the API only (below).</div>
 </div>
 
 <div class="dsec">

@@ -103,7 +103,7 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
       {
         code: 'POLICY_LIMIT_REACHED',
         status: 400,
-        text: "Registration refused: the account is at its plan's client limit.",
+        text: 'The policy has reached its own client limit. Raise the limit or use another policy.',
       },
       {
         code: 'SOCKET_PROTOCOL_UNSUPPORTED',
@@ -139,11 +139,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         code: 'POLICY_DISABLED',
         status: 403,
         text: 'The policy for that PIN is switched off. Enable it in the console.',
-      },
-      {
-        code: 'POLICY_FULL',
-        status: 409,
-        text: 'The policy has reached its own client limit. Raise the limit or use another policy.',
       },
     ],
   },
@@ -214,11 +209,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         code: 'CLIENT_INACTIVE',
         status: 409,
         text: "The client is paused or revoked, so it can't take commands.",
-      },
-      {
-        code: 'CLIENT_UPDATE_ERROR',
-        status: 500,
-        text: "The change couldn't be saved. Try again; quote the <code>traceId</code> if it keeps failing.",
       },
     ],
   },
@@ -349,7 +339,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
       },
       { code: 'RUN_NOT_FOUND', status: 404, text: 'No run with that reference in this workspace.' },
       { code: 'VARIABLE_NOT_FOUND', status: 404, text: "The shared variable hasn't been set yet." },
-      { code: 'WORKFLOW_ALREADY_ENABLED', status: 409, text: "It's already on." },
       {
         code: 'WORKFLOW_DEPRECATED',
         status: 409,
@@ -366,11 +355,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         text: 'Another workflow in the workspace already uses that reference.',
       },
       { code: 'RUN_NOT_CANCELLABLE', status: 409, text: 'The run has already finished.' },
-      {
-        code: 'WORKFLOW_DEFINITION_UNREADABLE',
-        status: 500,
-        text: "A stored version can't be read. Quote the <code>traceId</code> on GitHub.",
-      },
       {
         code: 'RUN_DROPPED_BY_CONCURRENCY_POLICY',
         status: 409,
@@ -449,6 +433,16 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         text: 'Only a Telegram integration can list its chats.',
       },
       {
+        code: 'INTEGRATION_WEBHOOK_ACTIVE',
+        status: 409,
+        text: "The Telegram bot has a webhook set, so Telegram won't list its recent chats. Type the chat id, or remove the webhook.",
+      },
+      {
+        code: 'INTEGRATION_BOT_BUSY',
+        status: 409,
+        text: "Another program is reading the bot's updates, so Telegram won't list its recent chats. Try again, or type the chat id.",
+      },
+      {
         code: 'INTEGRATIONS_NOT_CONFIGURED',
         status: 503,
         text: "Integrations aren't set up on this server, so secrets can't be stored.",
@@ -523,7 +517,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         status: 403,
         text: 'Too many failed sign-ins. Wait, or reset your password.',
       },
-      { code: 'AUTH_NOT_FOUND', status: 404, text: 'Nothing matches that sign-in record.' },
       { code: 'AUTH_SESSION_NOT_FOUND', status: 404, text: 'That session was already signed out.' },
       { code: 'USERNAME_TAKEN', status: 409, text: 'Someone already uses that username.' },
       {
@@ -614,20 +607,15 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         text: 'Same answer as above, from the sign-in side: not a workspace you can open.',
       },
       {
-        code: 'WORKSPACE_UNAUTHORIZED',
-        status: 403,
-        text: "Your membership doesn't cover this workspace any more.",
-      },
-      {
         code: 'PERMISSION_UNAUTHORIZED',
         status: 403,
         text: "You're a member but lack the permission. Ask an admin for a role that has it.",
       },
       { code: 'TENANT_NOT_FOUND', status: 403, text: 'Not an account you belong to.' },
-      { code: 'ROLE_NOT_FOUND', status: 403, text: 'No role with that reference in your account.' },
+      { code: 'ROLE_NOT_FOUND', status: 404, text: 'No role with that reference in your account.' },
       {
         code: 'GROUP_NOT_FOUND',
-        status: 403,
+        status: 404,
         text: 'No group with that reference in your account.',
       },
       { code: 'USER_NOT_FOUND', status: 404, text: 'No such person in your account.' },
@@ -636,7 +624,6 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         status: 409,
         text: 'That person is already in the workspace.',
       },
-      { code: 'ROLE_NAME_TAKEN', status: 409, text: 'Another role already has that name.' },
       {
         code: 'AUTH_ROLE_CONFLICT',
         status: 409,

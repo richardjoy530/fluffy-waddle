@@ -22,7 +22,7 @@
   <ul class="dul">
     <li><b>Online</b>: it holds a connection. The header shows how long it has been up.</li>
     <li><b>Offline</b>: no connection. The client shows when it was <b>last seen</b>.</li>
-    <li><b>Updating</b>: it closed its connection to install new firmware. For up to 5 minutes it shows as updating, not offline, and <a routerLink="/docs/nodes/client-online-offline">online and offline triggers</a> wait. If it doesn't come back in that time it shows as offline.</li>
+    <li><b>Updating</b>: it closed its connection to install new firmware. For up to 5 minutes it shows as updating, not offline, and <a routerLink="/docs/nodes/client-online-offline">online and offline triggers</a> wait. If it doesn't come back in that time it shows as offline. For now, the console shows an updating client as offline.</li>
   </ul>
   <p>A board that loses power can't say goodbye. Its connection is noticed as gone when the keepalive stops being answered (see <a routerLink="/docs/protocol/websocket" fragment="keepalive">keepalive</a>). If a whole WBSKT gateway stops answering, its clients are shown offline within about two minutes, so offline triggers still fire.</p>
 </div>
@@ -42,6 +42,7 @@
   <h2 id="names-and-tags">Names and tags</h2>
   <p>A client starts with the name it registered with. Rename it any time; the name is up to 100 characters, and workflows refer to the client by its ID, so a rename never breaks one.</p>
   <p>Tags group clients across policies, like <b>kitchen</b> or <b>battery</b>. A client can have up to 10. They are stored in lower case, and the client list filters by tag.</p>
+  <div class="tip"><span class="tipl">For now</span>Tags are in the API only (below); the console doesn't show or set them.</div>
 </div>
 
 <div class="dsec">
@@ -51,7 +52,7 @@
 
 <div class="dsec">
   <h2 id="removing-a-client">Removing a client</h2>
-  <p><b>Revoke</b> keeps the client in the list and closes its connection, so you can bring it back later by approving it. <b>Delete</b> removes it with its capabilities and state, closes its connection and stops its secret working. Commands waiting for it fail, saying it was deleted. Its past messages stay in the <a routerLink="/docs/activity">audit log</a>.</p>
+  <p><b>Revoke access</b> keeps the client in the list and closes its connection, so you can bring it back later with <b>Restore access</b>. <b>Delete client</b> removes it with its capabilities and state, closes its connection and stops its secret working. Commands waiting for it fail, saying it was deleted. Its past messages stay in the <a routerLink="/docs/activity">audit log</a>.</p>
   <p>A deleted client can only come back by registering again with a PIN, as a new client. Its library has to forget its stored ID and secret first; each SDK's page says how.</p>
 </div>
 
@@ -59,7 +60,7 @@
   <h2 id="what-happens-when">What happens when…</h2>
   <dl class="qa">
     <dt>Two boards use the same ID and secret</dt>
-    <dd>Each connection ends the one before it, so they knock each other off. After 5 of these in 10 minutes the console warns you that the credentials look shared, at most once every 10 minutes. Give each board its own registration.</dd>
+    <dd>Each connection ends the one before it, so they knock each other off. After 5 of these in 10 minutes the audit log warns that the credentials look shared, at most once every 10 minutes. Give each board its own registration.</dd>
     <dt>I revoke a client that is connected</dt>
     <dd>Its connection closes within a moment and it can't sign in again. The library logs the refusal and keeps retrying on its reconnect schedule, so approving it later brings it straight back.</dd>
     <dt>A client is deleted, then starts again with its old credentials</dt>

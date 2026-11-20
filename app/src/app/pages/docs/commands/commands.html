@@ -1,5 +1,6 @@
 <h1 class="x-t">Commands</h1>
 <p class="lead">A command is a message WBSKT sends to a client, like switching a relay on. You can send one from the console, from the API, or from a workflow's <a routerLink="/docs/nodes/send-to-client">Send to client</a> step. A command to a client that is offline waits until it comes back.</p>
+<div class="tip"><span class="tipl">For now</span>The console sends only to a client that is online, and doesn't list or cancel waiting commands. Queueing for an offline client works through the API and from workflows.</div>
 
 <div class="dsec">
   <h2 id="send-one">Send one</h2>
@@ -16,7 +17,7 @@
       <tr><td><b>Sent</b></td><td>The client was connected and the command is on its way.</td></tr>
       <tr><td><b>Queued</b></td><td>The client is offline. The command waits for it.</td></tr>
       <tr><td><b>Delivered</b></td><td>WBSKT wrote it to the client's connection.</td></tr>
-      <tr><td><b>Acknowledged</b></td><td>The client confirmed it arrived. The libraries do this for you, before your code acts on it.</td></tr>
+      <tr><td><b>Acknowledged</b></td><td>Shown as Acked in the console. The client confirmed it arrived. The libraries do this for you, before your code acts on it.</td></tr>
       <tr><td><b>Failed</b></td><td>It couldn't be delivered, or it expired first. The reason is shown.</td></tr>
       <tr><td><b>Cancelled</b></td><td>Someone cancelled it while it was waiting.</td></tr>
     </tbody>
@@ -30,7 +31,7 @@
   <ul class="dul">
     <li>A command waits at most 24 hours. You can give it an earlier expiry when you send it.</li>
     <li>A client can have up to 100 commands waiting. Past that, new ones are refused until some are delivered or cancelled.</li>
-    <li>The client page lists what is waiting. Cancel any of them there.</li>
+    <li>The API lists what is waiting and cancels any of it (below).</li>
     <li>A command that expires, or whose client is revoked or deleted while it waits, ends as <b>Failed</b> with the reason.</li>
   </ul>
   <p>The expiry travels with the command. A board that receives one after its expiry, say from its own late-arriving connection, refuses it instead of acting on it, and that shows as Failed too. Clients that are pending, rejected or revoked don't get a queue: commands to them are refused.</p>
@@ -94,7 +95,7 @@
       <tbody>
         <tr><td><code>COMMAND_TYPE_INVALID</code></td><td><span class="num">400</span></td><td>A type that isn't 1 to 100 characters.</td></tr>
         <tr><td><code>COMMAND_TYPE_RESERVED</code></td><td><span class="num">400</span></td><td>A type the platform keeps: <code>capabilities</code>, <code>state.report</code>, or anything starting <code>sys.</code> in any case.</td></tr>
-        <tr><td><code>COMMAND_PAYLOAD_TOO_LARGE</code></td><td><span class="num">400</span></td><td>A payload over 32 KiB.</td></tr>
+        <tr><td><code>COMMAND_PAYLOAD_TOO_LARGE</code></td><td><span class="num">400</span></td><td>A payload over 32,768 characters.</td></tr>
         <tr><td><code>COMMAND_EXPIRY_INVALID</code></td><td><span class="num">400</span></td><td>An expiry in the past or more than 24 hours ahead.</td></tr>
         <tr><td><code>COMMAND_STATUS_INVALID</code></td><td><span class="num">400</span></td><td>Listing commands with a status other than <code>queued</code>.</td></tr>
         <tr><td><code>OTA_URL_INVALID</code>, <code>OTA_SHA256_INVALID</code>, <code>OTA_VERSION_INVALID</code>, <code>OTA_SIZE_INVALID</code></td><td><span class="num">400</span></td><td>A link that isn't <code>https</code>, a digest that isn't 64 hex digits, a version over 50 characters, a size that isn't a byte count.</td></tr>

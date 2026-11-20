@@ -18,7 +18,7 @@ export interface DocsNodeGroup {
 
 // The palette's groups, in the console's order. Nodes are listed in this order in the sidebar too.
 export const DOCS_NODE_GROUPS: DocsNodeGroup[] = [
-  { id: 'start', anchor: 'starts-the-workflow', label: 'Starts the workflow', blurb: 'Triggers. A workflow has exactly one, and what it hands on is the run\'s input.' },
+  { id: 'start', anchor: 'starts-the-workflow', label: 'Starts the workflow', blurb: 'Triggers. A workflow can have several; what each hands on is the run\'s input.' },
   { id: 'flow', anchor: 'flow', label: 'Flow', blurb: 'Decide where the run goes next: one way or another, once per item, down several paths at once, or into another workflow.' },
   { id: 'wait', anchor: 'waits', label: 'Waits', blurb: 'Park the run on the server until a time passes or something calls back, for minutes or days.' },
   { id: 'data', anchor: 'data', label: 'Data', blurb: 'Keep a value for later steps of this run, or for every run of the workflow.' },

@@ -13,14 +13,14 @@
   <p>State is what a client is doing right now: <b>heater</b> is <b>on</b>, <b>temp</b> is <b>21.5</b>. The client reports the variables that changed, and the console's <b>State</b> panel shows each one's latest value, its type and how long ago it changed, updating live.</p>
   <ul class="dul">
     <li>A variable keeps the value of the newest report by the time the client made it. A report that was buffered while the board was offline doesn't overwrite a newer value when it finally arrives.</li>
-    <li>Values can be numbers, text, true or false, lists or objects. A client can have up to 200 variables; new ones past that are ignored.</li>
+    <li>Values can be numbers, text, true or false, lists or objects. A client can have up to 200 variables; new ones past that are ignored. A report over 8,192 characters is ignored whole, and only its first 50 variables are read.</li>
     <li>State survives the client disconnecting. It goes when the client is deleted.</li>
   </ul>
 </div>
 
 <div class="dsec">
   <h2 id="readings">Readings and charts</h2>
-  <p>Every number in a state report is also kept as a <b>reading</b>, at the time the client took it. That history is what the client page charts, and you can export it.</p>
+  <p>Every number in a state report is also kept as a <b>reading</b>, at the time the client took it. For now, the console's chart shows only the values received since you opened the page, and reading history is in the API only (below).</p>
   <p>Readings are kept as sent for a while, then rolled up into one row per hour (count, minimum, average and maximum), which is kept much longer. Charts over long ranges use the hourly roll-ups, so counts and averages stay exact even after the raw readings are gone.</p>
   <div class="tbl"><table>
     <thead><tr><th scope="col">Plan</th><th scope="col">Every reading</th><th scope="col">Hourly roll-ups</th></tr></thead>
@@ -36,7 +36,8 @@
 
 <div class="dsec">
   <h2 id="export">Export</h2>
-  <p><b>Export CSV</b> on the State panel downloads a client's readings: every reading as sent, for as far back as they are kept, or one row per variable and hour, for as far back as the chart goes. An export holds up to 100,000 rows; choose a shorter range for more.</p>
+  <p><b>Export CSV</b> on the State panel saves the latest value of each variable. The readings export holds every reading as sent, for as far back as they are kept, or one row per variable and hour; it holds up to 100,000 rows, so choose a shorter range for more.</p>
+  <div class="tip"><span class="tipl">For now</span>The readings export is in the API only (below).</div>
 </div>
 
 <div class="dsec">

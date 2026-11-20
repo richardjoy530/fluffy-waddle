@@ -83,13 +83,13 @@
     <div class="tbl"><table>
       <thead><tr><th scope="col">Run when the last path ends</th><th scope="col">Paths</th><th scope="col">Final status</th></tr></thead>
       <tbody>
-        <tr><td>Cancelling, for credits</td><td>any</td><td><code>OutOfCredits</code></td></tr>
-        <tr><td>Cancelling</td><td>some cancelled, some completed</td><td><code>PartiallyFailed</code></td></tr>
-        <tr><td>Cancelling</td><td>otherwise</td><td><code>Cancelled</code></td></tr>
-        <tr><td>Failing</td><td>any</td><td><code>Failed</code></td></tr>
-        <tr><td>Running</td><td>failed and completed</td><td><code>PartiallyFailed</code></td></tr>
-        <tr><td>Running</td><td>only failed</td><td><code>Failed</code></td></tr>
-        <tr><td>Running</td><td>otherwise</td><td><code>Succeeded</code></td></tr>
+        <tr><td>Cancelling, for credits</td><td>any</td><td>Out of credits</td></tr>
+        <tr><td>Cancelling</td><td>some cancelled, some completed</td><td>Partly failed</td></tr>
+        <tr><td>Cancelling</td><td>otherwise</td><td>Cancelled</td></tr>
+        <tr><td>Failing</td><td>any</td><td>Failed</td></tr>
+        <tr><td>Running</td><td>failed and completed</td><td>Partly failed</td></tr>
+        <tr><td>Running</td><td>only failed</td><td>Failed</td></tr>
+        <tr><td>Running</td><td>otherwise</td><td>Succeeded</td></tr>
       </tbody>
     </table></div>
     <p>Run statuses in flight: <code>Running</code>, <code>Failing</code>, <code>Cancelling</code>. Path statuses: <code>Active</code>, <code>Waiting</code>, <code>Completed</code>, <code>Failed</code>, <code>Cancelled</code>.</p>
