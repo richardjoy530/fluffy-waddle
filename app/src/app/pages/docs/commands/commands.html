@@ -1,0 +1,118 @@
+<h1 class="x-t">Commands</h1>
+<p class="lead">A command is a message WBSKT sends to a client, like switching a relay on. You can send one from the console, from the API, or from a workflow's <a routerLink="/docs/nodes/send-to-client">Send to client</a> step. A command to a client that is offline waits until it comes back.</p>
+
+<div class="dsec">
+  <h2 id="send-one">Send one</h2>
+  <p>Open the client and use <b>Send command</b>. If the client declared its commands (see <a routerLink="/docs/state" fragment="capabilities">capabilities</a>), pick one and fill in the form. Otherwise switch to JSON, type a command type like <code>relay.set</code>, and write the payload.</p>
+  <p>The payload arrives on the board as the JSON you wrote, so <code>&#123;"on": true&#125;</code> arrives as an object, not as text. Text that isn't JSON, like <code>lights on</code>, arrives as a JSON string.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-to-it">What happens to it</h2>
+  <p>Each command gets an ID, and the client's activity shows it move through these steps:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Step</th><th scope="col">Means</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sent</b></td><td>The client was connected and the command is on its way.</td></tr>
+      <tr><td><b>Queued</b></td><td>The client is offline. The command waits for it.</td></tr>
+      <tr><td><b>Delivered</b></td><td>WBSKT wrote it to the client's connection.</td></tr>
+      <tr><td><b>Acknowledged</b></td><td>The client confirmed it arrived. The libraries do this for you, before your code acts on it.</td></tr>
+      <tr><td><b>Failed</b></td><td>It couldn't be delivered, or it expired first. The reason is shown.</td></tr>
+      <tr><td><b>Cancelled</b></td><td>Someone cancelled it while it was waiting.</td></tr>
+    </tbody>
+  </table></div>
+  <p>An acknowledgement means the command arrived, not that it worked. If the outcome matters, have the board send a message back, like <code>relay.state</code>, and react to that.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="offline-clients">Commands for an offline client</h2>
+  <p>A registered client that is offline gets its commands later. They wait in its queue and are delivered oldest first as soon as it connects. If it drops before a command is delivered, the command goes back in the queue.</p>
+  <ul class="dul">
+    <li>A command waits at most 24 hours. You can give it an earlier expiry when you send it.</li>
+    <li>A client can have up to 100 commands waiting. Past that, new ones are refused until some are delivered or cancelled.</li>
+    <li>The client page lists what is waiting. Cancel any of them there.</li>
+    <li>A command that expires, or whose client is revoked or deleted while it waits, ends as <b>Failed</b> with the reason.</li>
+  </ul>
+  <p>The expiry travels with the command. A board that receives one after its expiry, say from its own late-arriving connection, refuses it instead of acting on it, and that shows as Failed too. Clients that are pending, rejected or revoked don't get a queue: commands to them are refused.</p>
+  <div class="tip"><span class="tipl">Workflows</span>A Send to client step's command expires when the step stops waiting for its answer: its ack timeout, 30 seconds unless you set it. So an offline board doesn't act on an old command after the workflow gave up on it. See <a routerLink="/docs/nodes/send-to-client">Send to client</a>.</div>
+</div>
+
+<div class="dsec">
+  <h2 id="templates">Templates</h2>
+  <p>Save a command you send often as a template: a name, a type and a payload. You can save one straight from a message in a client's Activity. A template is either for the whole workspace or pinned to one policy. A client's <b>Templates</b> menu shows the workspace's templates and those of its own policy, and the policy page lists the ones pinned to it. A workspace can hold 200, each with its own name.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="firmware-updates">Firmware updates</h2>
+  <p>A client whose library can update its own firmware says so when it connects (the ESP32 library can). You start an update through the API, with a link to the new image (it must be <code>https</code>), its SHA-256 and optionally the version; the console doesn't have a button for it yet. WBSKT sends the client a link, not the image.</p>
+  <p>The client reports how it goes: accepted, downloading (with progress when it can), and installed with the new version once the new firmware connects, or rejected or failed with the reason. While it restarts it shows as <a routerLink="/docs/clients" fragment="online-and-offline">updating</a>. If the new firmware can't reach WBSKT, the board goes back to its previous one.</p>
+  <ul class="dul">
+    <li>An update is a command: it waits for an offline client and always expires, after 24 hours unless you say sooner.</li>
+    <li>Sending a newer update cancels any older one still waiting, so the board never installs an outdated image.</li>
+    <li>The link is visible to anyone who can read the client. Use a link that expires, not one with a long-lived key in it.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>I send a command to an offline board</dt>
+    <dd>It is queued and the answer says so, with when it expires. It is delivered the moment the board connects, before newer commands.</dd>
+    <dt>The board comes back after the command expired</dt>
+    <dd>It never gets it. The command ended as Failed when it expired: "The command expired before the client came back."</dd>
+    <dt>The board drops in the middle of receiving it</dt>
+    <dd>A command not delivered goes back in the queue. One that was delivered but not acknowledged is not sent again, so a board never acts twice on one command.</dd>
+    <dt>A workflow sends to a board that is offline</dt>
+    <dd>With <b>Wait for acknowledgement</b> on, the step waits for the board until its ack timeout, then leaves by <b>timeout</b>. With it off, the command is queued and the step carries on at once. A full queue or a client that isn't registered leaves by <b>failed</b> when waiting, and fails the step with <code>COMMAND_NOT_SENT</code> when not.</dd>
+    <dt>I send to a client in another workspace</dt>
+    <dd>It reads as not found. A command can only reach a client in the workspace it was sent from.</dd>
+    <dt>I ping an offline board</dt>
+    <dd>Refused with <code>CLIENT_OFFLINE</code>. Pings are never queued.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/clients/&#123;clientRef&#125;</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Permission</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST commands</code></td><td><code>clients.command</code></td><td><code>&#123; type, payload, expiresAt? &#125;</code>. Answers <code>&#123; commandId, status: "sent" | "queued", expiresAt &#125;</code>.</td></tr>
+        <tr><td><code>GET commands?status=queued</code></td><td><code>clients.read</code></td><td>What waits, oldest first: <code>commandId</code>, <code>type</code>, <code>payload</code>, <code>queuedAt</code>, <code>expiresAt</code>.</td></tr>
+        <tr><td><code>DELETE commands/&#123;commandId&#125;</code></td><td><code>clients.command</code></td><td>Cancels a waiting command.</td></tr>
+        <tr><td><code>POST ota</code></td><td><code>clients.firmware</code></td><td><code>&#123; url, sha256, version?, size?, expiresAt? &#125;</code>. Sent like a command.</td></tr>
+        <tr><td><code>GET comms</code></td><td><code>logs.read</code></td><td>The message history the Activity panel shows, filterable by <code>direction=in|out</code>.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Templates live under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/message-templates</code> (<code>templates.read</code>, <code>templates.manage</code>), optionally filtered by <code>policyRefId</code>.</p>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>COMMAND_TYPE_INVALID</code></td><td><span class="num">400</span></td><td>A type that isn't 1 to 100 characters.</td></tr>
+        <tr><td><code>COMMAND_TYPE_RESERVED</code></td><td><span class="num">400</span></td><td>A type the platform keeps: <code>capabilities</code>, <code>state.report</code>, or anything starting <code>sys.</code> in any case.</td></tr>
+        <tr><td><code>COMMAND_PAYLOAD_TOO_LARGE</code></td><td><span class="num">400</span></td><td>A payload over 32 KiB.</td></tr>
+        <tr><td><code>COMMAND_EXPIRY_INVALID</code></td><td><span class="num">400</span></td><td>An expiry in the past or more than 24 hours ahead.</td></tr>
+        <tr><td><code>COMMAND_STATUS_INVALID</code></td><td><span class="num">400</span></td><td>Listing commands with a status other than <code>queued</code>.</td></tr>
+        <tr><td><code>OTA_URL_INVALID</code>, <code>OTA_SHA256_INVALID</code>, <code>OTA_VERSION_INVALID</code>, <code>OTA_SIZE_INVALID</code></td><td><span class="num">400</span></td><td>A link that isn't <code>https</code>, a digest that isn't 64 hex digits, a version over 50 characters, a size that isn't a byte count.</td></tr>
+        <tr><td><code>COMMAND_NOT_QUEUED</code></td><td><span class="num">404</span></td><td>Cancelling one that was already delivered, expired or cancelled.</td></tr>
+        <tr><td><code>COMMAND_QUEUE_FULL</code></td><td><span class="num">409</span></td><td>The offline client already has 100 waiting.</td></tr>
+        <tr><td><code>CLIENT_INACTIVE</code></td><td><span class="num">409</span></td><td>The offline client is pending, rejected or revoked.</td></tr>
+        <tr><td><code>OTA_NOT_SUPPORTED</code></td><td><span class="num">409</span></td><td>The client's last capabilities don't list <code>ota</code>.</td></tr>
+        <tr><td><code>TEMPLATE_NAME_TAKEN</code></td><td><span class="num">409</span></td><td>Another template has that name, ignoring case.</td></tr>
+        <tr><td><code>TEMPLATE_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>The workspace already has 200 templates.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>On the wire</h3>
+    <ul class="dul">
+      <li>A command reaches the client as <code>&#123; type, payload, commandId, expiresAt &#125;</code>. The client answers <code>sys.ack &#123; commandId &#125;</code> on arrival, or <code>sys.ack &#123; commandId, type, refused: "expired" &#125;</code> when it came too late. See the <a routerLink="/docs/protocol" fragment="messages">client protocol</a>.</li>
+      <li>Acks for commands sent with an ID never count against the client's message budget.</li>
+      <li>Firmware updates use <code>sys.ota.update</code>, the one reserved type sent as a command, and progress comes back as <code>sys.ota.status</code>.</li>
+      <li>Every route a command can take, the console, the API, a firmware update or a workflow, goes through one sender that checks the client belongs to the sender's workspace first.</li>
+      <li>A gateway silent for 75 seconds has commands for its clients queued rather than sent, and they go out as soon as it is heard from again.</li>
+    </ul>
+  </div>
+</div>

@@ -46,6 +46,10 @@ export const DOCS_NAV: DocsGroup[] = [
     items: [
       { label: 'Connect a board', path: '/docs/connect' },
       { label: 'Readings and commands', path: '/docs/messages' },
+      { label: 'Policies', path: '/docs/policies' },
+      { label: 'Client lifecycle', path: '/docs/clients' },
+      { label: 'Commands', path: '/docs/commands' },
+      { label: 'Capabilities, state and readings', path: '/docs/state' },
     ],
   },
   {

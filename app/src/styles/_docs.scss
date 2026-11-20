@@ -348,6 +348,13 @@
 .mk .dx .gcard{min-height:0}
 }
 
+.mk .dx .deep{margin-top:72px;border-top:1px solid rgba(255,255,255,0.07)}
+.mk .dx .deep .kick{display:inline-flex;align-items:center;height:24px;margin-top:28px;padding:0 10px;border-radius:999px;background:rgba(185,165,240,0.12);font-size:12px;font-weight:500;color:#c7b7f3}
+.mk .dx .deep .dsec:first-of-type{margin-top:14px}
+.mk .dx .qa{margin:6px 0 0}
+.mk .dx .qa dt{margin-top:20px;font-size:15.5px;line-height:1.5;font-weight:500;color:#ecebe7}
+.mk .dx .qa dd{margin:6px 0 0;font-size:15.5px;line-height:1.7;color:#9d9991}
+.mk .dx .qa dd b{font-weight:500;color:#ecebe7}
 @media (max-width: 900px) {
 .mk .dx .docs,.mk .dx .docs.wide{grid-template-columns:minmax(0,1fr);gap:0;padding-top:20px}
 .mk .dx .mbar{display:flex;gap:8px;margin-bottom:24px}

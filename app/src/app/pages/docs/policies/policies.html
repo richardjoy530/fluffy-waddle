@@ -1,0 +1,111 @@
+<h1 class="x-t">Policies</h1>
+<p class="lead">A policy is how clients join a workspace. It has a PIN that clients present when they first start, decides whether they join at once or wait for you, and can cap how many join.</p>
+
+<div class="dsec">
+  <h2 id="what-a-policy-is">What a policy is</h2>
+  <p>Think of a policy as a door into your workspace with its own key. Make one for each group of clients that belong together, like <b>greenhouse</b> or <b>office sensors</b>. Each client joins through one policy and stays listed under it in the console.</p>
+  <p>Open <b>Policies</b> in the console and choose <b>New policy</b>. You give it a name, say whether new clients are approved automatically, and optionally set a client limit. WBSKT makes the PIN for you.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Setting</th><th scope="col">What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Name</b></td><td>Up to 100 characters. Shown in the explorer and on each of its clients.</td></tr>
+      <tr><td><b>Approve new clients automatically</b></td><td>On: a client with the PIN joins straight away. Off: it waits in <b>Pending</b> until someone approves it.</td></tr>
+      <tr><td><b>Client limit</b></td><td>The most approved clients the policy may hold. Leave it empty for no limit.</td></tr>
+      <tr><td><b>Enabled</b></td><td>A disabled policy turns new clients away. Clients already approved keep working.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="the-pin">The PIN</h2>
+  <p>The PIN is 12 letters and digits, like <code>K7PX9MHT4RQ2</code>. It leaves out characters that look alike (0 and O, 1, I and L, U), so it is easy to copy by hand, and case doesn't matter. The policy page hides it until you choose <b>Show PIN</b>, and <b>Copy PIN</b> puts it on your clipboard.</p>
+  <p>Anyone who has the PIN can add a client to the policy. Treat it like a password. If it leaks, choose <b>Rotate</b>: the policy gets a new PIN, the old one stops working at once, and the clients that already joined are not affected, because after the first start a client signs in with its own secret, not the PIN.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="approving-clients">Approving clients</h2>
+  <p>With automatic approval off, each new client appears in the policy's <b>Pending</b> list. Approve it and it can connect. Reject it and it stays listed as <b>Rejected</b> and cannot sign in. <b>Approve all</b> approves every pending client at once, and you can select several to approve or reject together.</p>
+  <p>Approving is also how you bring back a client you revoked or rejected earlier. See <a routerLink="/docs/clients" fragment="statuses">client statuses</a>.</p>
+  <div class="tip"><span class="tipl">Tip</span>Turn automatic approval on while you are setting up a batch of boards, then turn it off. Clients that already joined stay approved.</div>
+</div>
+
+<div class="dsec">
+  <h2 id="client-limit">The client limit</h2>
+  <p>Only approved clients count towards the limit. Once the policy holds that many, a new client trying to join is turned away and keeps retrying, and approving a pending one is refused too. Make room by removing or revoking a client, or raise the limit.</p>
+  <p>You can't set the limit below the number of clients already approved: remove some first. Your plan has a client limit of its own, shared by every workspace in your account, and whichever limit is reached first applies. See <a routerLink="/docs/billing" fragment="what-happens-at-a-limit">plans and limits</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="turn-off-or-delete">Turning a policy off, or deleting it</h2>
+  <p><b>Disable</b> stops the policy taking new clients and leaves everything else as it is. <b>Enable</b> turns it back on with the same PIN.</p>
+  <p>A policy can be deleted only when no client is enrolled through it, whatever their status: delete its clients first. Its history stays in the activity log, and any message templates saved to it stay in the workspace, no longer tied to a policy.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="templates">Templates</h2>
+  <p>A template is a saved command, with a type and a payload, that you send from a client's page with one click. Templates saved to a policy show for every client in it. See <a routerLink="/docs/commands" fragment="templates">templates</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="activity">The policy's activity</h2>
+  <p>The policy page lists what happened to it: clients registering, being approved, rejected or revoked, the PIN being rotated, the policy being changed, turned off or on, and a client turned away because the policy or the plan was full. Everything there is also in the workspace's activity log.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>A client starts with a PIN that doesn't exist</dt>
+    <dd>It is refused with <code>POLICY_NOT_FOUND</code> and the SDKs stop trying, since waiting won't fix a typo. Correct the PIN and start the client again.</dd>
+    <dt>A client starts while the policy is disabled</dt>
+    <dd>It is refused with <code>POLICY_DISABLED</code> and keeps retrying on its normal schedule, so it joins on its own once you turn the policy on.</dd>
+    <dt>The policy is full</dt>
+    <dd>New clients are refused with <code>POLICY_LIMIT_REACHED</code> and keep retrying. The policy's activity says so, at most once an hour so a retrying board doesn't flood it.</dd>
+    <dt>The account is at its plan's client limit</dt>
+    <dd>On a policy with automatic approval, new clients are refused with <code>PLAN_CLIENT_LIMIT_REACHED</code> and keep retrying. On one without, they still join as Pending, and approving them is refused with the same code.</dd>
+    <dt>I rotate the PIN while boards are being set up</dt>
+    <dd>Boards that already registered carry on. A board that hasn't registered yet is refused with <code>POLICY_NOT_FOUND</code> and stops; give it the new PIN.</dd>
+    <dt>I lower the limit below the clients already approved</dt>
+    <dd>The change is refused with <code>POLICY_LIMIT_CONFLICT</code>. Nothing is removed for you.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/registration-policies</code>. Reading needs <code>policies.read</code>, and every change needs <code>policies.manage</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /</code></td><td>Lists policies, each with its approved and connected client counts. Filters: <code>autoApproval</code>, <code>name</code>.</td></tr>
+        <tr><td><code>POST /</code></td><td>Creates one. The PIN is generated by the server, never supplied.</td></tr>
+        <tr><td><code>PATCH /&#123;policyRef&#125;</code></td><td>Changes any of <code>name</code>, <code>maxClients</code>, <code>autoApproval</code>, <code>isEnabled</code>. A field left out keeps its value. <code>removeMaxClients: true</code> clears the limit.</td></tr>
+        <tr><td><code>POST /&#123;policyRef&#125;/rotate-pin</code></td><td>Replaces the PIN and returns the policy with the new one.</td></tr>
+        <tr><td><code>DELETE /&#123;policyRef&#125;</code></td><td>Deletes a policy with no clients.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>POLICY_NAME_REQUIRED</code></td><td><span class="num">400</span></td><td>The name is blank once trimmed.</td></tr>
+        <tr><td><code>POLICY_NAME_TOO_LONG</code></td><td><span class="num">400</span></td><td>The name is over 100 characters.</td></tr>
+        <tr><td><code>POLICY_LIMIT_INVALID</code></td><td><span class="num">400</span></td><td>A limit below 1.</td></tr>
+        <tr><td><code>POLICY_LIMIT_AMBIGUOUS</code></td><td><span class="num">400</span></td><td><code>maxClients</code> and <code>removeMaxClients</code> together.</td></tr>
+        <tr><td><code>POLICY_LIMIT_CONFLICT</code></td><td><span class="num">400</span></td><td>A limit below the clients already approved.</td></tr>
+        <tr><td><code>POLICY_UPDATE_EMPTY</code></td><td><span class="num">400</span></td><td>A change that names no field.</td></tr>
+        <tr><td><code>POLICY_NOT_FOUND</code></td><td><span class="num">404</span></td><td>No such policy in this workspace, or (on registration) no policy has that PIN.</td></tr>
+        <tr><td><code>POLICY_HAS_CLIENTS</code></td><td><span class="num">409</span></td><td>Deleting a policy that still has clients. The message gives the count.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li>The PIN is 12 characters from <code>23456789ABCDEFGHJKMNPQRSTVWXYZ</code>, about 59 bits, drawn from a secure random source. It is matched without case.</li>
+      <li>The policy limit counts clients with status Registered only. It is checked under a lock on the policy row, so two boards registering at the same instant can't both take the last place.</li>
+      <li>A registration through a full policy is refused even when the policy needs approval, so Pending can't grow past the limit.</li>
+      <li>The plan's client limit is checked only when a client becomes Registered: on registration through an auto-approve policy, or on approval.</li>
+      <li>Policy changes are logged with what changed (<code>changes: [&#123;field, before, after&#125;]</code>) and sent to every open console.</li>
+    </ul>
+  </div>
+</div>

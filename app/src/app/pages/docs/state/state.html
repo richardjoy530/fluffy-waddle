@@ -1,0 +1,109 @@
+<h1 class="x-t">Capabilities, state and readings</h1>
+<p class="lead">A client tells WBSKT what it is and which commands it takes, and reports what it is doing. WBSKT shows the latest values on the client's page and keeps the numbers as readings you can chart and export.</p>
+
+<div class="dsec">
+  <h2 id="capabilities">Capabilities</h2>
+  <p>Every time a client connects, the first thing it sends is its capabilities: the library and version it runs, the platform, the version of your own code, and the commands it takes, each with its parameters. The libraries send this for you from the commands you declare in code.</p>
+  <p>The console uses them to build the <b>Send command</b> form: one field per parameter, typed as text, number, on/off or JSON, with required ones marked. A client that declares nothing still takes commands; you write them as JSON.</p>
+  <p>Capabilities also say which optional platform features the client supports. Today that is one: <a routerLink="/docs/commands" fragment="firmware-updates">firmware updates</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="state">State</h2>
+  <p>State is what a client is doing right now: <b>heater</b> is <b>on</b>, <b>temp</b> is <b>21.5</b>. The client reports the variables that changed, and the console's <b>State</b> panel shows each one's latest value, its type and how long ago it changed, updating live.</p>
+  <ul class="dul">
+    <li>A variable keeps the value of the newest report by the time the client made it. A report that was buffered while the board was offline doesn't overwrite a newer value when it finally arrives.</li>
+    <li>Values can be numbers, text, true or false, lists or objects. A client can have up to 200 variables; new ones past that are ignored.</li>
+    <li>State survives the client disconnecting. It goes when the client is deleted.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="readings">Readings and charts</h2>
+  <p>Every number in a state report is also kept as a <b>reading</b>, at the time the client took it. That history is what the client page charts, and you can export it.</p>
+  <p>Readings are kept as sent for a while, then rolled up into one row per hour (count, minimum, average and maximum), which is kept much longer. Charts over long ranges use the hourly roll-ups, so counts and averages stay exact even after the raw readings are gone.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Plan</th><th scope="col">Every reading</th><th scope="col">Hourly roll-ups</th></tr></thead>
+    <tbody>
+      <tr><td><b>Free</b></td><td>3 days</td><td>30 days</td></tr>
+      <tr><td><b>Maker</b></td><td>7 days</td><td>1 year</td></tr>
+      <tr><td><b>Pro</b>, <b>Team</b></td><td>7 days</td><td>2 years</td></tr>
+      <tr><td><b>Business</b></td><td>90 days</td><td>2 years</td></tr>
+    </tbody>
+  </table></div>
+  <p>Text, true or false and other values stay as the latest state but aren't kept as readings. To chart something on or off, report it as <code>1</code> or <code>0</code>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="export">Export</h2>
+  <p><b>Export CSV</b> on the State panel downloads a client's readings: every reading as sent, for as far back as they are kept, or one row per variable and hour, for as far back as the chart goes. An export holds up to 100,000 rows; choose a shorter range for more.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="message-types">Message types</h2>
+  <p>WBSKT keeps a list of the message types each client has sent: how many, when first and last, and the latest payload as an example. It's the quickest way to find the exact type to put in a <a routerLink="/docs/nodes/client-message">Client message</a> trigger. Up to 100 types are kept per client. The list is available through the API for now.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>A sensor fails and returns NaN</dt>
+    <dd>The libraries refuse to send a message or report holding NaN or infinity, rather than sending an empty value that looks like a real one. Leave the field out when a reading fails.</dd>
+    <dt>A board reconnects and sends an hour of buffered reports</dt>
+    <dd>Each reading lands at the time it was taken and is marked late. The latest state stays the newest value, whatever order the reports arrive in.</dd>
+    <dt>I move to a plan that keeps readings for less time</dt>
+    <dd>Nothing is deleted at once. For 30 days readings are kept as long as the old plan kept them.</dd>
+    <dt>A client's firmware adds a command</dt>
+    <dd>The new firmware sends its capabilities when it connects, and the form shows the new command from then on.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Messages</h3>
+    <p><code>capabilities</code>, sent first on every connection:</p>
+    <div class="code"><div class="bar"><span class="tab on">capabilities</span></div><pre>&#123;
+  <span class="s">"agent"</span>: <span class="s">"wbskt-python"</span>, <span class="s">"version"</span>: <span class="s">"1.0.0"</span>, <span class="s">"os"</span>: <span class="s">"Linux armv7l"</span>,
+  <span class="s">"capabilities"</span>: [
+    &#123; <span class="s">"command"</span>: <span class="s">"relay.set"</span>, <span class="s">"description"</span>: <span class="s">"Switch the relay"</span>,
+      <span class="s">"parameters"</span>: [ &#123; <span class="s">"name"</span>: <span class="s">"on"</span>, <span class="s">"dataType"</span>: <span class="s">"boolean"</span>, <span class="s">"isRequired"</span>: <span class="k">true</span> &#125; ] &#125;
+  ],
+  <span class="s">"system"</span>: [ <span class="s">"ota"</span> ],
+  <span class="s">"firmwareVersion"</span>: <span class="s">"2.4.1"</span>
+&#125;</pre></div>
+    <p><code>state.report</code>, whenever something changes: <code>&#123; "heater": "on", "temp": 21.5 &#125;</code>.</p>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/clients/&#123;clientRef&#125;</code>, all with <code>clients.read</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET state</code></td><td>The latest value of each state variable.</td></tr>
+        <tr><td><code>GET readings?name=</code></td><td>One variable over <code>from</code>/<code>to</code> (default the last day, at most 740 days) as <code>&#123; start, count, min, avg, max &#125;</code> per bucket. <code>bucket</code> is seconds or <code>30s</code>, <code>5m</code>, <code>1h</code>, <code>1d</code>; left out, it is picked for about 500 buckets. Only buckets holding a reading are listed.</td></tr>
+        <tr><td><code>GET readings/csv</code></td><td>One variable or all. <code>resolution=raw</code> (default): <code>name,sentAt,receivedAt,value,late</code>. <code>resolution=hourly</code>: <code>name,hourStart,count,min,avg,max</code>.</td></tr>
+        <tr><td><code>GET message-types</code></td><td><code>type</code>, <code>count</code>, <code>firstSeenAt</code>, <code>lastSeenAt</code>, <code>isPlatform</code>, <code>samplePayload</code> (when 4,000 characters or less).</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>READINGS_NAME_REQUIRED</code>, <code>READINGS_NAME_INVALID</code></td><td><span class="num">400</span></td><td>No variable named, or a name that can't be one.</td></tr>
+        <tr><td><code>READINGS_BUCKET_INVALID</code></td><td><span class="num">400</span></td><td>A bucket the grammar above doesn't allow.</td></tr>
+        <tr><td><code>READINGS_TOO_MANY_BUCKETS</code></td><td><span class="num">400</span></td><td>A bucket so small for the range that the answer would be too long.</td></tr>
+        <tr><td><code>READINGS_RESOLUTION_INVALID</code></td><td><span class="num">400</span></td><td>A CSV resolution other than <code>raw</code> or <code>hourly</code>.</td></tr>
+        <tr><td><code>READINGS_RANGE_TOO_LARGE</code></td><td><span class="num">400</span></td><td>An export over 100,000 rows.</td></tr>
+        <tr><td><code>RATE_LIMITED</code></td><td><span class="num">429</span></td><td>More than 10 exports a minute in the workspace, shared with the activity log's export.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li>A capabilities message over 32 KB is ignored. <code>firmwareVersion</code> is cut to 50 characters.</li>
+      <li>Property names in capabilities are read ignoring case. <code>dataType</code> is <code>string</code>, <code>number</code>, <code>boolean</code> or <code>object</code>.</li>
+      <li>A reading's time is its report's <code>sentAt</code>, never later than when it arrived. One more than 30 seconds old on arrival is <code>late</code>.</li>
+      <li>Hourly roll-ups use the hour of the client's own time, and keep count, minimum, maximum and sum, so averages over any range are exact.</li>
+      <li>Message type counts are approximate: a batch delivered twice is counted twice. Types compare ignoring case.</li>
+    </ul>
+  </div>
+</div>
