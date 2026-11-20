@@ -49,3 +49,18 @@ npm run build    # prerenders every route; a broken page fails here
 ```
 
 Pushes to `master` deploy straight to GitHub Pages at wbskt.com, so build before you merge.
+
+## Product docs
+
+The docs under `app/src/app/pages/docs` describe how the product behaves, and they follow the code in
+wbskt/Wbskt and wbskt/Wbskt.Console. Those repos ask every PR that changes behaviour for a
+`Product docs:` line linking the PR here that documents it.
+
+- Each docs page leads with what a user sees and does, then a **What happens when…** list of
+  scenarios, then an **In depth** block with the endpoints, error codes and exact rules.
+- Write from the code, not from memory, and say "For now" where the console doesn't do yet what the
+  platform does.
+- `node scripts/docs-coverage.mjs ../Wbskt` checks that every node kind has a page and every API error
+  code is documented, and that `/docs/scenarios` lists every page's "What happens when…" question.
+  CI runs it on each PR, and weekly against wbskt/Wbskt `master`, filing an issue for anything new. A code that isn't for product docs (staff or host-to-host only) goes in
+  `scripts/docs-coverage-ignore.json` with the reason.
