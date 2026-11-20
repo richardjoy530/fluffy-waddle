@@ -1,0 +1,88 @@
+<h1 class="x-t">Usage and credit caps</h1>
+<p class="lead">Your plan's clients, messages, credits and runs are shared by every workspace in the account. This page covers how usage is counted, the warnings you get on the way to a limit, and how to stop one workspace spending everyone's credits.</p>
+
+<div class="dsec">
+  <h2 id="what-is-counted">What is counted</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Usage</th><th scope="col">Counts</th><th scope="col">Resets</th></tr></thead>
+    <tbody>
+      <tr><td><b>Clients</b></td><td>Approved clients. Pending, revoked and rejected ones don't count.</td><td>Never; it's how many you have now.</td></tr>
+      <tr><td><b>Messages</b></td><td>Both ways: what clients send, and commands delivered to them. Pings and acknowledgements don't count.</td><td>On the 1st, UTC.</td></tr>
+      <tr><td><b>Credits</b></td><td>What workflow runs spend: 1 to start, then each step's price. See <a routerLink="/docs/billing" fragment="how-credits-are-counted">how credits are counted</a>.</td><td>On the 1st, UTC.</td></tr>
+      <tr><td><b>Runs at once</b></td><td>Runs going right now, in all workspaces.</td><td>Never; it's how many are going now.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Credits include what runs still going have spent but not yet posted, so a burst of runs can't overshoot the month by starting all at once.</p>
+  <div class="tip"><span class="tipl">For now</span>The console doesn't show usage or set a workspace's cap yet. Both are in the API, below.</div>
+</div>
+
+<div class="dsec">
+  <h2 id="warnings">Warnings on the way</h2>
+  <ul class="dul">
+    <li><b>Credits.</b> At 80% and at 100% of the month's credits, every workspace in the account gets a warning in the console. Past 100%, new runs draw on credit packs, and are refused when there's nothing left. Business carries on and is invoiced.</li>
+    <li><b>Messages.</b> At 80%, a warning. At the limit on Free, each client is slowed to one message a minute until the 1st. Paid plans are slowed only further on: at twice the allowance on Maker and Pro, one and a half times on Team, and never on Business.</li>
+    <li><b>Clients.</b> A board that would go past the limit is refused when it registers or is approved, with <code>PLAN_CLIENT_LIMIT_REACHED</code>, and the policy's activity says so.</li>
+  </ul>
+  <p>What each limit stops, and what keeps working, is in <a routerLink="/docs/billing" fragment="what-happens-at-a-limit">what happens at a limit</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="credit-cap">A workspace's credit cap</h2>
+  <p>Credits are shared, so a busy test workspace can spend the month that production needs. Give it a <b>monthly credit cap</b>: once the workspace has spent that many credits this month, its new runs are refused and its running ones stop at the next charge.</p>
+  <ul class="dul">
+    <li>A cap is a ceiling, not a reservation. Caps in an account can add up to more than it has.</li>
+    <li>The workspace gets a warning at 80% and at 100% of its cap.</li>
+    <li>Raising or removing the cap lets new runs start again at once.</li>
+    <li>A cap of 0 stops the workspace's workflows entirely.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>One workspace reaches its cap while another has plenty</dt>
+    <dd>Only the capped workspace's runs are refused. The others carry on from the account's credits.</dd>
+    <dt>I set a cap below what the workspace has already spent</dt>
+    <dd>It's accepted, and the answer says the cap is reached: new runs are refused from then on, until the 1st or until you raise it.</dd>
+    <dt>A run is going when its workspace reaches the cap</dt>
+    <dd>Its next step that costs credits fails with <code>WORKSPACE_CREDIT_CAP_REACHED</code> and the run ends Out of credits. Steps already done stay done.</dd>
+    <dt>The month's credits run out at 23:50 on the 31st</dt>
+    <dd>New runs are refused for ten minutes, then the month resets at 00:00 UTC and they start again.</dd>
+    <dt>A Free account uses its messages</dt>
+    <dd>Each client can still send one message a minute, state reports included, until the 1st. Commands still reach the clients.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Permission</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /api/v1/workspaces/&#123;ws&#125;/usage</code></td><td><code>billing.read</code></td><td>This calendar month (UTC): <code>&#123; plan, periodStart, periodEnd, account, workspace, days &#125;</code>. <code>account</code> is pooled: <code>credits &#123; used, limit, topUp, topUpExpiresAt, topUpExpiring, remaining &#125;</code>, <code>messages &#123; used, limit, throttled &#125;</code>, <code>clients</code> and <code>activeRuns</code> <code>&#123; used, limit &#125;</code>. <code>workspace</code> is this workspace's share, with its <code>monthlyCreditCap</code>. <code>days</code> is its credits per UTC day over <code>from</code>/<code>to</code> (the last 31 days by default, at most 366).</td></tr>
+        <tr><td><code>PUT /api/v1/workspaces/&#123;ws&#125;/credit-cap</code></td><td><code>billing.manage</code></td><td>Sets <code>&#123; monthlyCreditCap &#125;</code>, or <code>null</code> to remove it. Answers <code>&#123; monthlyCreditCap, creditsSpentThisMonth, capReached &#125;</code>.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>WORKSPACE_CREDIT_CAP_INVALID</code></td><td><span class="num">400</span></td><td>A cap below 0 or above 10<sup>12</sup>.</td></tr>
+        <tr><td><code>WORKSPACE_CREDIT_CAP_BUSY</code></td><td><span class="num">503</span></td><td>The workspace's runs held the cap for more than 5 seconds. Try again after <code>Retry-After</code>.</td></tr>
+        <tr><td><code>WORKSPACE_CREDIT_CAP_REACHED</code></td><td><span class="num">409</span></td><td>A test run or run by hand refused for the cap. A trigger's event shows as Refused.</td></tr>
+        <tr><td><code>PLAN_CREDIT_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>The same for the account's month.</td></tr>
+        <tr><td><code>PLAN_RUN_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>The account already has as many runs going as its plan allows.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li><code>remaining</code> is what new runs may still spend, less what runs going still hold of their budgets. On Business it counts up to twice the allowance, since Business runs carry on past it.</li>
+      <li>The account is checked before the workspace cap, and the cap before the run's own budget, so the code names the first limit that ran out.</li>
+      <li>Setting a cap also holds runs already going to it: each one's next charge is allowed only from what the cap has left.</li>
+      <li>The 80% and 100% warnings come once per threshold and month. Workspace warnings carry the cap and what was spent; account warnings leave out the account's figures, which only <code>billing.read</code> may see.</li>
+      <li>The message warning arrives within about a minute of the crossing, in the workspace that carried the most messages.</li>
+    </ul>
+  </div>
+</div>

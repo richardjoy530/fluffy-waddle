@@ -1,0 +1,128 @@
+<h1 class="x-t">What happens when…</h1>
+<p class="lead">Every scenario the docs answer, in one list. Each one links to the page that explains it, where the answer sits with the rules behind it.</p>
+
+<div class="dsec">
+  <h2 id="clients">Clients</h2>
+  <h3><a routerLink="/docs/policies" fragment="what-happens-when">Policies</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">A client starts with a PIN that doesn't exist</a></li>
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">A client starts while the policy is disabled</a></li>
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">The policy is full</a></li>
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">The account is at its plan's client limit</a></li>
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">I rotate the PIN while boards are being set up</a></li>
+    <li><a routerLink="/docs/policies" fragment="what-happens-when">I lower the limit below the clients already approved</a></li>
+  </ul>
+  <h3><a routerLink="/docs/clients" fragment="what-happens-when">Client lifecycle</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">Two boards use the same ID and secret</a></li>
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">I revoke a client that is connected</a></li>
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">A client is deleted, then starts again with its old credentials</a></li>
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">A client's clock is wrong</a></li>
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">A client was offline and sends a backlog</a></li>
+    <li><a routerLink="/docs/clients" fragment="what-happens-when">The account is frozen by WBSKT support</a></li>
+  </ul>
+  <h3><a routerLink="/docs/commands" fragment="what-happens-when">Commands</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">I send a command to an offline board</a></li>
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">The board comes back after the command expired</a></li>
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">The board drops in the middle of receiving it</a></li>
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">A workflow sends to a board that is offline</a></li>
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">I send to a client in another workspace</a></li>
+    <li><a routerLink="/docs/commands" fragment="what-happens-when">I ping an offline board</a></li>
+  </ul>
+  <h3><a routerLink="/docs/state" fragment="what-happens-when">Capabilities, state and readings</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/state" fragment="what-happens-when">A sensor fails and returns NaN</a></li>
+    <li><a routerLink="/docs/state" fragment="what-happens-when">A board reconnects and sends an hour of buffered reports</a></li>
+    <li><a routerLink="/docs/state" fragment="what-happens-when">I move to a plan that keeps readings for less time</a></li>
+    <li><a routerLink="/docs/state" fragment="what-happens-when">A client's firmware adds a command</a></li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="workflows">Workflows</h2>
+  <h3><a routerLink="/docs/workflows" fragment="what-happens-when">Drafts, publishing and versions</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">I publish while runs of the old version are going</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">I publish a version whose trigger was removed while events were queued for it</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">A version publishes but can't be made live</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">Two people edit the same workflow through the API</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">Someone publishes while my draft is open</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">A workflow uses a client that was deleted</a></li>
+    <li><a routerLink="/docs/workflows" fragment="what-happens-when">The workspace has 100 workflows</a></li>
+  </ul>
+  <h3><a routerLink="/docs/runs" fragment="what-happens-when">Runs</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">WBSKT restarts in the middle of a run</a></li>
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">A run is left with nothing it can do</a></li>
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">A path is waiting and its wait is lost</a></li>
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">I cancel a run that already finished</a></li>
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">Too many runs are going at once</a></li>
+    <li><a routerLink="/docs/runs" fragment="what-happens-when">I start a test run while one is going</a></li>
+  </ul>
+  <h3><a routerLink="/docs/triggers" fragment="what-happens-when">Triggers in depth</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/triggers" fragment="what-happens-when">The same message is delivered twice</a></li>
+    <li><a routerLink="/docs/triggers" fragment="what-happens-when">Two workflows listen for the same thing</a></li>
+    <li><a routerLink="/docs/triggers" fragment="what-happens-when">I turn a workflow off while events are queued</a></li>
+    <li><a routerLink="/docs/triggers" fragment="what-happens-when">A board goes offline for 30 seconds with a 60-second offline trigger</a></li>
+    <li><a routerLink="/docs/triggers" fragment="what-happens-when">The account is out of credits</a></li>
+  </ul>
+  <h3><a routerLink="/docs/variables" fragment="what-happens-when">Variables and placeholders</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">A placeholder names a value the run doesn't have</a></li>
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">Two runs increment the same counter at once</a></li>
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">A shared variable is set while a run is using it</a></li>
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">I publish a new version</a></li>
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">A path's data grows past 256 KB</a></li>
+    <li><a routerLink="/docs/variables" fragment="what-happens-when">A condition compares text with a number</a></li>
+  </ul>
+  <h3><a routerLink="/docs/failures" fragment="what-happens-when">Retries and failures</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">A URL answers 503 three times</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">A URL answers 404</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">WBSKT restarts while a step waits to try again</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">One of three split paths fails and the join waits for all</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">A step jumps back to an earlier step on failure</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">A run is left with nothing it can do</a></li>
+    <li><a routerLink="/docs/failures" fragment="what-happens-when">The parent of a Run workflow step fails</a></li>
+  </ul>
+  <h3><a routerLink="/docs/engine" fragment="what-happens-when">How the engine runs workflows</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/engine" fragment="what-happens-when">The engine restarts while a URL call is in flight</a></li>
+    <li><a routerLink="/docs/engine" fragment="what-happens-when">The engine restarts during a 2-hour delay</a></li>
+    <li><a routerLink="/docs/engine" fragment="what-happens-when">A client answers just as its wait times out</a></li>
+    <li><a routerLink="/docs/engine" fragment="what-happens-when">A step crashes in a way WBSKT didn't expect</a></li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="account">Account</h2>
+  <h3><a routerLink="/docs/activity" fragment="what-happens-when">Audit log</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/activity" fragment="what-happens-when">A board keeps trying to join a full policy</a></li>
+    <li><a routerLink="/docs/activity" fragment="what-happens-when">A workflow sends a command to a client</a></li>
+    <li><a routerLink="/docs/activity" fragment="what-happens-when">Someone signs in with the wrong password</a></li>
+    <li><a routerLink="/docs/activity" fragment="what-happens-when">A member is removed from the workspace</a></li>
+    <li><a routerLink="/docs/activity" fragment="what-happens-when">I need something from four months ago</a></li>
+  </ul>
+  <h3><a routerLink="/docs/usage" fragment="what-happens-when">Usage and credit caps</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/usage" fragment="what-happens-when">One workspace reaches its cap while another has plenty</a></li>
+    <li><a routerLink="/docs/usage" fragment="what-happens-when">I set a cap below what the workspace has already spent</a></li>
+    <li><a routerLink="/docs/usage" fragment="what-happens-when">A run is going when its workspace reaches the cap</a></li>
+    <li><a routerLink="/docs/usage" fragment="what-happens-when">The month's credits run out at 23:50 on the 31st</a></li>
+    <li><a routerLink="/docs/usage" fragment="what-happens-when">A Free account uses its messages</a></li>
+  </ul>
+  <h3><a routerLink="/docs/limits" fragment="what-happens-when">Limits</a></h3>
+  <ul class="dul">
+    <li><a routerLink="/docs/limits" fragment="what-happens-when">I need more than a platform limit allows</a></li>
+    <li><a routerLink="/docs/limits" fragment="what-happens-when">A board floods the gateway with readings</a></li>
+    <li><a routerLink="/docs/limits" fragment="what-happens-when">The account hits its run limit</a></li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="not-here">Not here?</h2>
+  <p>Each node page lists the problems that step can hit, and <a routerLink="/docs/troubleshooting">troubleshooting</a> covers a board that won't connect or a rule that doesn't run. Every error code is in the <a routerLink="/docs/errors">error reference</a>.</p>
+</div>

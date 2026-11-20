@@ -92,7 +92,7 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'filters', label: 'Filters and holds' },
     { id: 'webhooks', label: 'Webhooks' },
     { id: 'schedules', label: 'Schedules' },
-    { id: 'why-didnt-it-start', label: 'Why didn\'t it start?' },
+    { id: 'why-didnt-it-start', label: "Why didn't it start?" },
     { id: 'what-happens-when', label: 'What happens when…' },
     { id: 'in-depth', label: 'In depth' },
   ],
@@ -112,6 +112,46 @@ export const DOCS_SECTIONS: Record<string, DocsSection[]> = {
     { id: 'credits', label: 'Running out of credits' },
     { id: 'what-happens-when', label: 'What happens when…' },
     { id: 'in-depth', label: 'In depth' },
+  ],
+  '/docs/engine': [
+    { id: 'from-event-to-run', label: 'From an event to a run' },
+    { id: 'paths', label: 'Paths and steps' },
+    { id: 'waiting', label: 'Waiting' },
+    { id: 'restarts', label: 'Restarts and failover' },
+    { id: 'once', label: 'Once, not twice' },
+    { id: 'housekeeping', label: 'Housekeeping' },
+    { id: 'what-happens-when', label: 'What happens when…' },
+    { id: 'in-depth', label: 'In depth' },
+  ],
+  '/docs/activity': [
+    { id: 'views', label: 'What it shows' },
+    { id: 'filters', label: 'Filters' },
+    { id: 'client-traffic', label: 'Client traffic' },
+    { id: 'export', label: 'Export' },
+    { id: 'what-happens-when', label: 'What happens when…' },
+    { id: 'in-depth', label: 'In depth' },
+  ],
+  '/docs/usage': [
+    { id: 'what-is-counted', label: 'What is counted' },
+    { id: 'warnings', label: 'Warnings on the way' },
+    { id: 'credit-cap', label: "A workspace's credit cap" },
+    { id: 'what-happens-when', label: 'What happens when…' },
+    { id: 'in-depth', label: 'In depth' },
+  ],
+  '/docs/limits': [
+    { id: 'plan-limits', label: 'Plan limits' },
+    { id: 'clients-and-messages', label: 'Clients and messages' },
+    { id: 'workflows', label: 'Workflows' },
+    { id: 'kept', label: 'How long things are kept' },
+    { id: 'sign-in', label: 'Sign-in and the API' },
+    { id: 'what-happens-when', label: 'What happens when…' },
+    { id: 'in-depth', label: 'In depth' },
+  ],
+  '/docs/scenarios': [
+    { id: 'clients', label: 'Clients' },
+    { id: 'workflows', label: 'Workflows' },
+    { id: 'account', label: 'Account' },
+    { id: 'not-here', label: 'Not here?' },
   ],
   '/docs/nodes': [
     ...DOCS_NODE_GROUPS.map((g) => ({ id: g.anchor, label: g.label })),
@@ -219,7 +259,9 @@ function nodeSections(doc: DocsNodeDoc): DocsSection[] {
     ...(doc.output.length ? [{ id: 'adds-to-the-run', label: 'What it adds to the run' }] : []),
     ...(doc.example || doc.code ? [{ id: 'example', label: 'Example' }] : []),
     ...(doc.concurrency ? [{ id: 'runs-that-overlap', label: 'Runs that overlap' }] : []),
-    ...(doc.problems.length ? [{ id: 'problems-you-might-see', label: 'Problems you might see' }] : []),
+    ...(doc.problems.length
+      ? [{ id: 'problems-you-might-see', label: 'Problems you might see' }]
+      : []),
     { id: 'see-also', label: 'See also' },
   ];
 }

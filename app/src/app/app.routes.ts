@@ -133,7 +133,8 @@ export const routes: Routes = [
           description:
             'How a workflow is drafted, checked and published, what its versions and states mean, and the settings every workflow has.',
         },
-        loadComponent: () => import('./pages/docs/workflows/workflows').then((m) => m.DocsWorkflows),
+        loadComponent: () =>
+          import('./pages/docs/workflows/workflows').then((m) => m.DocsWorkflows),
       },
       {
         path: 'runs',
@@ -160,7 +161,8 @@ export const routes: Routes = [
           description:
             'What a run can read, how placeholders fill in a message, local and shared variables, and how conditions compare values.',
         },
-        loadComponent: () => import('./pages/docs/variables/variables').then((m) => m.DocsVariables),
+        loadComponent: () =>
+          import('./pages/docs/variables/variables').then((m) => m.DocsVariables),
       },
       {
         path: 'failures',
@@ -170,6 +172,52 @@ export const routes: Routes = [
             'How a step tries again, what a run does when a step still fails, how split paths fail together, and running out of credits.',
         },
         loadComponent: () => import('./pages/docs/failures/failures').then((m) => m.DocsFailures),
+      },
+      {
+        path: 'engine',
+        title: 'How the engine runs workflows · WBSKT docs',
+        data: {
+          description:
+            'From an event to a finished run: paths, waits, restarts and failover, and what WBSKT guarantees happens once.',
+        },
+        loadComponent: () => import('./pages/docs/engine/engine').then((m) => m.DocsEngine),
+      },
+      {
+        path: 'activity',
+        title: 'Audit log · WBSKT docs',
+        data: {
+          description:
+            'What the audit log records, its views and filters, client traffic, export, and how long entries are kept.',
+        },
+        loadComponent: () => import('./pages/docs/activity/activity').then((m) => m.DocsActivity),
+      },
+      {
+        path: 'usage',
+        title: 'Usage and credit caps · WBSKT docs',
+        data: {
+          description:
+            'How clients, messages, credits and runs are counted across workspaces, the warnings on the way to a limit, and capping one workspace.',
+        },
+        loadComponent: () => import('./pages/docs/usage/usage').then((m) => m.DocsUsage),
+      },
+      {
+        path: 'limits',
+        title: 'Limits · WBSKT docs',
+        data: {
+          description:
+            'Every limit in WBSKT in one place: plan limits, message and client limits, workflow limits, retention and rate limits.',
+        },
+        loadComponent: () => import('./pages/docs/limits/limits').then((m) => m.DocsLimits),
+      },
+      {
+        path: 'scenarios',
+        title: 'What happens when… · WBSKT docs',
+        data: {
+          description:
+            'Every scenario the WBSKT docs answer, from a board joining a full policy to a run running out of credits, each linked to its page.',
+        },
+        loadComponent: () =>
+          import('./pages/docs/scenarios/scenarios').then((m) => m.DocsScenarios),
       },
       {
         path: 'nodes',
@@ -216,7 +264,9 @@ export const routes: Routes = [
         title: `${i.name} integration · WBSKT docs`,
         data: { integration: i.slug, description: `Connect ${i.name} to WBSKT. ${i.blurb}` },
         loadComponent: () =>
-          import('./pages/docs/integration-page/integration-page').then((m) => m.DocsIntegrationPage),
+          import('./pages/docs/integration-page/integration-page').then(
+            (m) => m.DocsIntegrationPage,
+          ),
       })),
       {
         path: 'communication',
@@ -262,7 +312,8 @@ export const routes: Routes = [
           description:
             'Connecting a client over WebSocket: the upgrade and its refusals, frames, keepalive and close codes.',
         },
-        loadComponent: () => import('./pages/docs/websocket/websocket').then((m) => m.DocsWebsocket),
+        loadComponent: () =>
+          import('./pages/docs/websocket/websocket').then((m) => m.DocsWebsocket),
       },
       {
         path: 'protocol/mqtt',

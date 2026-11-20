@@ -62,6 +62,7 @@ export const DOCS_NAV: DocsGroup[] = [
       { label: 'Triggers in depth', path: '/docs/triggers' },
       { label: 'Variables and placeholders', path: '/docs/variables' },
       { label: 'Retries and failures', path: '/docs/failures' },
+      { label: 'How the engine runs workflows', path: '/docs/engine' },
     ],
   },
   {
@@ -98,6 +99,9 @@ export const DOCS_NAV: DocsGroup[] = [
     items: [
       { label: 'Workspaces and members', path: '/docs/members' },
       { label: 'Plans and billing', path: '/docs/billing' },
+      { label: 'Usage and credit caps', path: '/docs/usage' },
+      { label: 'Audit log', path: '/docs/activity' },
+      { label: 'Limits', path: '/docs/limits' },
     ],
   },
   {
@@ -114,6 +118,7 @@ export const DOCS_NAV: DocsGroup[] = [
         ],
       },
       { label: 'Error codes', path: '/docs/errors' },
+      { label: 'What happens when…', path: '/docs/scenarios' },
     ],
   },
   {

@@ -371,6 +371,16 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         status: 500,
         text: "A stored version can't be read. Quote the <code>traceId</code> on GitHub.",
       },
+      {
+        code: 'RUN_DROPPED_BY_CONCURRENCY_POLICY',
+        status: 409,
+        text: 'A run by hand was dropped: a run is going and the trigger is set to <b>Skip it</b>.',
+      },
+      {
+        code: 'WORKFLOW_HAS_NO_MANUAL_TRIGGER',
+        status: 409,
+        text: "The workflow has no Run by hand trigger, so it can't be started from the console or the API.",
+      },
     ],
   },
   {
@@ -407,6 +417,41 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         code: 'INTEGRATIONS_UNAVAILABLE',
         status: 503,
         text: 'The integration service is down and nothing was sent. Retry in a moment.',
+      },
+      {
+        code: 'INTEGRATION_LIMIT_REACHED',
+        status: 409,
+        text: 'The workspace already has 50 integrations. Delete one you no longer use.',
+      },
+      {
+        code: 'INTEGRATION_IN_USE',
+        status: 409,
+        text: "A live workflow uses it. Turn those workflows off, or make a version live that doesn't use it, first. The answer lists them.",
+      },
+      {
+        code: 'INTEGRATION_RUNS_IN_FLIGHT',
+        status: 409,
+        text: 'Runs still going use it and would fail at that step. Wait for them, or delete it anyway with <code>confirm=true</code>.',
+      },
+      {
+        code: 'INTEGRATION_CHANGED',
+        status: 409,
+        text: 'Someone else changed it while you were saving. Reload it and try again.',
+      },
+      {
+        code: 'INTEGRATION_TYPE_IMMUTABLE',
+        status: 400,
+        text: "An integration's type can't change. Add a new one instead.",
+      },
+      {
+        code: 'INTEGRATION_TYPE_UNSUPPORTED',
+        status: 400,
+        text: 'Only a Telegram integration can list its chats.',
+      },
+      {
+        code: 'INTEGRATIONS_NOT_CONFIGURED',
+        status: 503,
+        text: "Integrations aren't set up on this server, so secrets can't be stored.",
       },
     ],
   },
@@ -500,6 +545,26 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         code: 'ACCOUNT_DELETE_RETRY',
         status: 409,
         text: 'Deleting the account was interrupted. Send the request again.',
+      },
+      {
+        code: 'AUTH_EMAIL_UNVERIFIED',
+        status: 401,
+        text: 'Confirm your email address before signing in. Ask for a new link if the old one expired.',
+      },
+      {
+        code: 'SIGNUP_CHALLENGE_REQUIRED',
+        status: 400,
+        text: 'Signing up needs a solved challenge. Fetch one and send its answer with the sign-up.',
+      },
+      {
+        code: 'SIGNUP_CHALLENGE_INVALID',
+        status: 400,
+        text: 'The sign-up challenge expired, was used already, or the answer is wrong. Fetch a new one.',
+      },
+      {
+        code: 'BILLING_SUBSCRIPTION_NOT_CANCELLED',
+        status: 503,
+        text: "Your subscription couldn't be cancelled with the payment provider, so nothing was deleted. Try again shortly.",
       },
     ],
   },
@@ -601,6 +666,117 @@ export const DOCS_ERROR_GROUPS: DocsErrorGroup[] = [
         code: 'WORKSPACE_RESOLVE_ERROR',
         status: 500,
         text: "We couldn't check your membership just then. Try again.",
+      },
+      {
+        code: 'PLAN_WORKSPACE_LIMIT_REACHED',
+        status: 409,
+        text: 'Your plan allows no more workspaces. Delete one, or upgrade.',
+      },
+      {
+        code: 'PLAN_MEMBER_LIMIT_REACHED',
+        status: 409,
+        text: 'Your plan allows no more members. Remove one, or upgrade.',
+      },
+      {
+        code: 'TENANT_FREE_LIMIT_REACHED',
+        status: 409,
+        text: 'You already have a Free account of your own. Upgrade it before creating another.',
+      },
+      {
+        code: 'ROLE_BUILT_IN',
+        status: 409,
+        text: "The built-in Admin role holds every permission and can't be changed or deleted. Make a role of your own instead.",
+      },
+      {
+        code: 'EVENT_LOG_GROUP_UNKNOWN',
+        status: 400,
+        text: "<code>group</code> isn't one of <code>people</code>, <code>clients</code>, <code>policies</code>, <code>workflows</code>, <code>integrations</code> or <code>security</code>.",
+      },
+      {
+        code: 'EVENT_LOG_SOURCE_UNKNOWN',
+        status: 400,
+        text: "<code>source</code> isn't one of <code>Console</code>, <code>Api</code>, <code>Client</code>, <code>Workflow</code>, <code>System</code> or <code>Support</code>.",
+      },
+      {
+        code: 'MESSAGES_BUCKET_INVALID',
+        status: 400,
+        text: 'Message counts come by the hour or by the day: <code>1h</code> or <code>1d</code>.',
+      },
+      {
+        code: 'MESSAGES_HOURLY_EXPIRED',
+        status: 400,
+        text: 'Hourly message counts are no longer kept that far back. Ask for days instead.',
+      },
+    ],
+  },
+  {
+    id: 'plans-and-billing',
+    title: 'Plans, billing and usage',
+    codes: [
+      {
+        code: 'BILLING_UNAVAILABLE',
+        status: 503,
+        text: "Payments aren't set up on this server.",
+      },
+      {
+        code: 'BILLING_CHECKOUT_INVALID',
+        status: 400,
+        text: 'A checkout names either a plan with its interval, or a credit pack.',
+      },
+      {
+        code: 'BILLING_OFFER_INVALID',
+        status: 400,
+        text: "That plan isn't offered on that interval.",
+      },
+      {
+        code: 'BILLING_SUBSCRIPTION_ACTIVE',
+        status: 409,
+        text: 'The account already has a subscription. Change its plan instead of starting another.',
+      },
+      {
+        code: 'BILLING_SUBSCRIPTION_REQUIRED',
+        status: 409,
+        text: 'There is no subscription to change. Start one with a checkout.',
+      },
+      {
+        code: 'BILLING_SUBSCRIPTION_NOT_CHANGEABLE',
+        status: 409,
+        text: 'The subscription is cancelled or a payment failed. Resume it or settle the payment in the billing portal first.',
+      },
+      {
+        code: 'BILLING_PLAN_SET_BY_OPERATOR',
+        status: 403,
+        text: 'WBSKT set this plan for you, so a subscription would change nothing. Contact us to change it. Credit packs can still be bought.',
+      },
+      {
+        code: 'BILLING_CUSTOMER_NOT_FOUND',
+        status: 404,
+        text: "The account hasn't paid for anything yet, so it has no billing portal.",
+      },
+      {
+        code: 'BILLING_CUSTOMER_SHARED',
+        status: 409,
+        text: "The account shares a payment customer with another account, so its portal would show the other's billing. Contact support.",
+      },
+      {
+        code: 'BILLING_PROVIDER_REFUSED',
+        status: 409,
+        text: 'The payment provider refused the request. Check the subscription in the billing portal.',
+      },
+      {
+        code: 'BILLING_PROVIDER_UNAVAILABLE',
+        status: 503,
+        text: "The payment provider couldn't be reached. Try again shortly.",
+      },
+      {
+        code: 'WORKSPACE_CREDIT_CAP_INVALID',
+        status: 400,
+        text: 'A monthly credit cap is from 0 to 10<sup>12</sup> credits, or <code>null</code> for none.',
+      },
+      {
+        code: 'WORKSPACE_CREDIT_CAP_BUSY',
+        status: 503,
+        text: "The workspace's runs held the cap for too long. Try again after <code>Retry-After</code>.",
       },
     ],
   },
