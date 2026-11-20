@@ -1,0 +1,131 @@
+<h1 class="x-t">Drafts, publishing and versions</h1>
+<p class="lead">A workflow is edited as a draft, checked, and published as a numbered version. One version is live at a time, and runs always finish on the version they started on. This page covers that whole cycle, and turning a workflow off, retiring it and deleting it.</p>
+
+<div class="dsec">
+  <h2 id="drafts">Drafts</h2>
+  <p>Changes you make in the designer are a <b>draft</b> until you publish. A draft can be broken: half-wired steps and empty settings are fine while you work. Nothing a draft says affects the runs of the live version.</p>
+  <p>Choose <b>Edit</b> on a published workflow to start a draft from its live version, and <b>Discard draft</b> to throw your changes away. A new workflow is a draft until its first publish.</p>
+  <div class="tip warn"><span class="tipl">For now</span>The console keeps your draft in this browser, under your account, so it doesn't follow you to another computer and teammates don't see it. Shared drafts saved on the server are already in the API (below) and are coming to the console.</div>
+</div>
+
+<div class="dsec">
+  <h2 id="problems">Checking a workflow</h2>
+  <p><b>Validate</b> checks the draft against the same rules publishing uses and lists what it finds in <b>Problems</b>, each linked to the step and the setting. There are two kinds:</p>
+  <ul class="dul">
+    <li><b>Errors</b> block publishing: a step with a required setting left empty, a connection to nothing, a client that isn't in this workspace, an integration that doesn't exist, a loop in parallel that never joins, a value out of range.</li>
+    <li><b>Warnings</b> don't: a step nothing leads to, a workflow with no trigger, a client that is pending or revoked, a shared variable read but never set, an error path that leads straight to an End.</li>
+  </ul>
+  <p>The full list of codes is in <a routerLink="/docs/failures" fragment="in-depth">Retries and failures, in depth</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="publishing">Publishing and versions</h2>
+  <p><b>Publish</b> checks the draft once more and saves it as the next version: v1, v2, v3. A version never changes after it's published. To change a workflow you publish a new one.</p>
+  <ul class="dul">
+    <li>Publishing can make the new version live straight away, or leave the live version where it is so you can switch later.</li>
+    <li>Switching the live version to an older one is how you roll back. Its triggers replace the newer one's in one step.</li>
+    <li>Runs already going finish on the version they started on. New runs start on the live version.</li>
+    <li>Each run shows the version it ran, and its steps read as they were in that version, even after you rename or remove them.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="states">On, off, deprecated, deleted</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">State</th><th scope="col">What starts it</th><th scope="col">What you can do</th></tr></thead>
+    <tbody>
+      <tr><td><span class="x-pill p-green"><i></i>Enabled</span></td><td>Its triggers, on the live version.</td><td>Everything. Publish, switch versions, turn it off.</td></tr>
+      <tr><td><span class="x-pill p-grey"><i></i>Disabled</span></td><td>Nothing. Run by hand is refused.</td><td>Edit, publish and test. Turn it on by making a version live.</td></tr>
+      <tr><td><span class="x-pill p-amber"><i></i>Deprecated</span></td><td>Nothing.</td><td>Read it and its runs. Reinstate or delete it.</td></tr>
+      <tr><td><span class="x-pill p-red"><i></i>Deleted</span></td><td>Nothing, ever.</td><td>Read its past runs, by run.</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="dul">
+    <li><b>Turning a workflow off</b> removes its triggers and schedules and drops events waiting in its queue. Runs already going finish, unless you choose to cancel them too.</li>
+    <li><b>Deprecate</b> retires a workflow you no longer use but want to keep. Its triggers go as when turning it off; its versions and runs stay. It can't be published or turned on until you reinstate it.</li>
+    <li><b>Reinstate</b> brings a deprecated workflow back <b>Disabled</b>. Nothing starts it until you make a version live again.</li>
+    <li><b>Delete</b> can't be undone. The workflow leaves the list, its triggers go, runs still going are cancelled shortly after, and its ID can never be published again. Past runs stay readable from the run.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="settings">Workflow settings</h2>
+  <p>These are saved with each version, so they change when you publish.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Setting</th><th scope="col">What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Name</b>, <b>Description</b></td><td>Shown in the explorer, in tabs and in run history.</td></tr>
+      <tr><td><b>Fail the run when a path fails</b></td><td>Off (default): the other paths carry on and the run ends partly failed. On: the first failed path fails the whole run. See <a routerLink="/docs/failures">Retries and failures</a>.</td></tr>
+      <tr><td><b>Credit limit per run</b></td><td>The most one run may spend. 10,000 when left empty. A run that reaches it stops as Out of credits.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>I publish while runs of the old version are going</dt>
+    <dd>They finish on the old version, including ones waiting days on a timer or a signal. Only new runs use the new one.</dd>
+    <dt>I publish a version whose trigger was removed while events were queued for it</dt>
+    <dd>Making the new version live drops the events queued for triggers it no longer has. The answer says how many.</dd>
+    <dt>A version publishes but can't be made live</dt>
+    <dd>It stays published and not live, and the answer says why, say an integration that was deleted. Fix it and make it live.</dd>
+    <dt>Two people edit the same workflow through the API</dt>
+    <dd>Each save of a server draft carries the revision it started from. A save over someone else's newer one is refused with <code>WORKFLOW_DRAFT_CONFLICT</code>, so nobody overwrites another's work unseen.</dd>
+    <dt>Someone publishes while my draft is open</dt>
+    <dd>Your draft is now <b>outdated</b>. Publishing it is refused with <code>WORKFLOW_DRAFT_OUTDATED</code> until you confirm you want to publish it anyway over their version.</dd>
+    <dt>A workflow uses a client that was deleted</dt>
+    <dd>Publishing or making that version live is refused with <code>CLIENT_NOT_FOUND</code>. A version already live keeps running; its step fails at run time.</dd>
+    <dt>The workspace has 100 workflows</dt>
+    <dd>A new one can't be published. Drafts of new workflows don't count, up to 50 of them.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;workspaceRef&#125;/workflows</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Permission</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST /</code></td><td><code>workflows.create</code></td><td>Publishes: <code>&#123; refId, name, description, nodes, edges, sharedVariableSchema, creditBudget, failFast, enable &#125;</code>. <code>enable</code> is required. Answers <code>&#123; refId, version, state, liveVersion &#125;</code>.</td></tr>
+        <tr><td><code>POST validate</code></td><td><code>workflows.create</code></td><td>Checks without publishing. An invalid definition is a 200 with <code>isValid: false</code> and every issue's <code>code</code>, <code>nodeId</code> and <code>field</code>.</td></tr>
+        <tr><td><code>GET drafts</code>, <code>GET /&#123;ref&#125;/draft</code></td><td><code>workflows.read</code></td><td>Server drafts, with <code>revision</code>, <code>baseVersion</code>, <code>outdated</code> and the draft's validation.</td></tr>
+        <tr><td><code>PUT /&#123;ref&#125;/draft</code></td><td><code>workflows.create</code></td><td>Saves a draft with <code>expectedRevision</code> (null to start one).</td></tr>
+        <tr><td><code>POST /&#123;ref&#125;/draft/publish</code></td><td><code>workflows.create</code></td><td><code>&#123; revision, enable, force &#125;</code>. Publishes the draft and deletes it in one step.</td></tr>
+        <tr><td><code>DELETE /&#123;ref&#125;/draft?revision=</code></td><td><code>workflows.create</code></td><td>Discards it, only at that revision.</td></tr>
+        <tr><td><code>GET /&#123;ref&#125;/versions</code>, <code>/versions/&#123;n&#125;</code></td><td><code>workflows.read</code></td><td>Every version with <code>isLive</code> and run count; one version's definition, readable after deletion.</td></tr>
+        <tr><td><code>POST /&#123;ref&#125;/enable</code></td><td><code>workflows.execute</code></td><td><code>&#123; version &#125;</code>. Makes it live: turns the workflow on, or switches the live version.</td></tr>
+        <tr><td><code>POST /&#123;ref&#125;/disable</code></td><td><code>workflows.execute</code></td><td><code>&#123; cancelRunningRuns &#125;</code>, default false.</td></tr>
+        <tr><td><code>POST /&#123;ref&#125;/deprecate</code>, <code>/reinstate</code></td><td><code>workflows.delete</code></td><td>Retire and bring back (as Disabled).</td></tr>
+        <tr><td><code>DELETE /&#123;ref&#125;</code></td><td><code>workflows.delete</code></td><td>Deletes for good.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>WORKFLOW_VALIDATION_FAILED</code></td><td><span class="num">400</span></td><td>Publishing or making live a definition with errors. The issues are in the body.</td></tr>
+        <tr><td><code>INTEGRATION_NOT_FOUND</code></td><td><span class="num">400</span></td><td>A step names an integration this workspace doesn't have.</td></tr>
+        <tr><td><code>WORKFLOW_NOT_FOUND</code>, <code>WORKFLOW_VERSION_NOT_FOUND</code>, <code>WORKFLOW_DRAFT_NOT_FOUND</code></td><td><span class="num">404</span></td><td>Not in this workspace, or deleted.</td></tr>
+        <tr><td><code>WORKFLOW_DEPRECATED</code></td><td><span class="num">409</span></td><td>Publishing, turning on or off a deprecated workflow.</td></tr>
+        <tr><td><code>WORKFLOW_NOT_DEPRECATED</code></td><td><span class="num">409</span></td><td>Reinstating one that isn't.</td></tr>
+        <tr><td><code>WORKFLOW_DELETED</code></td><td><span class="num">409</span></td><td>Publishing or drafting under a deleted workflow's ID.</td></tr>
+        <tr><td><code>WORKFLOW_REF_TAKEN</code></td><td><span class="num">409</span></td><td>The ID belongs to another workspace's workflow.</td></tr>
+        <tr><td><code>WORKFLOW_DRAFT_CONFLICT</code></td><td><span class="num">409</span></td><td>The draft was saved, discarded or published since you read it.</td></tr>
+        <tr><td><code>WORKFLOW_DRAFT_OUTDATED</code></td><td><span class="num">409</span></td><td>Another version was published since the draft started. Resend with <code>force: true</code>.</td></tr>
+        <tr><td><code>WORKFLOW_DRAFT_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>50 drafts of new workflows already.</td></tr>
+        <tr><td><code>WORKFLOW_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>100 workflows already.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li>The version number is assigned by the database under a lock, so two publishes at once get consecutive numbers, never the same one.</li>
+      <li>Making a version live replaces the workflow's trigger registrations and schedules, drops queued events for trigger nodes the version lacks, and points runs at it, all in one transaction. A version is checked against today's rules and integrations first, so an old version can be refused.</li>
+      <li>A run is refused unless it is on the live version of an enabled workflow, so a trigger still cached for a moment after turning off starts nothing. Test runs are the exception.</li>
+      <li>Older publish bodies with the definition nested under <code>definition</code> are still read, for one more release.</li>
+    </ul>
+  </div>
+</div>

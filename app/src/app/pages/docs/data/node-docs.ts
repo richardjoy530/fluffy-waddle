@@ -154,7 +154,7 @@ export const DOCS_NODE_DOCS: Record<string, DocsNodeDoc> = {
     ],
     ports: [{ id: 'default', when: 'A call matched and started a run.' }],
     output: [
-      { key: 'trigger', text: 'The request body. A JSON body\'s fields can be read in later nodes, like <code>{{trigger.payload.button}}</code>.' },
+      { key: 'trigger', text: 'The request body. A JSON body\'s fields can be read in later nodes, like <code>{{trigger.body.button}}</code>.' },
       TRIGGER_OUTPUT,
     ],
     code: {
@@ -182,7 +182,7 @@ export const DOCS_NODE_DOCS: Record<string, DocsNodeDoc> = {
     ],
     ports: [{ id: 'default', when: 'Someone started a run.' }],
     output: [
-      { key: 'trigger', text: 'The inputs, by name. An input called <code>reason</code> is <code>{{trigger.payload.reason}}</code>.' },
+      { key: 'trigger', text: 'The inputs, by name. An input called <code>reason</code> is <code>{{trigger.body.reason}}</code>.' },
       TRIGGER_OUTPUT,
     ],
     code: {

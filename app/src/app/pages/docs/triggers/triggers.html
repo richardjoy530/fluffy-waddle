@@ -1,0 +1,121 @@
+<h1 class="x-t">Triggers in depth</h1>
+<p class="lead">A trigger decides when a workflow starts. The five kinds each have their own <a routerLink="/docs/nodes" fragment="triggers">node page</a>; this page covers what they share: what happens when a trigger fires while a run is going, filters, secrets, and how to find out why a run didn't start.</p>
+
+<div class="dsec">
+  <h2 id="kinds">The five triggers</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Trigger</th><th scope="col">Starts a run when</th></tr></thead>
+    <tbody>
+      <tr><td><a routerLink="/docs/nodes/client-message"><b>Client message</b></a></td><td>A client, or any client, sends a message of a type. It can also wait until a filter has held for a while, like "temperature above 30 for 10 minutes".</td></tr>
+      <tr><td><a routerLink="/docs/nodes/client-online-offline"><b>Client online or offline</b></a></td><td>A client has stayed online, or offline, for a time you set (60 seconds by default).</td></tr>
+      <tr><td><a routerLink="/docs/nodes/schedule"><b>Schedule</b></a></td><td>A cron timetable comes round, in UTC.</td></tr>
+      <tr><td><a routerLink="/docs/nodes/webhook-received"><b>Webhook received</b></a></td><td>Another service POSTs to the workflow's own URL.</td></tr>
+      <tr><td><a routerLink="/docs/nodes/run-by-hand"><b>Run by hand</b></a></td><td>Someone starts it from the console or the API, or another workflow's Run workflow step does.</td></tr>
+    </tbody>
+  </table></div>
+  <p>A workflow can have several triggers. Each one starts its own runs.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="overlapping-runs">When it fires while a run is going</h2>
+  <p>Under <b>Advanced</b>, each trigger says what happens if it fires again while an earlier run it started is still going:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Choice</th><th scope="col">What happens</th></tr></thead>
+    <tbody>
+      <tr><td><b>Queue it</b> (default)</td><td>The new event waits. When the running one ends, the oldest waiting event starts the next run. Events wait at most 24 hours.</td></tr>
+      <tr><td><b>Run both</b></td><td>Starts another run alongside.</td></tr>
+      <tr><td><b>Cancel the running one</b></td><td>Starts a new run and cancels the one going. If the new run can't start (out of credits, too many runs), the old one is left alone.</td></tr>
+      <tr><td><b>Skip it</b></td><td>The new event is dropped.</td></tr>
+    </tbody>
+  </table></div>
+  <p>"A run going" means one with the same <b>correlation key</b>. By default that is the trigger's own source: the client and message type, the client and its state, or the webhook path. Set a correlation key, like <code>$trigger.payload.zone</code>, and runs are grouped by that value instead, so zone A and zone B queue separately.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="filters">Filters and holds</h2>
+  <p>Client message and webhook triggers can have a <b>filter</b>, a condition on the incoming data, like <b>temp</b> greater than <b>30</b>. An event that doesn't match starts nothing and costs nothing. A filter that can't be worked out, say a field that isn't there, counts as no match.</p>
+  <p>A Client message trigger with a filter can also <b>hold</b>: it fires only once the filter has kept matching for the time you set (up to 24 hours), then stays quiet until a message stops matching. That turns "too hot" into "too hot for 10 minutes", without a run for every reading.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="webhooks">Webhooks</h2>
+  <ul class="dul">
+    <li>The URL is <code>https://api.dev.wbskt.com/api/callbacks/webhook/&#123;workspace&#125;/&#123;path&#125;</code>, and only <code>POST</code> starts a run. The body, up to 128 KB, becomes the run's trigger data.</li>
+    <li>Give the trigger a <b>secret</b> and callers must send it in the <code>X-Wbskt-Secret</code> header.</li>
+    <li>The answer is always <code>202</code>, whether it started a run, didn't match, or had the wrong secret, so the URL can't be probed. Check the trigger's recent events (below) to see what happened.</li>
+    <li>Send an <code>Idempotency-Key</code> header and a retry with the same key within 24 hours starts nothing new.</li>
+    <li>A path takes 600 requests a minute. One address can make 1,200 callback requests a minute in all.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="schedules">Schedules</h2>
+  <p>Schedules run in UTC. If WBSKT was down when a schedule came due, it fires <b>once</b> when it is back, for the latest time it missed, then carries on as usual. An every-minute schedule that missed two hours starts one run, not 120.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="why-didnt-it-start">Why didn't it start?</h2>
+  <p>Each trigger keeps what it did with its last 20 events: the time, the message type, the outcome, and the run it started. It can take a couple of seconds for the newest to show.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Outcome</th><th scope="col">Means</th></tr></thead>
+    <tbody>
+      <tr><td><b>Started run</b></td><td>It started a run, linked.</td></tr>
+      <tr><td><b>Queued</b></td><td>It waits behind a run with the same key.</td></tr>
+      <tr><td><b>Dropped</b></td><td>Skipped, because a run with the same key was going.</td></tr>
+      <tr><td><b>Refused</b></td><td>Not allowed to start: out of credits, the workspace's cap, or too many runs at once.</td></tr>
+      <tr><td><b>Filtered</b></td><td>The filter didn't match.</td></tr>
+      <tr><td><b>Secret mismatch</b></td><td>A webhook arrived without the right secret.</td></tr>
+      <tr><td><b>Idempotent</b></td><td>The same event arrived twice; the second did nothing.</td></tr>
+      <tr><td><b>Held</b></td><td>A hold trigger saw a matching message and is counting.</td></tr>
+    </tbody>
+  </table></div>
+  <p>An event that matched no trigger at all, like a message type nobody listens for, has no workflow to show it under and isn't kept. See also <a routerLink="/docs/troubleshooting" fragment="my-rule-didnt-run">My rule didn't run</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>The same message is delivered twice</dt>
+    <dd>It starts at most one run per trigger.</dd>
+    <dt>Two workflows listen for the same thing</dt>
+    <dd>Each starts its own run, independently, with its own concurrency choice.</dd>
+    <dt>I turn a workflow off while events are queued</dt>
+    <dd>The queued events are dropped. Turning it on again doesn't bring them back.</dd>
+    <dt>A board goes offline for 30 seconds with a 60-second offline trigger</dt>
+    <dd>Nothing starts: it has to stay offline for the whole 60 seconds. A board installing firmware counts as updating, not offline, for up to 5 minutes.</dd>
+    <dt>The account is out of credits</dt>
+    <dd>New runs are refused and show as Refused. Events aren't queued for later; they are dropped. The console shows a banner once a minute per workflow while it happens.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Trigger settings</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Kind</th><th scope="col">Settings</th></tr></thead>
+      <tbody>
+        <tr><td><code>trigger:client</code></td><td><code>clientRef</code>, <code>type</code> (<code>*</code> for any), <code>correlationKey</code>, <code>concurrencyPolicy</code>, <code>filter</code>, <code>holdSeconds</code> (needs a filter, at most 86,400).</td></tr>
+        <tr><td><code>trigger:clientPresence</code></td><td><code>clientRef</code>, <code>state</code> (<code>Online</code> or <code>Offline</code>), <code>forSeconds</code> (default 60, at most 86,400), <code>correlationKey</code>, <code>concurrencyPolicy</code>.</td></tr>
+        <tr><td><code>trigger:schedule</code></td><td><code>cron</code>, <code>correlationKey</code>.</td></tr>
+        <tr><td><code>trigger:webhook</code></td><td><code>path</code>, <code>correlationKey</code>, <code>concurrencyPolicy</code>, <code>filter</code>, <code>secret</code>.</td></tr>
+        <tr><td><code>trigger:manual</code></td><td><code>description</code>, <code>inputs</code> (<code>[&#123; name, label?, default? &#125;]</code>, read as <code>$trigger.body.NAME</code>).</td></tr>
+      </tbody>
+    </table></div>
+    <p>Concurrency policies on the wire: <code>Queue</code>, <code>AllowParallel</code>, <code>CancelExisting</code>, <code>DropIfRunning</code>.</p>
+    <h3>Endpoint</h3>
+    <p><code>GET /api/v1/workspaces/&#123;ws&#125;/workflows/&#123;ref&#125;/triggers/&#123;nodeId&#125;/recent</code> (<code>workflows.read</code>) answers <code>recent</code>, the last 20 outcomes, and <code>hold</code> (<code>holding</code>, <code>fired</code> or <code>clear</code>, with <code>sinceAt</code> and <code>dueAt</code>) for a hold trigger.</p>
+    <h3>Validation</h3>
+    <p><code>TRIGGER_CLIENT_REQUIRED</code>, <code>TRIGGER_MESSAGE_TYPE_REQUIRED</code>, <code>WEBHOOK_PATH_MISSING</code>, <code>INVALID_CLIENT_REF</code>, <code>INVALID_CRON</code>, <code>INVALID_PRESENCE_DURATION</code>, <code>INVALID_HOLD_DURATION</code>, <code>HOLD_REQUIRES_FILTER</code>, <code>MANUAL_INPUT_NAME_INVALID</code>, <code>MANUAL_INPUT_NAME_DUPLICATE</code>, <code>MANUAL_INPUT_NAME_RESERVED</code>, and the warning <code>SUSPICIOUS_CORRELATION_KEY</code>.</p>
+    <h3>Guarantees</h3>
+    <ul class="dul">
+      <li>Each trigger's start is keyed by the event, stored uniquely on the run, so a redelivered event can't start a second run.</li>
+      <li>The concurrency check is made again under a lock when the run is created, so two events arriving together can't both slip past Skip it or Queue it.</li>
+      <li>Cancel the running one moves the old runs to Cancelling in the same transaction that starts the new one, and only if it starts.</li>
+      <li>A webhook secret is compared as a SHA-256 hash in fixed time, and never written into the run's data.</li>
+      <li>A run refused for credits or the plan's run limit isn't queued: the event is gone. The refusal is reported once a minute per workflow as <code>WorkflowTriggerRefusedEvent</code>.</li>
+      <li>Queued events are replayed one per finished run. One whose replay fails is tried again.</li>
+    </ul>
+  </div>
+</div>

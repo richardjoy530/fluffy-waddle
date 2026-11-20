@@ -55,7 +55,14 @@ export const DOCS_NAV: DocsGroup[] = [
   {
     id: 'workflows',
     title: 'Workflows',
-    items: [{ label: 'Your first rule', path: '/docs/first-rule' }],
+    items: [
+      { label: 'Your first rule', path: '/docs/first-rule' },
+      { label: 'Drafts, publishing and versions', path: '/docs/workflows' },
+      { label: 'Runs', path: '/docs/runs' },
+      { label: 'Triggers in depth', path: '/docs/triggers' },
+      { label: 'Variables and placeholders', path: '/docs/variables' },
+      { label: 'Retries and failures', path: '/docs/failures' },
+    ],
   },
   {
     id: 'nodes',

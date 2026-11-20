@@ -1,0 +1,158 @@
+<h1 class="x-t">Retries and failures</h1>
+<p class="lead">Steps that reach outside WBSKT can fail: a URL times out, a chat service is down, a board doesn't answer. This page covers how a step tries again, what the run does when it still fails, how split paths fail together, and what happens when a run runs out of credits.</p>
+
+<div class="dsec">
+  <h2 id="retries">Trying again</h2>
+  <p>Every action step has a <b>Try again</b> setting. A new step starts with it on: 3 tries, waiting 2 seconds, then 4, with up to 20% random spread, never more than a minute.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Try again</th><th scope="col">Waits between tries</th></tr></thead>
+    <tbody>
+      <tr><td><b>Off</b></td><td>No second try.</td></tr>
+      <tr><td><b>Same wait</b></td><td>The first wait every time: 5 s, 5 s, 5 s.</td></tr>
+      <tr><td><b>Growing wait</b></td><td>The first wait times the try: 5 s, 10 s, 15 s.</td></tr>
+      <tr><td><b>Doubling wait</b></td><td>Twice as long each time: 5 s, 10 s, 20 s.</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="dul">
+    <li><b>Tries</b> counts the first one, from 1 to 20. <b>Longest wait</b> caps any single wait. <b>Jitter</b> spreads the waits at random, so many runs failing together don't all try again at the same instant.</li>
+    <li>Only temporary errors are tried again, like a timeout or a 5xx answer. A 4xx answer or a missing setting fails at once, because trying again would get the same answer.</li>
+    <li><b>Only retry on</b> narrows it further to the error codes you list. Others fail straight away.</li>
+    <li>Each try costs the step's credits again.</li>
+    <li>A wait of 5 seconds or more is kept on the server, not in memory, so a retry survives WBSKT restarting.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="when-it-fails">When a step still fails</h2>
+  <p>Once its tries are used up, the step's <b>When it still fails</b> setting decides what happens next:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Choice</th><th scope="col">What happens</th></tr></thead>
+    <tbody>
+      <tr><td><b>Fail this path</b> (default)</td><td>This path ends as failed. Other paths of the run carry on.</td></tr>
+      <tr><td><b>Continue down “error”</b></td><td>The step gets an <b>error</b> output, and the run carries on from it. Use it to send a fallback alert.</td></tr>
+      <tr><td><b>Treat it as done</b></td><td>The run carries on from the step's normal output, as if it had worked.</td></tr>
+      <tr><td><b>Fail the whole run</b></td><td>Every path stops, and any workflow it started with Run workflow is cancelled.</td></tr>
+      <tr><td><b>Jump to another step</b></td><td>The run carries on from the step you pick.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Whenever the run carries on after a failure, the next steps can read what went wrong as <code ngNonBindable>&#123;&#123;lastError.errorCode&#125;&#125;</code> and <code ngNonBindable>&#123;&#123;lastError.message&#125;&#125;</code>.</p>
+  <p>To stop a run on purpose, with your own reason, use the <a routerLink="/docs/nodes/fail-run">Fail run</a> step.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="fail-fast">How a run ends</h2>
+  <p>A run's final status comes from its paths:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Its paths</th><th scope="col">The run</th></tr></thead>
+    <tbody>
+      <tr><td>All succeeded</td><td><span class="x-pill p-green"><i></i>Succeeded</span></td></tr>
+      <tr><td>Some failed, some succeeded</td><td><span class="x-pill p-amber"><i></i>Partly failed</span></td></tr>
+      <tr><td>All failed, or a step failed the whole run</td><td><span class="x-pill p-red"><i></i>Failed</span></td></tr>
+      <tr><td>Someone cancelled it</td><td><span class="x-pill p-grey"><i></i>Cancelled</span></td></tr>
+      <tr><td>It spent its credit budget</td><td><span class="x-pill p-violet"><i></i>Out of credits</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>Turn on <b>Fail the run when a path fails</b> in the workflow's settings to stop everything on the first failed path instead of letting the others finish. See <a routerLink="/docs/runs" fragment="statuses">run statuses</a>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="paths">Split paths and failures</h2>
+  <p><a routerLink="/docs/nodes/split-into-paths">Split into paths</a> and <a routerLink="/docs/nodes/for-each-in-parallel">For each, in parallel</a> start several paths. <a routerLink="/docs/nodes/wait-for-paths">Wait for paths</a> brings them back together: when all have arrived, when the first has, or when a number of them have.</p>
+  <ul class="dul">
+    <li>A path that fails still arrives, counted as a failure. The step after the join can read how many succeeded and failed, as <code>joinSucceeded</code> and <code>joinFailed</code>, and decide what to do.</li>
+    <li>A path that ends before it reaches the join, at an End step or an output with nothing after it, never arrives. Waiting for all, the join can't be met, so the run fails with <code>JOIN_BRANCH_ENDED</code>. Waiting for the first or for a number, the join carries on without it, and fails only once too few paths are left to meet it.</li>
+    <li>Exactly one path carries on after the join. The others end there.</li>
+    <li>Splitting without a join is fine for fire-and-forget: each path just runs to its end. But either every path of a split reaches the same join or none does.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="credits">Running out of credits</h2>
+  <p>A run spends credits as it goes: 1 to start, then each step's price before it runs. Three limits can stop it, and the step that hits one fails with a code that says which:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Code</th><th scope="col">The limit</th><th scope="col">Raise it in</th></tr></thead>
+    <tbody>
+      <tr><td><code>OUT_OF_CREDITS_RUN_BUDGET</code></td><td>This run's budget (10,000 unless the workflow sets another).</td><td>The workflow's <b>Credit limit per run</b>.</td></tr>
+      <tr><td><code>PLAN_CREDIT_LIMIT_REACHED</code></td><td>The account's credits for the month, with any credit packs.</td><td>Your plan, or a credit pack. See <a routerLink="/docs/billing">billing</a>.</td></tr>
+      <tr><td><code>WORKSPACE_CREDIT_CAP_REACHED</code></td><td>The workspace's own monthly cap.</td><td>The workspace's usage settings.</td></tr>
+    </tbody>
+  </table></div>
+  <p>The run is cancelled and ends <b>Out of credits</b>. Steps already done stay done. When the month or the workspace cap is used up, new runs are refused as well, not queued.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>A URL answers 503 three times</dt>
+    <dd>With the default Try again, the step tries 3 times over about 6 seconds, then fails, and the path follows When it still fails.</dd>
+    <dt>A URL answers 404</dt>
+    <dd>It fails on the first try. A 4xx isn't temporary, so it isn't tried again.</dd>
+    <dt>WBSKT restarts while a step waits to try again</dt>
+    <dd>A wait of 5 seconds or more is kept on the server and carries on after the restart. A shorter one is held in memory, so the step may start its tries over.</dd>
+    <dt>One of three split paths fails and the join waits for all</dt>
+    <dd>The join is met when the other two arrive, with <code>joinFailed</code> = 1. The run ends Partly failed unless a later step fails it, or Fail the run when a path fails is on, which stops it at the first failure.</dd>
+    <dt>A step jumps back to an earlier step on failure</dt>
+    <dd>That is allowed, so a run can go round again. Each pass costs credits, so a loop that never succeeds ends when the run's credit budget does.</dd>
+    <dt>A run is left with nothing it can do</dt>
+    <dd>A run with no path running and nothing waiting is ended from its paths when the engine next starts, or after 30 minutes at most.</dd>
+    <dt>The parent of a Run workflow step fails</dt>
+    <dd>The run it started is cancelled too.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Retry policy</h3>
+    <p>An action node's <code>retry</code>:</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Field</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>strategy</code></td><td><code>Constant</code> (Same wait), <code>Linear</code> (Growing wait: initial × attempt), <code>Exponential</code> (Doubling wait: initial × factor<sup>attempt−1</sup>).</td></tr>
+        <tr><td><code>initialDelay</code></td><td>The first wait. Not negative.</td></tr>
+        <tr><td><code>factor</code></td><td>Growth for Exponential, default 2, above 0.</td></tr>
+        <tr><td><code>maxDelay</code></td><td>The cap, applied after jitter. At least <code>initialDelay</code>.</td></tr>
+        <tr><td><code>maxAttempts</code></td><td>Tries in all, 1 to 20.</td></tr>
+        <tr><td><code>jitterPct</code></td><td>Random spread, 0 to 100 percent either way.</td></tr>
+        <tr><td><code>retryOn</code></td><td>Error codes or exception types to retry. Empty means any retryable failure.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Each attempt is journaled as <code>NodeRetrying</code> in the run's history.</p>
+    <h3>onFailure</h3>
+    <p><code>outcome</code> is <code>FailBranch</code> (the default), <code>FailRun</code>, <code>ContinueOnError</code>, <code>ContinueAsSucceeded</code> or <code>JumpToNode</code> with <code>targetNodeId</code>. <code>Compensate</code> is refused at publish. The continuing outcomes write <code>lastError</code> (<code>errorCode</code>, <code>message</code>). The workflow's <code>failFast: true</code> fails the run on the first failed path.</p>
+    <h3>Joins</h3>
+    <p><code>mode</code> is <code>All</code>, <code>Any</code> or <code>Quorum</code> with <code>quorumCount</code> (at least 1, and no more than a split's path count). A parallel for-each over fewer items than <code>quorumCount</code> waits for all of them. When the deciding arrival is a failure, a fresh path carries on past the join. Joins nest: a split inside a path has its own join.</p>
+    <h3>Validation codes</h3>
+    <p>Checked when a workflow is published, and as you edit. Errors block publishing; warnings don't.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Area</th><th scope="col">Codes</th></tr></thead>
+      <tbody>
+        <tr><td>Structure</td><td><code>NULL_DEFINITION</code>, <code>INVALID_WORKFLOW_REF_ID</code>, <code>INVALID_VERSION</code>, <code>DUPLICATE_NODE_ID</code>, <code>UNKNOWN_NODE_KIND</code>, <code>EDGE_UNKNOWN_NODE</code>, <code>EDGE_UNKNOWN_PORT</code>, <code>DUPLICATE_PORT_EDGE</code>, <code>MISSING_PORT</code>, <code>EXTRA_PORT</code></td></tr>
+        <tr><td>Failure handling</td><td><code>COMPENSATION_NOT_SUPPORTED</code>, <code>ONFAILURE_TARGET_MISSING</code>, <code>ONFAILURE_TARGET_NOT_FOUND</code>, <code>ONFAILURE_TARGET_INVALID</code> (the step itself or a trigger), <code>CONTINUE_ON_ERROR_WITHOUT_ERROR_PORT</code>, <code>RETRY_FACTOR_INVALID</code>, <code>RETRY_MAX_DELAY_BELOW_INITIAL</code>, <code>RETRY_ATTEMPTS_INVALID</code>, <code>RETRY_DELAY_INVALID</code>, <code>RETRY_JITTER_INVALID</code></td></tr>
+        <tr><td>Splits and joins</td><td><code>PARALLEL_FOREACH_WITHOUT_JOIN</code>, <code>FORK_BRANCH_WITHOUT_JOIN</code>, <code>FORK_BRANCHES_JOIN_MISMATCH</code>, <code>JOIN_WITHOUT_COHORT</code>, <code>QUORUM_COUNT_INVALID</code></td></tr>
+        <tr><td>Run workflow and End</td><td><code>SUBWORKFLOW_INPUT_KEY_RESERVED</code>, <code>SUBWORKFLOW_SELF_REFERENCE</code>, <code>SUBWORKFLOW_TARGET_NOT_FOUND</code>, <code>END_OUTPUT_WITHOUT_MANUAL_TRIGGER</code></td></tr>
+        <tr><td>Variables, placeholders and waits</td><td><code>VARIABLE_NAME_RESERVED</code>, <code>TEMPLATE_INVALID</code>, <code>WAITFORHTTP_WEAK_TOKEN</code>, <code>AWAIT_SIGNAL_CORRELATION_INVALID</code></td></tr>
+        <tr><td>Call a URL</td><td><code>WEBHOOK_URL_RELATIVE</code>, <code>WEBHOOK_TIMEOUT_INVALID</code>, <code>WEBHOOK_HEADER_INVALID</code>, <code>WEBHOOK_HEADER_FORBIDDEN</code>, <code>WEBHOOK_HEADERS_TOO_MANY</code></td></tr>
+        <tr><td>Other steps</td><td><code>INTEGRATION_REF_MISSING</code>, <code>TELEGRAM_CHAT_MISSING</code>, <code>TELEGRAM_MESSAGE_INVALID</code>, <code>TELEGRAM_PARSE_MODE_INVALID</code>, <code>TELEGRAM_THREAD_INVALID</code>, <code>DISCORD_MESSAGE_INVALID</code>, <code>DISCORD_EMBED_INVALID</code>, <code>DISCORD_THREAD_INVALID</code>, <code>DISCORD_AVATAR_URL_INVALID</code>, <code>NTFY_MESSAGE_MISSING</code>, <code>NTFY_PRIORITY_INVALID</code>, <code>CLIENT_MESSAGE_INVALID</code>, <code>CLIENT_MESSAGE_ACK_TIMEOUT</code></td></tr>
+        <tr><td>Triggers</td><td><code>TRIGGER_CLIENT_REQUIRED</code>, <code>TRIGGER_MESSAGE_TYPE_REQUIRED</code>, <code>WEBHOOK_PATH_MISSING</code>, <code>INVALID_CLIENT_REF</code>, <code>INVALID_CRON</code>, <code>INVALID_PRESENCE_DURATION</code>, <code>INVALID_HOLD_DURATION</code>, <code>HOLD_REQUIRES_FILTER</code>, <code>MANUAL_INPUT_NAME_INVALID</code>, <code>MANUAL_INPUT_NAME_DUPLICATE</code>, <code>MANUAL_INPUT_NAME_RESERVED</code></td></tr>
+        <tr><td>Clients</td><td><code>CLIENT_NOT_FOUND</code></td></tr>
+        <tr><td>Warnings</td><td><code>NO_TRIGGERS</code>, <code>ORPHAN_NODE</code>, <code>SUSPICIOUS_CORRELATION_KEY</code>, <code>SHARED_VARIABLE_UNDECLARED</code>, <code>ERROR_PATH_ENDS</code>, <code>CLIENT_NOT_REGISTERED</code>, <code>SUBWORKFLOW_TARGET_NOT_MANUAL</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>A publish that names an integration the workspace doesn't have is refused as well.</p>
+    <h3>Run-time failure codes</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>JOIN_BRANCH_ENDED</code></td><td>A path ended before its join, and the join can no longer be met.</td></tr>
+        <tr><td><code>EXPRESSION_EVALUATION_ERROR</code></td><td>A condition or value can't be worked out.</td></tr>
+        <tr><td><code>BRANCH_STATE_TOO_LARGE</code></td><td>A path's data would pass 256 KB.</td></tr>
+        <tr><td><code>SUBWORKFLOW_DEPTH_EXCEEDED</code></td><td>Run workflow steps nested more than 8 deep.</td></tr>
+        <tr><td><code>OUT_OF_CREDITS_RUN_BUDGET</code>, <code>PLAN_CREDIT_LIMIT_REACHED</code>, <code>WORKSPACE_CREDIT_CAP_REACHED</code></td><td>A credit limit, as above. Runs stopped before these codes existed carry <code>OUT_OF_CREDITS</code>.</td></tr>
+        <tr><td><code>REAPER_TIMEOUT</code></td><td>A run whose paths all ended cancelled, closed by the 30-minute sweep.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Each step's own failure codes are on its <a routerLink="/docs/nodes">node page</a>, and every code is in the <a routerLink="/docs/errors">error reference</a>.</p>
+  </div>
+</div>
