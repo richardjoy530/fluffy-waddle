@@ -1,0 +1,123 @@
+<h1 class="x-t">Limits</h1>
+<p class="lead">Every number WBSKT holds you to, in one place. Plan limits grow with your plan; platform limits are the same for everyone and keep one workspace from slowing down the rest.</p>
+
+<div class="dsec">
+  <h2 id="plan-limits">Plan limits</h2>
+  <p>Shared by every workspace in the account. Prices and the full comparison are on <a routerLink="/docs/billing" fragment="plans">plans and billing</a>.</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Limit</th><th scope="col">Free</th><th scope="col">Maker</th><th scope="col">Pro</th><th scope="col">Team</th><th scope="col">Business</th></tr></thead>
+    <tbody>
+      <tr><td>Clients</td><td><span class="num">20</span></td><td><span class="num">100</span></td><td><span class="num">500</span></td><td><span class="num">2,000</span></td><td>By contract</td></tr>
+      <tr><td>Messages a month</td><td><span class="num">1.5M</span></td><td><span class="num">10M</span></td><td><span class="num">50M</span></td><td><span class="num">200M</span></td><td>100,000 a client</td></tr>
+      <tr><td>Credits a month</td><td><span class="num">2,000</span></td><td><span class="num">25,000</span></td><td><span class="num">150,000</span></td><td><span class="num">600,000</span></td><td>300 a client</td></tr>
+      <tr><td>Runs going at once</td><td><span class="num">20</span></td><td><span class="num">100</span></td><td><span class="num">200</span></td><td><span class="num">200</span></td><td><span class="num">200</span></td></tr>
+      <tr><td>Workspaces</td><td><span class="num">1</span></td><td><span class="num">3</span></td><td><span class="num">10</span></td><td><span class="num">25</span></td><td><span class="num">50</span></td></tr>
+      <tr><td>Members</td><td><span class="num">1</span></td><td><span class="num">3</span></td><td><span class="num">10</span></td><td><span class="num">25</span></td><td><span class="num">50</span></td></tr>
+      <tr><td>Raw readings kept</td><td>3 days</td><td>7 days</td><td>7 days</td><td>7 days</td><td>90 days</td></tr>
+      <tr><td>Hourly readings kept</td><td>30 days</td><td>1 year</td><td>2 years</td><td>2 years</td><td>2 years</td></tr>
+      <tr><td>Run history kept</td><td>7 days</td><td>14 days</td><td>30 days</td><td>30 days</td><td>90 days</td></tr>
+    </tbody>
+  </table></div>
+  <p>A limit only refuses what would go past it. After moving to a smaller plan, what you already have stays; new clients, runs or members are refused until you're back under.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="clients-and-messages">Clients and messages</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Limit</th><th scope="col">Value</th><th scope="col">Past it</th></tr></thead>
+    <tbody>
+      <tr><td>One message</td><td>64 KB</td><td>The connection is closed. Send a link to anything bigger.</td></tr>
+      <tr><td>Messages a client sends</td><td>10 a second, bursts of 100</td><td>The extra are dropped; after 500 drops in a row the connection is closed. The libraries pace to 8 a second.</td></tr>
+      <tr><td>Commands waiting for one client</td><td>100</td><td>New commands are refused until it catches up.</td></tr>
+      <tr><td>How long a command waits</td><td>24 hours</td><td>It expires and is marked failed.</td></tr>
+      <tr><td>State variables per client</td><td>200</td><td>New ones are ignored.</td></tr>
+      <tr><td>Message types remembered per client</td><td>100</td><td>New types aren't listed.</td></tr>
+      <tr><td>Capabilities message</td><td>32 KB</td><td>It's ignored.</td></tr>
+      <tr><td>Policy name</td><td>100 characters</td><td>Refused.</td></tr>
+      <tr><td>Message templates per workspace</td><td>200</td><td>Refused.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="workflows">Workflows</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Limit</th><th scope="col">Value</th></tr></thead>
+    <tbody>
+      <tr><td>Workflows per workspace</td><td><span class="num">100</span></td></tr>
+      <tr><td>Runs going at once per workspace</td><td>200, on top of the plan's limit (runs started by other runs, queued events and replacements aside)</td></tr>
+      <tr><td>Credit budget per run</td><td>10,000 unless the workflow sets another</td></tr>
+      <tr><td>Items in a For each, in parallel</td><td><span class="num">1,000</span></td></tr>
+      <tr><td>A path's data</td><td>256 KB</td></tr>
+      <tr><td>Run workflow nesting</td><td>8 deep</td></tr>
+      <tr><td>Retries of one step</td><td>20 tries in all</td></tr>
+      <tr><td>Call a URL</td><td>Answer up to 256 KB, timeout up to 60 s, up to 20 headers</td></tr>
+      <tr><td>Hold, online/offline and acknowledgement waits</td><td>Up to 24 hours</td></tr>
+      <tr><td>Delay</td><td>Up to 365 days</td></tr>
+      <tr><td>Wait for a call token</td><td>At least 24 characters</td></tr>
+      <tr><td>Queued trigger events</td><td>Kept 24 hours</td></tr>
+      <tr><td>Webhook trigger</td><td>Body up to 128 KB; 600 requests a minute per path; 1,200 callback requests a minute per address</td></tr>
+      <tr><td>Integrations per workspace</td><td><span class="num">50</span></td></tr>
+      <tr><td>A run with nothing left to do</td><td>Ended after 30 minutes at most</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="kept">How long things are kept</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">What</th><th scope="col">Kept</th></tr></thead>
+    <tbody>
+      <tr><td>Audit log</td><td>90 days</td></tr>
+      <tr><td>Client traffic in the audit log</td><td>2 days</td></tr>
+      <tr><td>Readings and run history</td><td>By plan, above</td></tr>
+      <tr><td>Exports</td><td>Up to 100,000 rows each, 10 a minute per workspace</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="sign-in">Sign-in and the API</h2>
+  <p>Sign-in, sign-up and password calls are limited per address to 10 a minute, so a password can't be guessed by trying many. Refreshing a session is limited to 120 a minute. Past a limit the answer is <code>429 RATE_LIMITED</code> with <code>Retry-After</code>.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>I need more than a platform limit allows</dt>
+    <dd>Most platform limits are there to protect shared servers. Tell us what you are building; Business contracts can change several of them.</dd>
+    <dt>A board floods the gateway with readings</dt>
+    <dd>Past 10 a second the extra are dropped, and a board that keeps going is disconnected. The libraries pace for you, including the backlog they send after a reconnect.</dd>
+    <dt>The account hits its run limit</dt>
+    <dd>New runs are refused with <code>PLAN_RUN_LIMIT_REACHED</code>; a trigger's event shows as Refused and isn't queued.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Codes</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">Limit</th></tr></thead>
+      <tbody>
+        <tr><td><code>PLAN_CLIENT_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Clients</td></tr>
+        <tr><td><code>PLAN_RUN_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Runs going at once</td></tr>
+        <tr><td><code>PLAN_CREDIT_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Credits a month</td></tr>
+        <tr><td><code>PLAN_WORKSPACE_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Workspaces</td></tr>
+        <tr><td><code>PLAN_MEMBER_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Members, checked when an invitation is sent and when it is accepted</td></tr>
+        <tr><td><code>TENANT_FREE_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>One Free account of your own</td></tr>
+        <tr><td><code>WORKSPACE_CREDIT_CAP_REACHED</code></td><td><span class="num">409</span></td><td>The workspace's own cap (<a routerLink="/docs/usage" fragment="credit-cap">usage</a>)</td></tr>
+        <tr><td><code>WORKSPACE_BUSY</code></td><td><span class="num">503</span></td><td>Too many runs starting in the workspace at the same instant. Send it again.</td></tr>
+        <tr><td><code>INTEGRATION_LIMIT_REACHED</code></td><td><span class="num">409</span></td><td>Integrations per workspace</td></tr>
+        <tr><td><code>RATE_LIMITED</code></td><td><span class="num">429</span></td><td>Any per-minute limit</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li>Plan limits on clients and runs are counted across all the account's workspaces under one lock per limit, so two workspaces one short of the limit can't both pass at the same instant.</li>
+      <li>A member is anyone in the account, suspended or not. A pending invitation counts once it is accepted.</li>
+      <li>The gateway never counts a pong answering a ping, or an acknowledgement of a command sent for confirmation, against a client's message rate.</li>
+    </ul>
+  </div>
+</div>

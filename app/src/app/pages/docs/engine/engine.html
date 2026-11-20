@@ -1,0 +1,111 @@
+<h1 class="x-t">How the engine runs workflows</h1>
+<p class="lead">What happens between a trigger firing and a run finishing, and what WBSKT guarantees along the way: a run starts once per event, a step that changes the world runs once per attempt, waits survive restarts, and a run always ends.</p>
+
+<div class="dsec">
+  <h2 id="from-event-to-run">From an event to a run</h2>
+  <p>Every trigger is an event arriving: a client's message, a client going online or offline, a schedule coming due, a webhook, a run by hand. For each event the engine:</p>
+  <ul class="dul">
+    <li>first wakes any waiting run the event is for, like a Wait for signal or Wait for a call;</li>
+    <li>then finds every enabled workflow with a trigger that matches, checks its filter, and works out its correlation key;</li>
+    <li>applies the trigger's choice for when a run is going (<a routerLink="/docs/triggers" fragment="overlapping-runs">queue, run both, cancel, skip</a>);</li>
+    <li>checks credits and run limits, and starts the run from the live version.</li>
+  </ul>
+  <p>A run is pinned to the version it started on. Publishing a new version doesn't change runs already going.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="paths">Paths and steps</h2>
+  <p>A run is one or more <b>paths</b>. Each path runs its steps one after another and carries its own data. Splitting a run makes more paths; a join brings them back to one.</p>
+  <p>Before each step, the engine charges its credits. After it, the step's result decides what the path does next: follow an output, split, wait, fail, or end. When the last path ends, the run gets its final status.</p>
+  <p>Up to 50 paths across all runs move at once. More wait their turn, in order.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="waiting">Waiting</h2>
+  <p>A path that waits, for a delay, a signal, a call, a client's answer or a retry's backoff, is <b>parked</b>: it holds no worker, and what it waits for is written down on the server. A timer checks every second for waits that are due; an event that matches wakes the path at once. Whichever comes first, the event or the timeout, wins, and only once.</p>
+  <p>Because waits are written down, a run can wait for days, and a restart or a failover loses nothing.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="restarts">Restarts and failover</h2>
+  <p>Only one engine works at a time, holding a lease it renews every 10 seconds. If it stops, the next engine to start, a standby or the same one restarting, takes the lease once it runs out, within 30 seconds. Before it accepts any new event, it:</p>
+  <ul class="dul">
+    <li>picks up every path that was moving, from the step it was on;</li>
+    <li>finishes cancelling or failing runs that were being stopped;</li>
+    <li>closes runs whose last path had ended;</li>
+    <li>lets waits that came due while no engine ran fire now.</li>
+  </ul>
+  <p>A schedule that came due while WBSKT was down fires once, for the latest time it missed.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="once">Once, not twice</h2>
+  <ul class="dul">
+    <li><b>A run per event.</b> Each trigger's start is keyed by the event, so the same message delivered twice starts one run.</li>
+    <li><b>A step per attempt.</b> A step that changes something (a command, an email, a URL call, a counter) is keyed by its run, path, visit and attempt. If the engine stops mid-step and picks it up again, it gets the stored result rather than doing it again. A loop that visits the same step twice gets two keys, so both visits happen.</li>
+    <li><b>A wake per wait.</b> The event and the timer race to claim a wait; whoever claims it wakes the path, and the other finds nothing.</li>
+    <li><b>An end per path.</b> A path is ended only if it is still live, so two things trying to end it can't both succeed.</li>
+  </ul>
+</div>
+
+<div class="dsec">
+  <h2 id="housekeeping">Housekeeping</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Every</th><th scope="col">The engine</th></tr></thead>
+    <tbody>
+      <tr><td>Second</td><td>Fires due waits, schedules, online/offline checks and holds.</td></tr>
+      <tr><td>10 seconds</td><td>Posts what runs spent to the month's credit count.</td></tr>
+      <tr><td>5 minutes</td><td>Fails a path left waiting with nothing to wake it (<code>BOOKMARK_LOST</code>), re-sends a wake that got lost, and ends runs that have nothing left to do once they are 30 minutes old.</td></tr>
+      <tr><td>Hour</td><td>Deletes runs past the plan's history, and idempotency keys older than 24 hours.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>The engine restarts while a URL call is in flight</dt>
+    <dd>The step is run again when the path is picked up. If the call had finished and its result was stored, that result is used instead. A service that must never see a request twice should take an idempotency key from the run.</dd>
+    <dt>The engine restarts during a 2-hour delay</dt>
+    <dd>Nothing changes: the delay ends when it was due to.</dd>
+    <dt>A client answers just as its wait times out</dt>
+    <dd>Only one wins. The path leaves by the answer's output or by timeout, never both.</dd>
+    <dt>A step crashes in a way WBSKT didn't expect</dt>
+    <dd>The step fails with <code>EXECUTOR_CRASH</code> and a fixed message. The details go to WBSKT's own logs, not to the run's history, which every member can read.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules</h2>
+    <h3>Final status</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Run when the last path ends</th><th scope="col">Paths</th><th scope="col">Final status</th></tr></thead>
+      <tbody>
+        <tr><td>Cancelling, for credits</td><td>any</td><td><code>OutOfCredits</code></td></tr>
+        <tr><td>Cancelling</td><td>some cancelled, some completed</td><td><code>PartiallyFailed</code></td></tr>
+        <tr><td>Cancelling</td><td>otherwise</td><td><code>Cancelled</code></td></tr>
+        <tr><td>Failing</td><td>any</td><td><code>Failed</code></td></tr>
+        <tr><td>Running</td><td>failed and completed</td><td><code>PartiallyFailed</code></td></tr>
+        <tr><td>Running</td><td>only failed</td><td><code>Failed</code></td></tr>
+        <tr><td>Running</td><td>otherwise</td><td><code>Succeeded</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>Run statuses in flight: <code>Running</code>, <code>Failing</code>, <code>Cancelling</code>. Path statuses: <code>Active</code>, <code>Waiting</code>, <code>Completed</code>, <code>Failed</code>, <code>Cancelled</code>.</p>
+    <h3>Stopping a run</h3>
+    <p>Cancel moves a run to <code>Cancelling</code>; Fail run, <b>Fail the whole run</b> and fail-fast move it to <code>Failing</code>. Either way its waits are deleted, its waiting paths cancelled, and its child runs cancelled. Moving paths see it at their next step and end Cancelled.</p>
+    <h3>Engine codes</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>EXECUTOR_CRASH</code></td><td>A step failed in an unexpected way.</td></tr>
+        <tr><td><code>BRANCH_LOOP_ESCAPED</code></td><td>A path stopped in an unexpected way; it is ended so the run can still finish.</td></tr>
+        <tr><td><code>BOOKMARK_LOST</code></td><td>A path waited with nothing that could wake it, for two 5-minute checks in a row.</td></tr>
+        <tr><td><code>REAPER_TIMEOUT</code></td><td>A run with nothing left to do was ended after 30 minutes.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>History entries</h3>
+    <p>A run's history records <code>RunStarted</code> (without the trigger's data), each step's <code>NodeStarted</code>, <code>NodeCompleted</code> or <code>NodeFailed</code> with its duration and credits, <code>NodeRetrying</code>, a path being parked, resumed or recovered, and <code>RunFinalized</code>. See <a routerLink="/docs/runs" fragment="in-depth">runs</a>.</p>
+  </div>
+</div>

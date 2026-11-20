@@ -51,7 +51,7 @@
 
 <div class="dsec">
   <h2 id="removing-a-client">Removing a client</h2>
-  <p><b>Revoke</b> keeps the client in the list and closes its connection, so you can bring it back later by approving it. <b>Delete</b> removes it with its capabilities and state, closes its connection and stops its secret working. Commands waiting for it fail, saying it was deleted. Its past messages stay in the activity log.</p>
+  <p><b>Revoke</b> keeps the client in the list and closes its connection, so you can bring it back later by approving it. <b>Delete</b> removes it with its capabilities and state, closes its connection and stops its secret working. Commands waiting for it fail, saying it was deleted. Its past messages stay in the <a routerLink="/docs/activity">audit log</a>.</p>
   <p>A deleted client can only come back by registering again with a PIN, as a new client. Its library has to forget its stored ID and secret first; each SDK's page says how.</p>
 </div>
 

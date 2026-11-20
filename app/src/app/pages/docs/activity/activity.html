@@ -1,0 +1,108 @@
+<h1 class="x-t">Audit log</h1>
+<p class="lead">The audit log records what happened in a workspace: who signed in, which client joined, who changed a policy, which workflow was published and which run sent a command. Use it to answer "who did that, and when?".</p>
+
+<div class="dsec">
+  <h2 id="views">What it shows</h2>
+  <p>Open <b>Audit Logs</b> from the activity rail on the left. The explorer lists views, each a slice of the same log:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">View</th><th scope="col">Holds</th></tr></thead>
+    <tbody>
+      <tr><td><b>All activity</b></td><td>Everything below.</td></tr>
+      <tr><td><b>People and access</b></td><td>Sign-ins, failed or not, password changes and resets, invitations, members removed, suspended or restored, roles given or changed.</td></tr>
+      <tr><td><b>Clients</b></td><td>Joins, approvals, renames, status changes and commands.</td></tr>
+      <tr><td><b>Policies</b></td><td>Policies created, changed, turned off and on, and full.</td></tr>
+      <tr><td><b>Workflows</b></td><td>Publishes, runs started by hand and cancelled, deprecations, deletions and shared variables set.</td></tr>
+      <tr><td><b>Integrations</b></td><td>Integrations added, tested and replaced.</td></tr>
+      <tr><td><b>Security</b></td><td>Under <b>Needs a look</b>: the warnings about failed sign-ins, keys and PINs rotated, deletions and boards turned away.</td></tr>
+      <tr><td>Each person</td><td>What one member did.</td></tr>
+      <tr><td><b>Wbskt (system)</b></td><td>What WBSKT did on its own, like ending a stuck run or noticing a limit.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each entry has its time, what happened, who did it, where it came from, and how serious it is. Open one to see everything it carries, including what changed: a policy's limit from 10 to 20, a client's name, a workflow's version.</p>
+  <p>The log is <b>Live</b>: new entries appear as they happen. Pause it to read without the list moving.</p>
+  <p>Client and policy pages show their own activity too, which is this log narrowed to them.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="filters">Filters</h2>
+  <ul class="dul">
+    <li><b>Search</b> finds text anywhere in an entry: a name, an ID, a value.</li>
+    <li><b>Who</b> narrows it to one person. <b>Resource</b> narrows it to one client, policy or workflow.</li>
+    <li><b>Severity</b>: All, Warnings and up, or Errors only.</li>
+    <li><b>Source</b>: where it came from.</li>
+    <li>The range: the last 24 hours, 7 days, 30 days or 90 days.</li>
+  </ul>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Source</th><th scope="col">Means</th></tr></thead>
+    <tbody>
+      <tr><td><b>Console</b></td><td>Someone did it in the console.</td></tr>
+      <tr><td><b>API</b></td><td>Someone did it with their token from somewhere else: a script, another tool.</td></tr>
+      <tr><td><b>Client</b></td><td>A board did it: connected, sent a message, answered a command.</td></tr>
+      <tr><td><b>Workflow</b></td><td>A run did it: sent a command, or set a shared variable. The entry names the run.</td></tr>
+      <tr><td><b>System</b></td><td>WBSKT did it on its own.</td></tr>
+      <tr><td><b>Support</b></td><td>WBSKT support changed something for you, with the reason they gave.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="dsec">
+  <h2 id="client-traffic">Client traffic</h2>
+  <p>Messages, replies and pings are <b>client traffic</b>. There is a lot of it, so it is kept for 2 days, and you can hide it with the <b>Client traffic</b> switch to see only the changes. Everything else is kept for 90 days.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="export">Export</h2>
+  <p><b>Export CSV</b> downloads what the log lists, with the same filters, newest first. A file holds up to 100,000 rows; one cut there says so on its last line, so choose a shorter range.</p>
+</div>
+
+<div class="dsec">
+  <h2 id="what-happens-when">What happens when…</h2>
+  <dl class="qa">
+    <dt>A board keeps trying to join a full policy</dt>
+    <dd>The log says the policy is full at most once an hour, so a retrying board doesn't flood it. Every try is still refused.</dd>
+    <dt>A workflow sends a command to a client</dt>
+    <dd>The entry's source is Workflow, it names the run, and it shows under that workflow as well as the client.</dd>
+    <dt>Someone signs in with the wrong password</dt>
+    <dd>A failed sign-in is logged in every workspace the person belongs to, with the address and browser it came from, and shows under Security.</dd>
+    <dt>A member is removed from the workspace</dt>
+    <dd>What they did stays in the log, under their name.</dd>
+    <dt>I need something from four months ago</dt>
+    <dd>It's gone: entries are kept 90 days. Export the log regularly if you need a longer record.</dd>
+  </dl>
+</div>
+
+<div class="deep">
+  <span class="kick">In depth</span>
+  <div class="dsec">
+    <h2 id="in-depth">Rules and API</h2>
+    <h3>Endpoints</h3>
+    <p>Under <code>/api/v1/workspaces/&#123;ws&#125;/event-logs</code>, all with <code>logs.read</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Call</th><th scope="col">Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /</code></td><td>Entries newest first, <code>limit</code> per page (50 by default). Filters, all combined: <code>group</code>, <code>eventNames</code>, <code>eventName</code> (part of a name), <code>criticality</code>, <code>minCriticality</code>, <code>source</code>, <code>policyRefId</code>, <code>clientRefId</code>, <code>workflowRefId</code> (every version, deleted ones too), <code>userRefId</code>, <code>from</code>/<code>to</code>, <code>traffic=include|exclude</code>, <code>q</code> (up to 100 characters), and <code>sinceId</code> for only what is newer.</td></tr>
+        <tr><td><code>GET summary</code></td><td>Counts per group, event, person and source over <code>from</code>/<code>to</code> (the last 7 days by default, at most 400).</td></tr>
+        <tr><td><code>GET csv</code></td><td>The same filters as one file: <code>id,createdAt,event,criticality,userRefId,clientRefId,policyRefId,workflowRefId,data,source,clientAddress,userAgent</code>. The last 7 days by default, at most 400, at most 100,000 rows.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Groups are <code>people</code>, <code>clients</code>, <code>policies</code>, <code>workflows</code>, <code>integrations</code> and <code>security</code>. Sources are <code>Console</code>, <code>Api</code>, <code>Client</code>, <code>Workflow</code>, <code>System</code> and <code>Support</code>.</p>
+    <h3>Errors</h3>
+    <div class="tbl"><table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Status</th><th scope="col">When</th></tr></thead>
+      <tbody>
+        <tr><td><code>EVENT_LOG_GROUP_UNKNOWN</code></td><td><span class="num">400</span></td><td>A group that isn't one of the above.</td></tr>
+        <tr><td><code>EVENT_LOG_SOURCE_UNKNOWN</code></td><td><span class="num">400</span></td><td>A source that isn't one of the above.</td></tr>
+        <tr><td><code>CLIENT_NOT_FOUND</code>, <code>POLICY_NOT_FOUND</code></td><td><span class="num">404</span></td><td>A client or policy filter this workspace doesn't have.</td></tr>
+        <tr><td><code>RATE_LIMITED</code></td><td><span class="num">429</span></td><td>More than 10 exports a minute in the workspace, shared with the readings export.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rules worth knowing</h3>
+    <ul class="dul">
+      <li><code>userRefId</code> is set for actions taken by a signed-in person, and null for what clients, runs and WBSKT do on their own.</li>
+      <li><code>clientAddress</code> and <code>userAgent</code> are kept beside the entry, never inside its data, and go with it at the end of retention.</li>
+      <li>A change's data holds <code>changes: [&#123;field, before, after&#125;]</code>. A shared variable's value set by hand is cut to 256 characters there.</li>
+      <li>Entries never carry internal ids, only the references the API uses.</li>
+      <li>Things that happen to a person (signing in, changing a password) are logged in every workspace they belong to.</li>
+    </ul>
+  </div>
+</div>
